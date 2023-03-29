@@ -1,0 +1,699 @@
+1.ec2
+=====
+terraform {
+  required_providers {
+    aws = {
+        source = "hashicorp/aws"  
+    }    
+  }
+}
+provider "aws" {
+  region = "ap-south-1"
+  profile = "default"
+}
+
+resource "aws_vpc" "java_vpc" {
+  cidr_block       = "10.1.0.0/16"
+  instance_tenancy = "default"
+
+  tags = {
+    Name = "javavpc"
+  }
+}
+resource "aws_subnet" "java_sn" {
+  vpc_id     = aws_vpc.java_vpc.id
+  cidr_block = "10.1.1.0/24"
+  availability_zone = "ap-south-1a"
+  tags = {
+    Name = "javasn"
+  }
+}
+resource "aws_internet_gateway" "java_ig" {
+  vpc_id = aws_vpc.java_vpc.id
+
+  tags = {
+    Name = "javaig"
+  }
+}
+
+resource "aws_route_table" "java_igrt" {
+  vpc_id = aws_vpc.java_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.java_ig.id
+  }
+  tags = {
+    Name = "javaigrt"
+  }
+}
+resource "aws_route_table_association" "a" {
+  subnet_id      = aws_subnet.java_sn.id
+  route_table_id = aws_route_table.java_igrt.id
+}
+resource "aws_security_group" "java_ec2sg" {
+  name        = "allow_tls"
+  description = "Allow SSH"
+  vpc_id      = aws_vpc.java_vpc.id
+
+  ingress {
+    description      = "allow ssh protocal"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "allow_tls"
+  }
+}
+resource "aws_key_pair" "java_kp" {
+  key_name   = "javakp"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCTRQcMPZ/efJXbCvqDelkp7/qoz6cMnFTh/3dUOU2cGvy6a4kTbt7W+G740azIbjuYoySdx2EFDZYnnQ20HNde+Sp/UHx2Q+4bwuDaffkOBp6WQU9XQ5lhEiHp6/u0qxqgamJmfOsL8Ojef+Vzwipz5tNF/DODS8sV+LZFpv8UD3/x4fw9iwKbmMtzaYsEcS1yQLQ2FyicMv9aHLvR8y7fBeFsGGpVzttHq6cnsDa8RTfv2nL1SUEayf0ewyanrkmTC0lLzy6vkjytKGTlio/9pha3vWwsZx0m0v6DkIE4BVVUgUMeuamFurDCSgxBBwbQB9Ee3OZzC+YeIwU03Rs0QhRfuDczeAAqX7S+WipFraogJJFgG81016Ur7T76+7pt9NhxX6fr97tP6GeM9r+zydPrgqxepgmbI0UYVhUMsG9XetkAg7g935DEeu1twfNmYSXAjztWGYc1dBPG3hZxzpgIjOAcf61h933XVjKm93P2/tliOz+us3fy3dTmoHk= sathe@LAPTOP-IM6JCFV2"
+}
+resource "aws_instance" "java_ec2" {
+  ami                       = "ami-062df10d14676e201"
+  instance_type             = "t2.micro"
+  associate_public_ip_address = "true"
+  subnet_id = aws_subnet.java_sn.id
+  key_name = aws_key_pair.java_kp.key_name
+  vpc_security_group_ids = [aws_security_group.java_ec2sg.id]
+  tags = {
+    "Name" = "javaec2"
+  }
+}
+
+
+=====================================================================================================================================
+create ec2 with variables
+------------------------
+
+variables.tf
+-------------
+variable "myapp_vpccidr" {
+  type = string
+  default = "10.1.0.0/16"
+}
+variable "myapp_sncidr" {
+  type = string
+  default = "10.1.1.0/24"
+}
+variable "myapp_kyp" {
+  type = string
+  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCTRQcMPZ/efJXbCvqDelkp7/qoz6cMnFTh/3dUOU2cGvy6a4kTbt7W+G740azIbjuYoySdx2EFDZYnnQ20HNde+Sp/UHx2Q+4bwuDaffkOBp6WQU9XQ5lhEiHp6/u0qxqgamJmfOsL8Ojef+Vzwipz5tNF/DODS8sV+LZFpv8UD3/x4fw9iwKbmMtzaYsEcS1yQLQ2FyicMv9aHLvR8y7fBeFsGGpVzttHq6cnsDa8RTfv2nL1SUEayf0ewyanrkmTC0lLzy6vkjytKGTlio/9pha3vWwsZx0m0v6DkIE4BVVUgUMeuamFurDCSgxBBwbQB9Ee3OZzC+YeIwU03Rs0QhRfuDczeAAqX7S+WipFraogJJFgG81016Ur7T76+7pt9NhxX6fr97tP6GeM9r+zydPrgqxepgmbI0UYVhUMsG9XetkAg7g935DEeu1twfNmYSXAjztWGYc1dBPG3hZxzpgIjOAcf61h933XVjKm93P2/tliOz+us3fy3dTmoHk= sathe@LAPTOP-IM6JCFV2"
+}
+variable "ec2config" {
+    type = object ({
+        ami = string
+        associate_public_ip_address = bool
+        instance_type = string     
+    })
+    default = {
+      ami = "ami-062df10d14676e201"
+      associate_public_ip_address = true
+      instance_type = "t2.micro" 
+    }
+  }
+
+main.tf
+-------
+
+terraform {
+  required_providers {
+    aws = {
+        source = "hashicorp/aws"  
+    }    
+  }
+}
+provider "aws" {
+  region = "ap-south-1"
+  profile = "default"
+}
+
+
+resource "aws_vpc" "myapp_vpc" {
+  cidr_block = var.myapp_vpccidr 
+  instance_tenancy = "default"
+
+  tags = {
+    Name = "myappvpc"
+  }
+}
+resource "aws_subnet" "myapp_sn" {
+  vpc_id     = aws_vpc.myapp_vpc.id
+  cidr_block = var.myapp_sncidr
+  availability_zone = "ap-south-1a"
+  tags = {
+    Name = "myappsn"
+  }
+}
+
+resource "aws_internet_gateway" "myapp_ig" {
+  vpc_id = aws_vpc.myapp_vpc.id
+  tags = {
+    Name = "myappig"
+  }
+}
+
+resource "aws_route_table" "myapp_igrt" {
+  vpc_id = aws_vpc.myapp_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.myapp_ig.id
+  }
+  tags = {
+    Name = "myappigrt"
+  }
+}
+resource "aws_route_table_association" "a" {
+  subnet_id      = aws_subnet.myapp_sn.id
+  route_table_id = aws_route_table.myapp_igrt.id
+}
+resource "aws_security_group" "myapp_ec2sg" {
+  name        = "allow_tls"
+  description = "Allow SSH"
+  vpc_id      = aws_vpc.myapp_vpc.id
+
+  ingress {
+    description      = "allow ssh protocal"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "allow_tls"
+  }
+}
+
+
+resource "aws_key_pair" "myapp_kp" {
+  key_name   = "myappkp"
+  public_key = var.myapp_kyp
+}
+
+resource "aws_instance" "myapp_ec2" {
+  ami                       = var.ec2config.ami
+  instance_type             = var.ec2config.instance_type
+  associate_public_ip_address = var.ec2config.associate_public_ip_address
+  subnet_id = aws_subnet.myapp_sn.id
+  key_name = aws_key_pair.myapp_kp.key_name
+  vpc_security_group_ids = [aws_security_group.myapp_ec2sg.id]
+  tags = {
+    Name = "myappec2"
+  }
+}
+
+=====================================================================================================================================
+create dabase with ec2 instance (with variables)
+------------------------------------------------
+variable.tf
+
+variable "vpc_cidr" {
+  type = string
+  default = "10.0.0.0/16"
+  }
+
+  variable "pubsn_cidr" {
+    type = string
+    default = "10.1.0.0/24"
+  }
+
+  variable "privsn_cidr" {
+    type = string
+    default = "10.2.0.0/24"
+  }
+
+  variable "privsn2_cidr" {
+    type = string
+    default = "10.3.0.0/24"
+  }
+
+variable "ssh_port" {
+  type = number
+  default = 22
+}
+
+variable "db_port" {
+  type = number
+  default = 3306
+}
+
+variable "ec2_config" {
+  type = object({
+    instance_type = string
+    ami = string
+    associate_public_ip_address = bool
+  })
+  default = {
+    ami = "ami-062df10d14676e201"
+    associate_public_ip_address = true
+    instance_type = "t2.micro"
+  }
+}
+ variable "db_config" {
+   type = object({
+    dbname = string
+    engine = string
+    version = string
+    instanceclass = string
+    username = string
+    password = string
+   })
+   default = {
+     dbname = "mydb"
+     engine = "mysql"
+     instanceclass = "db.t2.micro"
+     version = "8.0.30"
+     allocatestorage = 10
+     username = "root"
+     password = "Welcome#1"
+   }
+ }
+
+
+main.tf
+-------
+
+terraform {
+  required_providers {
+    aws = {
+        source = "hashicorp/aws"
+    }
+  }
+}
+
+provider "aws" {
+  region = "ap-south-1"
+  profile = "default"
+}
+
+resource "aws_vpc" "fithealth_vpc" {
+  cidr_block = var.vpc_cidr
+}
+
+resource "aws_subnet" "fithealth_pubsn1" {
+  vpc_id = aws_vpc.fithealth_vpc.id
+  cidr_block = var.pubsn_cidr
+  availability_zone = "ap-south-1a"
+}
+
+resource "aws_subnet" "fithealth_prisn2" {
+  vpc_id = aws_vpc.fithealth_vpc.id
+  cidr_block = var.privsn_cidr
+  availability_zone = "ap-south-1b"
+}
+
+resource "aws_subnet" "fithealth_prisn3" {
+  vpc_id = aws_vpc.fithealth_vpc.id
+  cidr_block = var.privsn2_cidr
+  availability_zone = "ap-south-1a"
+}
+
+resource "aws_internet_gateway" "fit_ec2ig" {
+  vpc_id = aws_vpc.fithealth_vpc.id
+  tags = {
+    Name = "fitec2ig"
+  }
+}
+
+resource "aws_route_table" "fit_igrt" {
+  vpc_id = aws_vpc.fithealth_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.fit_ec2ig.id
+  }
+  tags = {
+    Name = "fitigrt"
+  }
+}
+
+resource "aws_route_table_association" "a" {
+  subnet_id = aws_subnet.fithealth_pubsn1.id
+  route_table_id = aws_route_table.fit_igrt.id
+}
+
+resource "aws_security_group" "fit_ec2sg" {
+   name        = "allow_tls"
+  description = "Allow SSH"
+  vpc_id      = aws_vpc.fithealth_vpc.id
+
+  ingress {
+    description      = "allow ssh protocal"
+    from_port        = var.ssh_port
+    to_port          = var.ssh_port
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "allow_ssh"
+  }
+}
+
+resource "aws_security_group" "fit_dbsg" {
+   name        = "allow_database"
+  description = "Allow SSH"
+  vpc_id      = aws_vpc.fithealth_vpc.id
+
+  ingress {
+    description      = "allow ssh protocal"
+    from_port        = var.db_port
+    to_port          = var.db_port
+    protocol         = "tcp"
+    cidr_blocks      = [var.vpc_cidr]
+  }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "allow_db"
+  }
+}
+
+resource "aws_key_pair" "fit_kp" {
+  key_name = "fithealth_kp"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCTRQcMPZ/efJXbCvqDelkp7/qoz6cMnFTh/3dUOU2cGvy6a4kTbt7W+G740azIbjuYoySdx2EFDZYnnQ20HNde+Sp/UHx2Q+4bwuDaffkOBp6WQU9XQ5lhEiHp6/u0qxqgamJmfOsL8Ojef+Vzwipz5tNF/DODS8sV+LZFpv8UD3/x4fw9iwKbmMtzaYsEcS1yQLQ2FyicMv9aHLvR8y7fBeFsGGpVzttHq6cnsDa8RTfv2nL1SUEayf0ewyanrkmTC0lLzy6vkjytKGTlio/9pha3vWwsZx0m0v6DkIE4BVVUgUMeuamFurDCSgxBBwbQB9Ee3OZzC+YeIwU03Rs0QhRfuDczeAAqX7S+WipFraogJJFgG81016Ur7T76+7pt9NhxX6fr97tP6GeM9r+zydPrgqxepgmbI0UYVhUMsG9XetkAg7g935DEeu1twfNmYSXAjztWGYc1dBPG3hZxzpgIjOAcf61h933XVjKm93P2/tliOz+us3fy3dTmoHk= sathe@LAPTOP-IM6JCFV2"
+}
+resource "aws_instance" "fit_ec2" {
+  instance_type = var.ec2_config.instance_type
+  ami = var.ec2_config.ami
+  associate_public_ip_address = var.ec2_config.associate_public_ip_address
+  subnet_id = aws_subnet.fithealth_pubsn1.id
+  key_name = aws_key_pair.fit_kp.key_name
+  vpc_security_group_ids = [aws_security_group.fit_ec2sg.id]
+  availability_zone = "ap-south-1a"
+}
+
+resource "aws_db_subnet_group" "fit_dbsngp" {
+  name = "fit_dbsngp"
+  subnet_ids = [aws_subnet.fithealth_prisn2.id, aws_subnet.fithealth_prisn3.id]
+  tags = {
+    "Name" = "fit health subnet froup"
+  }
+}
+
+
+resource "aws_db_instance" "fit_db" {
+    allocated_storage = 15
+    db_name = var.db_config.dbname
+    engine = var.db_config.engine
+    engine_version = var.db_config.version
+    instance_class = var.db_config.instanceclass
+    username = var.db_config.username
+    password = var.db_config.password
+    availability_zone = "ap-south-1a"
+    vpc_security_group_ids = [aws_security_group.fit_dbsg.id]
+    db_subnet_group_name = aws_db_subnet_group.fit_dbsngp.name
+}
+
+
+
+input.vars
+----------
+vpc_cidr = "10.1.0.0/16"
+pubsn_cidr = "10.1.1.0/24"
+privsn2_cidr = "10.1.2.0/24"
+privsn_cidr = "10.1.3.0/24"
+ssh_port = 22
+db_port = 3306
+db_config = {
+  dbname = "fithealthdb"
+  engine = "mysql"
+  instanceclass = "db.t2.micro"
+  password = "Welcome#1"
+  username = "root"
+  version = "8.0.30"
+}
+
+ output.vars
+------------
+output "fithealthec2_ip" {
+  value = aws_instance.fit_ec2.public_ip
+  description = "ec2 instance ip address"
+}
+
+output "fitdb_endpoint" {
+  value = aws_db_instance.fit_db.endpoint
+  description = "rds endpoint"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

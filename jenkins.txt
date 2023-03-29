@@ -1,0 +1,940 @@
+1.what is devops ?
+  ans:- devops is a change in culture and adoption of new tools and technologies in fast-paced developement and delivery of the 		application.
+2.what is change in culture ?
+  ans:- adopt agile methodologies in developing and delivering the application.
+3.ci/cd has how many terms ?
+  ans:- 3 
+	(i).continous integration
+	(ii).continous deployment
+	(iii).continous delivery
+4.what is continous integration ?
+  ans:- continous integration is about performing bunch of quality gating checks on the code that is delivered by the developer into a 
+	feature branch to ensure the stability of the builds.
+5.when ever developer pushes the code into the feature branch, before pushing the changes into the feature branch what quality checks
+  he need to perform ?
+  ans:- (i).pull the code from git repository
+	(ii).build the code
+	(iii).run unit test-cases
+	(iv).run code quality tools like sonarqube,cobertura etc for code review and code coverage
+	(v).push the artifact into the artifactory repository.
+6.what is continous deployment ?
+  ans:- continous deployment is the process of release a feature to the qa for further testing.
+7.how the continous deployment will works ?
+  ans:- whenever the developer completed the feature he will merge the feature into the develop branch upon merging the code into 
+	develop it should be delivered to the qa for testing,in-order to deliver the code for qa to test ops engineer has to 
+	perform bunch of activities.
+	(i).pull the code from repository
+	(ii).build the code
+	(iii).integration tests
+	(iv).publish the artifact into the artifactory repository
+	(v).provision the infrastructure on a cloud or local machine
+	(vi).install and configure required platform software on the env we created
+	(vii).deploy the application
+	(viii).do the sanity checks
+	(ix).release the env to the qa for further testing.
+8.what is continous delivery ?
+  ans:- the continous delivery is the process of release the tested/certified code or features by the qa into the production.
+-----------------------------------------------------------------------------------------------------------------------------------
+JENKINS-ARCHITECTURE
+--------------------
+1.what is jenkins job ?
+  ans:- job represents bunch of code/activities that has to be executed to perform build,deployment,or delivery of the application.
+2.how many ways we can trigger the jenkins job ?
+  ans:- we can trigger multiple ways
+	(i).through githooks
+	(ii).poll vcs
+3.how to work with githooks ?
+  ans:- when there is a new commit or merge happened on the git, the git will publish the info to the jenkins so that jenkins will run
+	an appropriate job.
+4.how to work with poll vcs ?
+  ans:- periodically poll the vcs and verify new commits if available build it.
+5.jenkins followes which type of architecture ?
+  ans:- jenkins followes the master & slave architecture.
+6.jenkins master where it will store the info about the jobs ?
+  ans:- jenkins master it self it will stores the info about the jobs.
+7.how the jenkins master will communicate with slave node ?
+  ans:- each slave node will be installed with agent software through which the jenkins master communicates with slave for running the
+	jobs.
+8.what are the features are there in master and slave architecture ?
+  ans:- (i).highly scalable (because of it's master and slave architecture we can attach any number of slave nodes to the master in 		     scheduling and distribute the jobs on the slaves.)	
+	(ii).scripted pipeline
+	(iii).plugin based architecture
+	(iv).we can establish parent and child relationship b/w the jobs
+	(v).we can run multiple pipelines in parallel for faster builds and deliveries.
+
+***imp
+===================================================================================================================================
+JENKINS JOBS
+------------
+1.how many types of jobs are there in jenkins ?
+  ans:- two types of jobs 	(i).free-style project		(ii).pipeline project
+2.what is freesstyle project job ?
+  ans:- freestyle project job is an old method of creating an jenkins job.
+3.where it will store the info about the freestyle project ?
+  ans:-it will stores the instructions we wrote in  freestyle project in master it self.
+4.how to workwith freestyle project ?
+  ans:- we can perform build activities in building a project using
+	->checkout the code from scm
+	->build steps
+	->postbuild activities then create the job.
+5.what are the problems in freestyle project ?
+  ans:- (i).debugging the failures in free-style project rely on logs only.most of the time logs would be lengthy.
+	(ii).free-style job code stored only jenkins server (database itslef),due to which  we can not collaborate,version and move 
+             to another env.
+6.how many types of pipeline projects are there ?
+  ans:- two types (i).declarative pipeline	(ii).scripted pipeline
+7.declarative pipeline written in which language ? 
+  ans:- DSL (domain specific language)
+8.scripted pipelines are written in which language ?
+  ans:- groovy language.
+9.syntax of declarative pipeline ?
+  ans:-	
+	pipeline {
+	  agent {
+            label 'labelname'
+	  }
+	  stages {
+	    stage('stage1'){
+	      //instruction
+	    }
+	  }
+	}
+10.syntax of scripted pipeline
+  ans:-
+	node('agentnode'){
+	  stage('stage1'){
+	    //instructions
+	  }
+	}
+11.how to perform the build steps in declarative pipeline ?
+  ans:- build steps are broken down into stages and each stage will have steps to perform operation.
+12.how many ways we can add the slave to the jenkins master ?
+  ans:- 3 ways we can add slave to the master
+	(i).agent connect to the jenkins controller
+	(ii).controller connects to the agent over ssh/rsh and install the agent on the slave to establish the connection.
+	(iii).over direct ssh
+===============================================================================================================================
+JENKINS PERSISTENCY
+-------------------
+1.default installation of the jenkins where it will store the info about the jobs,build executions,buildlogs,credentials,users,roles ?
+  ans:- it will store the info in files and folders.
+2.jenkins uses which type of persisitency in storing the information ?
+  ans:- file based persistency.
+3.directories will be created in where ? and followes which structure ?
+  ans:- directories will be created in jenkins home directory. and followes the structure of java object model.
+4.console output will store which files ?
+  ans:- plain text files.
+5.configuration values are stored in which files ?
+  ans:- property files
+6.project,jobs,build records etc are stored in which format ?
+  ans:- xml format using XStream.
+====================================================================================================================================== 
+==========================================************************************===========================================
+1.what is label ? why it is used ?
+  ans:- label is nothing but machine name.using which we can identify the machine.
+	on each of the slave machines on whom we want to run a project/job,we need to setup the required tools configure them.to 
+	identify and schedule jobs on these respective machines we can associate labels to the machines and trigger only on those 
+	baring labeled machines.
+2.default installation of jenkins where it will store the info about the jobs,build executions,build logs,credentials,users,roles ?
+  ans:- it will store in files and folders.
+3.jenkins uses which type of persistency in storing the information ?
+  ans:- jenkins uses file based persistency in storing the information.
+4.how the directories will create in jenkins ?
+  ans:- directories are created the jenkins home following the structure of the java object model.
+5.where the configuration values are stored ?
+  ans:- configuration values are stored in property files.
+6.project,jobs,build records are stored in which format ?
+  ans:- xml format using xstream.
+==================================================================================================================================
+**
+1.how to add java into environement variables ?
+  ans:- download java
+	type which java it will print /usr/bin/java
+	then go to sudo vi /etc/environment
+	then JAVA_HOME=/usr/bin/java
+        after this we need to attach it by using source 
+	source /etc/environment
+2.how to add maven into environement variables ?
+  ans:- download maven
+	type which mvn it will print /usr/bin/mvn
+	then go to sudo vi /etc/environment
+	then MAVEN_HOME=/usr/bin/mvn
+        after this we need to attach it by using source 
+	source /etc/environment
+
+==================================================================================================================================
+			jenkins credentials
+			-------------------
+1.what is jenkins credentials ?
+  ans:- within the jenkins jobs/builds we quite often need to use credentials to connect to a remote machine or database or external 
+	system to perform some activity.
+2.why jenkins credentials are used ?
+  ans:- suppose to pull the code from vcs repository we need to use the username/password of the scm repository,if we hardcode the vcs
+	repository credentials as part of the jenkins jobs then we would endup with security breach.because everyone who has access to
+	the jenkins jobs or log files will be able to see the credentials of the repository there by which people can misuse.
+3.while creating the jenkins jobs how many types of scopes are there ? what are those ?
+  ans:- there are two types of scopes are there
+	(i).server & node
+	(ii).server,node and childs
+4.what is server & node scope type ?
+  ans:- these credentials cannot be reffered in jenkins jobs, only used with in the jenkins system only.
+5.what is server,node and childs scope means ?
+  ans:- we can use these credentials as part of the jenkins jobs.
+6.by default all the credentials are stored in which domain ?
+  ans:- global.
+7.how to identify the credentials ?
+  ans:- by using id.
+8.while creating the credentials what are the options are available ?
+  ans:- scope,id,credential type.
+9.how to create credentials ?
+  ans:- dashboard --> Manage Jenkins --> Credentials -->system --> add domain --> domain name
+	goto that domain --> add credentials --> kind (username with password) --> scope (Global (jenkins,nodes,items,all child 	        items,etc)) -->username (root) --> password(Welcome@1) --> create 
+10.how to create credentials for git tokens ?
+  ans:- kind (username with password) --> scope (Global (jenkins,nodes,items,all child items,etc),token ,id,) --> username --> 	        password --> id --> Description 
+11.why do we need to create new domain ?
+  ans:- if you want to differentiate the credentials of our application/projects from others we can add our own domain and create 
+	credentials from our domain.
+12.how to clone the project using git credentials ?
+  ans:- git clone -b master -credentialId gitcredential repositoryurl.git
+13.how to clone the project using pat token ?
+  ans:- git clone -b branch https://username:pattoken@github.com/repositoryurl.git
+==================================================================================================================================
+					JENKINS PLUGINS
+					---------------
+1.what is jenkins plugins ? why it is used ?
+  ans:- plugins are means through which we can enhance the functionality of the jenkins system.we can integrate jenkins controller 
+	with various build tools,cloud providers,analysis tools etc through the help of plugins.
+2.how the jenkins plugins are works ?
+  ans:- plugins are nothing but programs that sits in jenkins system and are invoked by the jenkins controller as part of build 		process.these programs works with jenkins system and invokes external tools in carrying the build activities.
+3.how the jenkins downloads the plugins ?
+  ans:- jenkins downloads the plugins by connecting to the jenkins repository.
+4.how many ways we can install the plugins ?
+  ans:- two ways
+	(i).through repository (online)
+	(ii).offline installation
+5.what is the jenkins provided tool for discovering,downloading and installing the plugins from the jenkins repository ?
+  ans:- plugin manager tool
+6.how to install the plugins ?
+  ans:-  dashboard --> manage jenkins --> manage plugins --> here it will show available plugins,installed plugins.
+7.how many ways we can download the plugins offline ?
+  ans:-  two ways
+	(i). dashboard --> manage jenkins --> manage plugins --> advanced settings --> deploy plugin
+	(ii).we can install our own plugins by downloading it manually which are of *.hpi extension copy them into 
+	     JENKINS_HOME\plugins directory by renaming them into *.jpi and restart jenkins.
+****
+
+****
+======================================================================================================================================
+JENKINS SYSTEM CONFIGURATION
+-----
+-----------------------
+1.where the jenkins system configuration files are stored in ?
+  ans:- dashboard --> manage jenkins --> configure system --> 
+2.what are the jenkins system configurations we can see in configure system ?
+  ans:- (i).jenkins home directory
+	(ii).executors properties
+	(iii).jenkins location	
+	(iv).Global (properties :- we can attach additional environment variables which we wanted them to be available during build)
+	(v).pipeline configuration
+	(vi).SMTP and email server configurations for integrating with emails.
+
+======================================================================================================================================
+GLOBALTOOL CONFIGURATION 
+------------------------
+1.if you install the multiple versions of the same tool how to fetch the specific version of the tool ?
+  ans:- through the help of plugins we can pickup a specific version of the tool and trigger the job.
+2.how the plugins will pickup the specific version of the tool ?
+  ans:- we need to register the info about all the tools with their respective versions and locations with a id.
+3.where do we need to register the info about the tools and their versions ?
+  ans:- in global tool configuration
+4.how to install any tool through global tool configuration ?
+  ans:- dashboard --> manage jenkins --> global tool configuration --> Add JDK --> Name(11) --> here by default the java 11 version is 
+	not available so click on X and --> scroll down add installer -->Run Shell command --> 
+	sudo apt update -y
+	sudo apt install -y openjdk-11-jdk
+	--> tool home (/usr/lib/jvm/java-11-openjdk-amd64) --> lable (label name)
+5.what is the use of declaring the info about the tools in globaltool configuration ?
+  ans:- if we declare the info about the tool in global tool configuration it will download the tools in across all the slaves.
+6.why do we need to declare the global tool configuration ?
+  ans:- jenkins expected to have these tools installed across all the slave nodes under the same directory paths,which means slaves 
+	should be mirrored each other.insted of we manually downloading and installing the tools on each slave node we can make use of 	the installation agents in global tool cofiguration 
+7093264867
+======================================================================================================================================
+INTEGRATE JENKINS WITH GIT
+--------------------------
+1.how many ways we can integrate with git ?
+  ans:- 2 ways
+	(i).clone the git repository from jenkins using pat token
+	(ii).through git webhooks
+2.how to work with cloning the git repository ?
+  ans:- when ever we trigger the jenkins job manually ,the jenkins job will clone the code from git repository by using git pattokens.
+3.how to work with git webhooks ?
+  ans:-when ever the developer commits/merges the code into git repository git server will triggers the jenkins pipeline in building
+	and deploying the code through using webhooks. 
+
+==================================================================================================================================
+FREE STYLE PROJECT 
+------------------
+1.how to create free style project ?
+  ans:- create credentials
+	dashboard --> manage jenkins --> manage credentials --> system --> 
+
+	 dashboard --> new item --> enter the item name --> select freestyle project --> ok --> description (write anything)
+	--> git project (add git url) -->  sourcecode management (Git) --> credentials (add) --> branches to build (*/master)
+	--> repository browser (auto) -->
+build steps --> execute shell --> sudo apt update -y
+				  sudo apt install -y openjdk-11-jdk
+				  sudo mkdir -p /u01/middleware
+				  sudo chown -R vagrant:vagrant /u01
+				  sudo su vagrant bash -c "wget | https://dlcdn.apache.org/tomcat/tomcat-9/v.9.0.70/bin/apache
+				  -tomcat-9.0.70.tar.gz"
+				  sudo su vagrant bash -c "tar -xvzf /u01/middleware/apache-tomcat-9.0.70.tar.gz -c /u01/middleware"
+				  sudo su vagrant bash -c "cp target/foodies.war /u01/middleware/apache-tomcat-9.0.70/webapps"
+				  sudo su vagrant bash -c "/u01/middleware/apache-tomcat-9.0.70/bin/startup.sh"
+then build
+how to check it is running or not ?
+  ans:- curl http://localhost:8080/foodies/actuator/health
+
+
+2.how to clone the git project using git pat token ?
+  ans:- git clone -b develop https://username:pattoken@github.com/repositoryUrl.git
+3.how to generate git pattoken ?
+  ans:- goto settings --> developer settings --> personal access token (tokens (classic)) --> generate new token -->  
+================================================================================================================================
+JENKINS-PIPELINE
+----------------
+1.what is jenkins pipeline ?
+  ans:- pipeline is a sequence of activities or expressions or processes that are executed in an automated way for getting the 	software right from version control to the users or customers.
+2.how many types of pipelinses are there ?
+  ans:- 2 types (i).declarative pipeline	(ii).scripted pipeline
+3.how to write the build process in declarative pipeline ?
+  ans:-in declarative pipeline the whole build process or the code is broken down into stages,where each stage comprises of steps 
+	inside it.
+4.what is the default name we need to use for writing the pipeline script file ?
+  ans:- jenkinsfile.
+5.where should we need to write the jenkins file ?
+  ans:- root directory of the project.
+6.how to create pipeline from scm ?
+n  ans:- while creating the pipeline we need to choose pipeline script from scm
+	(i).choose SCM as git
+	(ii).provide the git repository url in which our pipeline script file exists
+	(iii).choose credentials
+	(iv).enter the script file name.then create pipeline.
+====================================================================================================================================
+VARIABLES
+---------
+1.what are variables ?
+  ans:- variables are the place holders in which we can store the values that can be used across within  the pipeline script.
+2.in pipeline script where do we need to declare the variables ?
+  ans:- in environament block.
+3.how to use the variables declared in pipeline ?
+  ans:- 
+pipeline {
+	agent any
+	environment {
+		APPLICATION_NAME='SAILOR'
+	}
+	stages {
+		stage ('show variable') {
+			steps {
+				echo "${APPLICATION_NAME}"
+			}
+		}
+	}
+}
+4.how to access the global variables ?
+  ans:- use env keyword.
+5.example of using global variable ?
+  ans:- we can get the info about current build using BUILD_NUMBER
+6.example of declaring and accessing varibles ?
+  ans:-
+pipeline {
+    agent any
+    environment {
+        APPLICATION_NAME='sailor'
+        APPLICATION_VERSION=1.0
+    }
+    stages {
+        stage('variables') {
+            steps {
+                echo "${env.APPLICATION_NAME}"
+                echo "${APPLICATION_VERSION}"
+            }
+        }
+        stage('global variables'){
+            steps {
+                echo "${env.BUILD_NUMBER}"
+                echo "job name: ${env.JOB_NAME}"
+            }
+        }
+    }
+}
+7.examples of builtin variables ?
+  ans:- (i).BUILD_NUMBER	(ii).JOB_NAME	(iii).JAVA_HOME		(iv).BUILD_ID		(V).JENKINS_HOME
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=====================================================================================================================================
+1.how to install gitea plugin ?
+  ans:- dashboard --> manage plugins --> plugin manager --> available plugins --> Gitea
+
+2.pipeline script for knowing the version of the maven ?
+  ans:- dashboard --> All --> globaltool --> configuration --> description (mvn version) --> pipeline (definition Pipeline script)
+	pipeline {
+	    agent {
+	        label 'jenkinsslave1'
+	    }
+	    stages {
+	        stage('mvn version') {
+	            steps {
+        	        sh '''mvn --version'''
+	            }
+        	}
+    	    }
+	}
+	--> save --> build now --> 
+
+
+3.how to work with maven in pipeline (if we have multiple mvn files with different versions, how to select specific version) ?
+  ans:- download Pipeline Maven Integration 
+	goto dashboard --> all --> globaltool --> configuration --> general --> 
+
+
+
+node ("jenkinsslave1") {
+    stage("mvn version") {
+        withMaven(maven: '3.8.6') {
+            sh '''mvn -version'''
+        }
+    }   
+}
+
+====================================================================================================================================
+PIPELINE PROJECTS
+-----------------
+1.declarative pipeline
+  --------------------
+1.declarative pipe lines are written in which language ?
+  ans:- declarative pipelines are written in DSL language(domain specific language). 
+2.how to write the declarative pipeline ?
+  ans:- in declarative pipeline the whole build process or the code is broken down into stages,where each stage comprises of steps 	        inside it.
+3.write the pipeline project ?
+  ans:-
+	pipeline {
+          agent {
+	    label 'label1'
+	  }	
+	  stages {
+	    stage('checkout scm') {
+	      steps {
+	        echo "checkout code from scm"
+	      }
+	    }
+	    stage('build') {
+	      steps {
+	        echo "mvn clean verify"
+	      }
+	    } 
+          }
+	} 
+
+4.how to build the project using jenkins ?
+  ans:- (i).clone the project
+	(ii).inside the project create file called jenkinsfile.commit it.
+==================================================================================================================================
+VARIABLES 
+---------
+1.what are variables in jenkins pipeline ?
+  ans:- variables are the place holders in which we can store the values that can be used across within the pipeline script.
+2.where do we can declare the variables in jenkins pipeline ?
+  ans:- we can declare variables in jenkins pipeline under environment {} block using key=value.
+3.what is the syntax of declaring variables in pipeline ?
+  ans:- pipeline {
+	   agent any 
+	   environment {
+	     KEY=VALUE 
+	   }
+	}
+4.how to use the variables we declared in pipeline ?
+  ans:- pipeline {
+	  agent any 
+	  environment {
+	    APPLICATION_NAME='SAILOR'
+	  }
+	  stages {
+	    stage ('show variables')	  
+ 	      steps {
+	        echo "${APPLICATION_NAME}"
+              }
+          }	
+
+}
+5.how many ways we can use the variables ?
+  ans:- ${VARIABLE}  (or)  env.VARIABLENAME
+=====================================================================================================================================
+PARAMETERS
+----------
+1.what are parameters in jenkins ?
+  ans:- parameters in jenkins means parameterizing the pipeline, which is nothing but passing the data as an input to the pipeline 
+	while launching/triggering the jenkins build.
+2.where do we need to use parameters in jenkins ?
+  ans:- many of the times while building the project,we may want to pass data/inputs in customizing the build.
+	ex:- it could be environment information on which the project has to be build/deployed or could be configurations that are 	     required as an input by the application itself for building and deploying etc. 
+
+1.how many ways we can configure the parameters ?
+  ans:- 2 ways
+	(i).static parameter definition
+	(ii).dynamic parameters through jenkins pipeline code
+2.how to declare the static parameters ?
+  ans:- through jenkins GUI/console we configure parameters to used for that project.these parameters are defined along with while 	        creating the pipeline job itself and stored in jenkins system persistence.
+3.what is the drawback of using static parameters ?
+  ans:- since these are stored local to the jenkins persistence, we can not move them across the jenkins env.
+	when we are moving the job from one env to another env we need to redefine the parameters manually in the jenkins job.
+4.how to build a pipeline project using static parameters ?
+  ans:- dashboard --> newitem --> itemname --> pipeline --> ok --> description --> select the box (this project is parameterized)-->
+	dropdown add parameters --> choice parameter (name,Choices,) --> script
+	build with parameters --> select env by dropdown --> build.
+
+pipeline {
+    agent any 
+    stages {
+        stage('show parameter') {
+            steps {
+                echo params.TARGET_ENV
+            }
+        }
+    }
+}
+
+5.what are dynamic parameters ?
+  ans:- insted of defining the parameters in jenkins ui while creating the job, we can define the parameters ascode within pipeline 		script itself.
+6.how dynamic parameters will work ?
+  ans:- when we ask jenkins to launch the build,jenkins by looking at the job definition it understands we declared the parameters 		through the code and shows a form-page asking us to enter the inputs using which it can trigger or launch the build.
+7.how many steps in working with the dynamic parameters ?
+  ans:- 1.defining parameters
+	2.using the values from these parameters
+8.in pipeline where do we need to declare the parameters ?
+  ans:- under parameters block {}
+9.example of declaring the parameters ?
+  ans:- pipeline {
+	  agent any
+	  parameters {
+	    string 'TARGET_HOST'
+	    choice choices: ['DEV', 'TEST', 'STAGE', 'PROD'] , name: 'BUILD_ENVIRONMENT'
+	  }
+	  stages {
+	    stage('show parameters') {
+              steps {
+                echo params.TARGET_HOST
+	        echo params.BUILD_ENVIRONMENT
+	      }
+	    }
+           }
+	}
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+1.how many levels we can declare the agent in declarative pipeline ?
+  ans:- two levels 
+	(i).pipeline level
+	(ii).individual stage level
+2.how to declare the agent in stage level ?
+  ans:- first we need to declare the agent none at the pipeline level.
+-------------------------------------------------------------------------------------------------------------------------------
+POST BLOCK
+----------
+1.what is post block ?
+  ans:- post block supports post-conditions based on which it will be executed.
+2.what are the options are available in post block ?
+  ans:- 1.always	2.changed	3.fixed		4.regression		5.aborted	6.failure	7.success
+	8.unstable	9.unsuccessful	10.cleanup
+3.in which situation what block we need to use ?
+  ans:- (1).always :- regardless of the status of the execution always the post-block will be executed.	
+	(2).changed :- execute the post block only when the pipeline run has a different status from its previous run
+	(3).fixed :- run the post block only when the current run is successful and previous runs are failed or unstable.
+	(4).regression :- if the current run is failed or unstable or aborted and previous run was successful.
+	(5).aborted :- pipeline is aborted manually using gui
+	(6).failure :- resulted in failure
+	(7).success :- resulted in success
+	(8).unstable :- this will execute only due to test failure or code violations.
+	(9).unsuccessfull :- if the pipeline or stage run has not success status then it is called un-successful 
+	(10).cleanup :- execute the post condition after every post condition completed irrespective of the pipeline status   
+
+4.how to write the pipeline by declaring post block ?
+  ans:-
+	pipeline {
+	agent any
+	stages {
+	  stage() {
+	    steps {
+
+	    }	
+          }
+	  post {
+	    always {
+	      echo 'always execute post block'
+	    }
+	  }
+        }
+      }
+
+----------------------------------------------------------------------------------------------------------------------------------
+DIRECTIVES
+----------
+1.ENVIRONMENT
+-------------
+1.environement block :- environment is a directive used for declaring variables either at pipeline level or stage level.
+2.how to declare the env variables in environment block ?
+  ans:- 
+    pipeline {
+      agent any
+      environment {
+        NAME="satheesh"
+        AGE="22"
+      }
+      stages {
+        stage('stage1') {
+          environment {
+            MEDIUM="telugu"
+          }
+          steps {
+            echo "name : ${NAME}"
+            echo "age : ${AGE}"
+            echo "medium : ${MEDIUM}"
+          }   
+        }
+      }
+    }
+
+3.environment directive support special type of helper method what is that ?
+  ans:- it supports helper method credentials().
+4.why credentials() methos is used ?
+  ans:- it is used for accessing the predefined credentials by using identifier we defined in jenkins environment.
+5.which stage we can write credentials ?
+  ans:- we can write credentials at both pipe line level and stage level also.
+6.
+
+dashboard --> manage jenkins --> credentials --> System --> Global credentials --> Add credentials --> kind (username with password)
+--> scope(jenkins,nodes,items,all child items,etc) --> username (root) --> password (root) --> 	ID (dbcredentials) -->
+description (database credentials) -->
+then read that credentials in pipeline
+pipeline {
+    agent any
+    stages {
+        stage('print variavles'){
+            environment {
+                DB_CRED = credentials('dbcredentials')
+            }
+            steps {
+                sh 'echo "DB_USER_NAME : ${DB_CRED_USR}"'  
+                sh 'echo "DB_USER_PASSWORD : ${DB_CRED_PSW}"'
+            }
+        }
+    }
+}
+
+
+2.OPTIONS
+---------
+1.what are the variables are available in options directive ?
+  ans:- (i).build discarder	(ii).checkoutToSubdirectory('subDirectory')	(iii).disableConcurrentBuilds	(iv).retry
+	(v).timeout	(vi).timestamp
+2.why build discarder is used ?
+  ans:- keep the artifacts and console output for specific number of recent pipeline runs only.
+	buildDiscarder(logRotator(numToKeepStr: '3'))
+3.why checkoutTosubdirectory('subDirectory') is used ?
+  ans:- checkout the source code into the subdirectory specified under the workspace.
+4.why disableConcurrentBuilds is used ?
+  ans:- disable concurrent builds prevent simultaneous access of shared resources.(same time two users can not build)
+5.why retry is used ?
+  ans:-on failure retry the pipeline specified number of times.
+6.why timeout variables is used ?
+  ans:- set a timeout period for the pipeline run.
+7.why timestamp is used ?
+  ans:- timestamp is used for append the time into the logs.
+
+
+pipeline {
+    agent {
+        label 'jenkinsslave1'
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '2')) 
+        checkoutToSubdirectory('project1')
+        disableConcurrentBuilds()
+        retry(3)
+        timeout(time: 1, unit: 'SECONDS')
+        timestamps()
+    }
+    stages {
+        stage('print msg') {
+            steps {
+                sh 'echo running'
+            }
+        }
+    }
+    
+} 
+
+3.PARAMETERS
+------------
+1.how the parameters are accessed within the piepline ?
+  ans:- using params.PARAMETER_NAME
+2.how many types of parameters supported by the jenkins ? what are those ?
+  ans:- 5 types.
+	(i).string 	(ii).text	(iii).boolean	   (iv).choice		(v).password
+3.syntax of using parameters ?
+  ans:- 
+	1.string(name: '', defaultvalue: '', description: '')
+	2.text(name: '', defaultvalue: '', description: '')
+	3.booleanParam(name: '', defaultvalue: '', description: '')
+	4.choice(name: '', choices: [], description: '')
+	5.password(name: '', defaultvalue: '', description: '')
+----------------------------------------------------------------------------------------------------------------------------------
+4.TRIGGERS
+----------
+1.why trigger directive is used ?
+  ans:- trigger directive is used for defining the automated way of triggering the pipeline.
+2.when the trigger is not required ?
+  ans:- pipeline that are integrated with vcs repository the trigger may not required,because pipeline is invoked through web-hooks.
+3.what are the types of triggers we can apply ?
+  ans:- there are 3 types of triggers we can apply
+	(i).cron	(ii).pollscm	(iii).upstream
+4.what is cron trigger ?
+  ans:- a cron-style string to define the regular time interval at which the pipeline has to be triggered.
+5. MINUTE	HOUR	  DOM	   MONTH	DOW
+   (0-59)      (0-23)	(1-31)    (1-12)       (0-7)
+6.how to write cron for execute the job on 1,15 of each month except december and if it not saturday & sunday ?
+  ans:- H H 1,15 1-11  1-5
+7.here H refers what ?
+  ans:- here h can be used in place of * (h for hash).
+8.how poll scm will works ?
+  ans:- it accepts the cron style expression indicating the interval time it has to goto scm repository to check for new commits if 	        exists then triggers the pipeline.
+9.how upstream will works ?
+  ans:- triggers the pipeline execute based on another job.
+10.how to write upstream ?
+  ans:- upstream(upstreamProjects: 'job1', 'job2', threshold: hudson.model.Result.SUCCESS)
+
+5.TOOLS
+-------
+1.why tool directive is used ?
+  ans:- when we refer the specified tool version in pipeline through tool directive, the jenkins system will install the tool and make
+	it available under the PATH.
+2.pipeline {
+    agent any 
+    tools {
+      maven '3.83.6'
+    }
+    stages {
+      stage {
+        steps {
+          sh 'mvn --version'
+        }
+      }
+    }
+  }
+
+3.before using tools directive what we need to do ?
+  ans:-before using the tools directive we need to add the tool into jenkins system under globaltool configuration defining the tool
+	to be auto-installed.
+
+
+6.INPUT
+-------
+1.why input directive is used ?
+  ans:- input directive on stage allow us to prompt for input using the input step.
+2.how the input directives will works on the stage ?
+  ans:- the stage will be paused after the options have been applied before the agent block for the stage or evaluating when 	conditions of the stage.
+	options applied --> paused  --> agent block (or) when conditions
+3.when will be the stage will be continued ?
+  ans:- if the input is approved then the stage will be continued.
+4.where the input parameters will be available ?
+  ans:- any parameters provided as part of the input submission will be avaiable in the environment for the rest of the stage.
+5.how to write input directives in pipeline ?
+  ans:- 	
+	pipeline {
+	  agent any 
+	  stages {
+	    stage('input with parameters') {
+	      input {
+	        message 'enter age'
+		ok 'yes'
+		parameters {
+		  string(name: 'age', defaultValue: '0', description: 'enterage')
+	        }
+	      }
+	    }
+	  }
+        }
+7.WHEN DIRECTIVE
+----------------
+1.why when directive is used ?
+  ans:- by using when directive we can determine when the stage should be executed depends on the given when condition.
+2. what we need to follow for write nested condition to execute the stage ?
+  ans:- if more than one when conditions are nested then all must return true to execute the stage. 
+3.what are the structures we can use for write nested when conditions ?
+  ans:- we can build nested when conditions using not,allof,or anyOf  structures.
+4.what are the built in conditions are there in when condition ?
+  ans:- 1.branch	2.equals	3.allOf		4.anyOf
+5.examples of using conditions ?
+  ans:- 
+	(1).branch 
+	   when {
+	     branch 'master'
+	   }
+	(2).equals
+	  when {
+	    equals expected: 2, actual: currentBuild.number
+	  }
+	(3).allOf
+	  when {
+	    branch 'master'; environment name: 'DEPLOY_TO', value: 'production'
+	  }
+	(4).anyOf
+	  anyOf{  
+	    {branch 'master'; branch 'develop'}
+	  }
+6.what is the default behaviour of when condition ?
+  ans:- by default when condition will be evaluated after the agent has entered into stage.
+7.how to change the default behaviour of when condition ?
+  ans:- using beforeAgent
+8.example of when directive ?
+  ans:- pipeline {
+	  agent any 
+	  stages {
+	    stage('when condition') {
+	      input {
+	        message: 'Enter age:'
+		ok 'ok'
+		parameters {
+		  string(name: 'age', defaultValue: 0, descritption: 'age:')
+		}
+	      }
+	      when{
+	        equals expected: '18' , actual: "${age}"
+	      }
+	    }
+	    steps {
+	      echo "age: ${age}"
+	    }
+	  }
+	}
+==================================================================================================================================
+difference between scripted pipeline and declarative pipeline ?
+  ans:-  		declarative pipeline							scripted pipeline
+	1.in declarative pipeline always the pipeline execution	     1.in scripted pipeline we need to write the checkout from scm.
+	  begins with declarative SCM checkout which comes for
+	  free.	
+	2.we can restart pipeline from any stage.	             2.we can not  execute the pipeline from any stage always it 
+								       starts from stage1.
+	3.
+	  
+
+
+
+
+
+
+pipeline {
+  agent any
+  environment {
+    foodiesGitpat = credentials('foodiespat')
+    foodiesGitURL = 'http://github.com/techsriman/foodies.git'
+    }
+    tools {
+      maven '3.8.6'
+    }
+    options {
+      buildDiscarder(logRotator(numToKeepStr: '3')) 
+      disableConcurrentBuilds()
+      timestamps()
+      timeout(time: '1', unit: 'HOURS')
+    }
+    stages {
+      stage('checkout') {
+        steps {
+          git(credentialsId: "${foodiesGitpat}", url: "${foodiesGitURL}")
+        }    
+      }        
+    }
+  }
+}
+
+
+
+
+
+1.how to generate git pipeline script ?
+  ans:- goto dashboard --> select the pipeline --> pipeline syntax --> in sample step drop down and select git --> add repository url
+        --> branch (master or develop) --> credentials (add credentials) --> then generate pipeline 
+       
+  then it looks like follow.  git credentialsId:'foodiespat', url:'https://github.com/techsriman/foodies.git'
+
+
+====================================================================================================================================
+continues delivery
+------------------
+1.how to deploy the specific artifact into the prodction ?
+  ans:- by using build number.pass the build number as an input.write the jenkins file to take the input manually.
+	(or) in cd pipeline we need to promote.
+
+
+
+
+**how to add users into jenkins ?
+  ans:- goto managejenkins --> manage users --> create user
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

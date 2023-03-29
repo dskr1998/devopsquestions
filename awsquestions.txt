@@ -1,0 +1,537 @@
+1.what is cloud computing ?
+  ans:- on demand delivery of computing services to the world is called cloud computing.
+2.how many types of services are provided by the cloud computing ?
+  ans:- 3 types of services 
+	(i).IAAS  = infrastructure as a service
+	(ii).PAAS = platform as a service
+	(iii).SAAS = software as a service
+3.what is IAAS and what are the  resources of IAAS ?
+  ans:- IAAS stands for infrastructure as a service.all the comupting and infrastructure resources that are required for hosting and
+	running an s/w application are provided as part of IAAS.
+	 (i).compute instance    (ii).network resources  (iii).ip addresses   (iv).storage
+        (v).load balancers   (vi).dns registries  (vii).dns service
+4.why we need IAAS tools ?
+  ans:- to host and deploy an application we need IAAS.
+5.how the cloud providers are offering IAAS layer to flexible to the world ?
+  ans:- they are using virtualization technology.
+6.what is virtulization ? how it works ?
+  ans:- virtualization is used for creating multiple parallel isolated environments on a physical machine.virtulization technology 
+	works based on hypervisor.
+7.how many types of hypervisors are there ?
+  ans:- 2 types (i).s/w hypervisor
+		(ii).h/w hypervisor
+8.what is PAAS ?
+  ans:- PAAS stands for platform as a service.
+9.what is platform software ?
+  ans:- For running/deploying an software application on a computing machine along with operating system we need additional software 		libraries, packages or application server infrastructure.
+10.what are the examples of s/w's ?
+  ans:- (i).language s/w  :- java sdk, python sdk, php sdk
+	(ii).application servers :- tomcat,lamp,wsgi
+	(iii).database servers :- mysqlserver,oracle
+11.what are the advantages of using PASS from a cloud provider ?
+  ans:-(i).the provisioning of the infrastructure along with PAAS layer ontop of it will be taken care by the cloud provider, so that 	           we can get the machines with PAAS installed and pre-configured and ready for deploying our application.
+       (ii).upgrading and patching the pass layer is taken care by cloud provider, so that we dont need apply or upgrade the PASS 
+	    infrastructure.
+       (iii).periodical backup and restoration of PAAS software along with infra is taken care by the cloud provider it self.
+	(iv).life cycle operations like scalein/scaleout,scaleup/scaledown are taken care by the cloud provider in managing PASS s/w.
+12.what is SAAS ? 
+  ans:-software as a service. where the cloud provider provides the enterprise software products to the world in a multi-tenant model.
+13.what are the advantages of using SAAS from cloud provider ?
+  ans:- (i).the cloud provider takes care of provisioning,installations and configuration of the enterprise software product.
+	(ii).since it is multi-tenant installation,the cost of infrastructure and licenses is distributed/shared to multiple                        customers/end users.
+	(iii).monitoring and maintainance activities like backup/restore are taken care by the cloud provider.
+	(iv).all the life cycle activities like scaleup/scaledown and scalein/scaleout are handled by the cloud provider.
+14.how many types of accounts are there in aws cloud ?
+  ans:- (i). AWS root account
+	(ii).IAM user account
+15.who is IAM user ?
+  ans:- as aws root user can delegate access to the services/resources by creating additional users in his account who are called 
+	"iam user".
+16.what is domain ? how many types are there ?
+  ans:-a domain is nothing but group of related services of similar nature so that users can quickly browse them at one place.
+	(i).compute
+	(ii).network
+	(iii).storage
+	(iv).database
+	(v).security
+	(vi).Management tools
+	(vii).messaging
+17.how many ways we can access the services in aws ?
+  ans:- (i).aws cloud console
+	(ii).programmatic access
+	(iii).REST api access
+18.what is the command line tool provided by the aws platform ?
+  ans:- AWS cli
+19.which shell it is provided ?
+  ans:- AWS cloud shell.
+20.what are programmatic cloud sdk/REST endpoint ? why those are required ?
+  ans:- these are used for automating the process of cloud services/resources.
+======================================================================================================================================
+AWS ARCHITECTURE
+----------------
+21.what is aws region ?
+  ans:- aws region is nothing but geographical location where it offeres the cloud platform resources from a specific location.
+	a region is not an country rather they can be multiple regions with in the country from where aws cloud offers the services.
+22.how to choose a region to utilize the cloud resources/services of the aws cloud platform ?
+  ans:- there are two factors are there based on which we need to choose 
+	(i).network latency
+	(ii).pricing
+23.what is availabilityzone ?
+  ans:-within aws region aws has setup multiple availability zones.an availability zone nothing but a group of datacenters within a 
+	location from where AWS is offering cloud platform services from that location.
+24.aws ensures how many az's of a region ?
+  ans:- 2 az's
+25.what is the purpose of az's ?
+  ans:-the purpose of AZ is for achieving the high availability.
+26.what is edge locations ?
+  ans:- edge locations are the co-located locations within an aws region, which are a kind of mini/small datacenters. In these edge 		locations amazon hosts global/shared services to reduce latency in offerring them.
+27.why aws has setup mini datacenters ?
+  ans:- there are few shared/global services are there within aws cloud platform like (i).Cloud front  (ii).Route53 etc
+	to reduce the network latency in distributing these services to the customers,aws has setup mini datacenters from where they
+	operate these shared/global services.
+28.what is scope of services means ?
+  ans:- scope of services means those are created and bounded to which scope within the cloud platform so that cloud engineers can
+	access and manage these resources/services created.
+29.how many types of scopes are there in aws ?
+  ans:- (i).global scope
+	(ii).Regional scope
+.	(iii).Availability zone
+30.what is global scope ?
+  ans:- the services categorized to the global scope are accessible and available across all the regions of the aws cloud platform.
+	a change in these services will effect all the regions of the aws account.
+31.what are the services are there in global scope ?
+  ans:- (i).Amazon Route53
+	(ii).IAM registry
+	(iii).AWS cloud front
+32.what is regional scope ?
+  ans:- the services that are created and accessible with in region only.
+33.what services are there in regional scope ?
+  ans:- (i).DynamoDB
+	(ii).S3 bucket
+	(iii).Elastic load balancer
+	(iv).virtual private network
+34.what is availabilitzone scope ?
+  ans:-These services are scoped to the Availability zone in which those are created and can be visible and managed only within the        zone
+35.what are the services of availabilityzone scope ?
+  ans:- (i).Amazon Elastic block storage
+	(ii).Amazon ec2
+	(iii).Subnet
+=====================================================================================================================================
+NETWORK DOMAIN
+--------------
+36.what is network domain ?
+  ans:- the network domain provides various types of resources like routers,firewalls and gateways etc.that are required for hosting,
+	interconnecting and enforce security or traffic restrictions on the resources with aws infrastructure.
+37.what is vpc ?
+  ans:- vpc stands for virtual private cloud network,it is an isolated network of resources of an aws account user.
+38.how to isolate the resources ?
+  ans:- create vpc,with in the vpc provision the resources,then the resources that are provisioned with in vpc are isolated.
+39.what are the characteristics of vpc ?
+  ans:- (i).vpc created per user account,per region level. where all the availability zones of the region are part of the vpc.
+	(ii).by default all the resources with in the vpc can communicate with each other.
+	(iii).per aws user account with in region we can create at max 5 vpc's only.(soft limit)
+	(iv).by default resources in one vpc can not communicate with resources in another vpc.
+	(v).if you want to communicate the resources across the vpc's we need to enable vpc peering.
+	(vi).by default per each user account,across all the regions aws will configure one default vpc.
+40.in aws how many types of limits are there ?
+  ans:- 2 types 
+	(i).soft limit (we can extend)
+	(ii).hard limit (we can't extend)
+41.what is the purpose of vpc ?
+  ans:-vpc is being used in many ways for organizing and controlling the access to the resources at various different purposes.
+	(i).across the business units/departments of an organization to isolate the resources of them we can create seperate vpcs.
+	(ii).across the different projects
+	(iii).for different environment like dev,test,prod etc.
+42.how to create the vpc ?
+  ans:- to create the vpc to isolate the resources from others we have to provide CIDR range along with name of the vpc.
+43.what is cidr  ?
+  ans:- cidr stands for class-less inter-domain routing,used for 
+
+--------------------------------------------------------------------------------------------------------------------------------------subnet
+------
+44.what is subnet ?
+  ans:- a vpc can be further broken down into smaller networks where we can create resources within the subnet of a vpc based on the 	
+	restrictions we wanted to enforce.
+45.where we can create the subnet ?
+  ans:- A subnet is created within the availability zone of a vpc.
+46.per vpc how many subnets we can create ?
+  ans:- 200
+47.what is the purpose of subnet ?
+  ans:- to enforce different security/traffic restrictions to various different group of resources within a vpc we can distribute them         into separate subnets
+	to distribute the resources across the availability zones of a region
+48.how to create subnet ?
+  ans:- while creating the subnet we need to specify
+	vpc,az,
+======================================================================================================================================
+
+						storage domain                  
+						**************
+1.what are the services are there in storage domain ?
+  ans:- (i).elastic block storage
+	(ii).simple storage service (s3)
+	(iii).elastic file system
+	(iv).cloud front
+	(v).snowball
+	(vi).glacier
+	(vii).storage gateway
+1.aws supports how many types of storage types ?
+  ans:- 3 types
+	(i).block storage
+	(ii).object storage
+	(iii).network storage
+2.what is block storage ?
+  ans:- stores the data on the disk interms of files and folders on a file system
+3.what is object storage ?
+  ans:-any object that can be stored and accessed using unique identifier.(like audio,video)
+4.what is network storage ?
+  ans:- the data stored on a network storage system can be mounted across the ec2 instances and can be accessed.
+------------------------------------------------------------------------------
+5.what is elastic block storage ?
+  ans:-elastic block storage acts as an harddisk for an ec2 instance.
+6.what is the default size of volume for the ec2 instance if you dont specify the size of volume at the time of provisioning ?
+  ans:- 10gib.
+7.default volume will be mount as what ?
+  ans:- it will be mount as root volume on to the ec2 instance.
+8.what is the max allowed capacity for root volume ?
+  ans:- 16gb
+9.is it possible to extend the size of root volume that is attached to ec2 at the time provisioning ?
+  ans:- not possible.
+10.how  many ways we can extend the storage capacity of ec2 instance after provisioning the instance ? what are those ?
+  ans:- two ways we can extend.
+	(i).mount an additional storage volume on to the existing ec2 instance.
+	(ii).expand the storage volume of an existing instance.
+11.where the physical devices attached to the computer are shown ?
+  ans:- /dev/sda2
+12.how to see the block deviced attached to the ec2 instance ?
+  ans:- lsblk
+	fdisk -l
+13.where the newly attched block volume will attached mostly ?
+  ans:- /dev/xvdf
+14.how to mount the device onto the operating system of the ec2 instance ?
+  ans:- first we need to make it as file system
+	sudo mkfs -t ext4 /dev/xvdf
+	create dir /ext
+	mount the device into /ext directory
+	sudo mount /dev/xvdf /ext
+15.how to mount the volume permanently ?
+  ans:- we need to add an entry into fstab file.
+16.what will happen when we add an entry into fstab file ?
+  ans:- it will auto mount all the devices that are added into fstab file upon bootup.
+17.how to add an entry into fstab file ?
+  ans:- devicepath    mountdirectory    filesystem    defaults   0   2    (or)
+	uuid          mountdirectory    filesystem    defaults   0   2
+18.how to see UUID of the device ?
+  ans:- sudo lsblk -d -fs /dev/xvdf
+19.what are the ebs volume types are there ?
+  ans:- (i).General Purpose SSD gp2    --- root supported volume type
+	(ii).General Purpose SSD gp3   --- root supported volume type
+	(iii).Provisioned IPOS SSD (io1)
+	(iv).Provisioned IOPS SSD (io2)
+	(v).magnetic storage (sata) (aws deprecated)
+
+20.what are the additional ebs volumes ?
+  ans:- (i).cold ssd
+	(ii).Throughput optimized HDD
+21.how to choose the ebs volume type based on the application/workload running on ec2 ?
+  ans:- 
+	(i).general purpose ssd gp2 
+	    when:- smaller workloads,boot volumes or non-production environments or small-scale applications.4
+		   gp2 is the default SSD backed EBS volume for ec2 instance.
+	(ii).general purpose ssd gp3
+	    when:- single instance databases (VDI)
+		   gp3 is the latest generation general purpose SSD-backed EBS Volume. These has low latency when compared with gp2.
+	(iii).provisioned IOPS (io1)
+	    when:- suited for IO and throughput intensive workloads like RDBMS or NoSQL Databases.
+	(iv).provisioned IOPS (io2)
+	    when:- AWS recommends us to use io2 SSD for SAP, IBM DB2 and Oracle etc
+	(v).standard magnetic storage volumes
+	    when:- These can be used when the performance is not the criteria.
+		   These EBS volumes can have a maximum size of 1 TB and can offer upto 200 IOPS
+	(vi).cold HDD (sc1 type)
+	    when:- suitable for storing infrequently accessed data like backups and archives. ($0.015/1GB per month)
+	(vii).throughput optimized hdd (st1 type)
+	    when:- There is a significant difference between st1 & sc1. When we provision the st1 HDD we can specify the IO Throughput 		   volumes. These volumes are better suitable for workloads like log management, big data, data warehouse, ETL etc
+--------------------------------------------------------------------------------------------
+EFS  (elastic file system)
+---
+1.what is elastic file system ?
+  ans:- elastic file system is a network storage location that can be mounted across the multiple ec2 instances to share the data
+	effectively b/w the applications.
+2.how to share the data b/w ec2 instances or applications ?
+  ans:- we need to use EFS (elastic file system).
+3.by using EFS where we can transfer the files ?
+  ans:- Using EFS we can not only share the files across the ec2 instances, we can even transfer the files between EFS and On-Premise 		servers as well
+4.what are the features of EFS ?
+  ans:- (i).scalable performance
+	(ii).scalable storage (automatically increase/decrease)
+	(iii).secured & complaint (through subnets and security groups)
+	(iv).storage options (standard and onezone)
+5.when should we use standard storage class ?
+  ans:- Most frequently accessed data can be placed in standard storage class. 
+        the EFS location is replicated across all AZs of the region automatically for optimized access
+6.when should we use one zone storage class ?
+  ans:- Less frequently accessed data can be placed on one-zone.
+7.can we move the data from standard to onezone ?
+  ans:- yes we can  move the data from standard to one zone.
+8.what are the uses of EFS ?
+  ans:- (i).The applications that are running across the ec2 instances to effectively share files/folders between them with low 	    network latency, high availability and securely
+	(ii).can be used for transferring the files/folders between cloud to on-premise
+	(iii).used for data migration
+	(iv).we can store the data on efs location so that it can be shared across multiple ec2 instances for data analytics and data 	     processing
+9.what are the differences b/w standard and one-zone ?
+  ans:- standard :- it will provision across all the subnets of the vpc.
+		    low network latency.
+		    high availability.
+		    higher throughput or scaled performance.
+		    The cost of storage is very high.
+	one-zone :- it will provision only one subnet of the vpc.
+		    the cost of storage comes down to 90% compared with standard.
+10.how many ways we can access the EFS location ?
+  ans:- 2 ways we can access the EFS location
+	(i).mount targets
+	(ii).access points
+11.when we create the efs location within the vpc and storage class is standard what will happen ?
+  ans:- then the efs will be created with both mount target and access point for all the subnets of the vpc.
+12.what is access point ?
+  ans:- an access point is an pointer to the efs storage.
+13.how to work with mount targets ?
+  ans:-we can access the efs location by mounting the mounttarget onto the ec2 instances with in the vpc,through mount targets
+	
+14.through mount target which directory we can access and perform the operations on behalf of which user ?
+  ans:- we can access the root file system of the EFS.
+	all the operations we perform on the efs location will be performed on the root user.
+15.how to work with access points ?
+  ans:- For each application we create an separate access point dedicating a directory. 
+	per each application create a user and configure in access point to perform operations on efs location through the application
+	user.
+16.what are the adwantages of using access points ?
+  ans:-(i)every application will perform operations on their dedicated directory location on the efs location, so no chance of 2 		  different applications overlapping the data of each other
+       (ii).security, not 2 different applications can see or access others data
+       (iii).multiple instances of the application can access the accesspoint through the same user
+17.main difference b/w mount target and access points ?
+  ans:- througu mount target we can access "/" (root)
+	through access points we can access the directory inside the root.(with specific user)
+------------------------------------------------------------------------------------------------------------------------------
+S3 BUCKET
+---------
+1.what are the problems in storing the semi-structured data and un-structured data in RDBMS ?
+  ans:- (i).huge amount of storage will be wasted.
+	(ii).cost of storage will be high when we store binary or object-based data in RDBMS.
+2.what are the another database management systems are there ?
+  ans:- there are two types of databases are there
+	(i).no-sql or semi structured database
+	(ii).object storage database
+3.aws provided how many types of databases ? what are those ?
+  ans:- 3 types	
+	(i).rds service
+	(ii).dynamodb
+	(iii).s3
+4.what is s3 ? it stores which type of data ?
+  ans:- s3 is an object storage database.we can store objects of data like audio,videos,images,docs into it.
+5.how to access the ojbect that is stored in s3 bucket ?
+  ans:- s3 will assign id for each object that is stored inside it.
+6.
+
+---------------------------------------------------------------------------------------------------------------------------
+SNOWBALL
+--------
+1.what is snowball ?
+  ans:- snow ball is a physical hardware device.
+2.why snowball is used ?
+  ans:- it is used for moving the data from on-premise or data center to aws cloud platform.
+3.how snowball works ?
+  ans:- aws teams carries the snowball to the datacenter and copy the data from datacenter and move to the respective aws cloud 	services by which migrating from on-premise or datacenter to aws cloud platform.
+------------------------------------------------------------------------------------------------------------------------------
+GLACIER
+-------
+1.why glacier is used ?
+  ans:- Glacier is an archival data storage service in which we can store the archieval data (long-term data) ata cheapest cost.
+2.what is archival data ?
+  ans:- The data that is not actively being used but need to be stored for longer-time for future usage if required.
+2.what is the cost of storing the archival data in glacier ?
+  ans:- price which is almost 10x cheap than the S3 storage
+3.how the glacier will store the data ?
+  ans:- glacier will store the data interms of objects similar to s3 storage.
+4.how to retrieve the data that is stored in glacier ?
+  ans:- by using id.
+5.how can we store the related data in glacier ?
+  ans:- we can group related data by compressing into zip files.
+6.how to move the data from rds/dynamodb to glacier ?
+  ans:- aws cannot move the data directly from these services into glacier b/c these 2 worlds of data storage are different. The         application developers has to write archievers and exporter programs in retriving the data from database and convert into         archivable format (kind of file) and store into glacier using aws glacier apis
+7.how to move the data from s3 to glacier ?
+  ans:- data in S3 is stored in object format, by configuring lifecycle policy on the bucket aws itself takes care of archiving the 	        objects into glacier and retrieve back by moving them into S3 again when required.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+CLOUD-FRONT
+-----------
+1.why cloud front service is used ?
+  ans:- cloudfront service is used for serving the static web content quickly there by reducing the load on the backend servers of the 	application
+2.what is the best and quicket way to host a static website ?
+  ans:- use cloudfront service along with S3 storage bucket.
+3.how aws takes care of host and distribute the static content ?
+  ans:- aws takes care of hosting and distributing the static content through CDN servers by placing them at various edge locations 	across the globe.
+4.what are purposes cloud front services is used ?
+  ans:- accelarating the static content of a website
+	streaming audio or video on demand.
+5.
+
+
+
+
+
+======================================================================================================================================
+IAM
+---
+1.while creating the iam user how many types of credentials types are available to create ?
+  ans:- 2 types 
+	(i).Access Key - programmatic access key
+	(ii).password - aws management console access
+2.how to work with MFA ?
+  ans:- goto iam dashboard --> add MFA for root user --> activate MFA -->  
+
+3.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+aws developer tools
+---------------
+1.what are the services are available in developer tool domain ?
+  ans:- (i).code commit		(ii).code build 	(iii).code deploy	(iv).CodePipeline 	(v).CodeArtifact
+2.what is code commit ?
+  ans:- code commit is nothing but a git repository managed and hosted by the git repository.
+3.why code build is used ?
+  ans:- code build is used for implementing continous integration,we can build,test,and publish the artifact through the help of code 	        build.
+4.why codedeploy  is used ?
+  ans:- using codedeploy we can deliver the software application.
+5.why CodePipeline is used ?
+  ans:- through the help of code pipeline we can execute the code deployment to release the code/deploy the code. 
+6.why codeArtifacts are used ?
+  ans:-code artifacts are used for storing the build artifacts that are produced through CodeBuild.
+7.what are the predefined iam policies are there for granting access to the code commit repository for an iam user ?
+  ans:- AWSCodeCommitFullAccess
+	AWSCodeCommitPowerUser
+	AWSCodeCommitReadOnly
+8.why do we need to create seperate credentials for IAM user ?
+  ans:- iam user apikey/secreatkey cannot be used for accessing the code commit repositories.we need to create an seperate code commit 	credentials for each IAM user using which he can access the code commit  repository.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

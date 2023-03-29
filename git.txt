@@ -1,0 +1,500 @@
+(i).git works on which strategy ?
+  ans:- git works on strategy of
+        (i).copy-modify-merge
+	(ii).distributed version control system
+(ii).existing vcs are which model ?
+  ans:- central server model.
+(iii).central server model means ?
+  ans:- for performing any operations the clients has to be online and should be connected to the central vcs.
+(iv).what is mean by distributed version control system ?
+  ans:- each client will clone the entire repository from the git server which acts as an standalone repository of it's own.a full             copy of the repository exists on each client machine so that all the operations can be carried local to the client itself
+	without the need of online.
+=======================================================================================================================
+1.git stands for ?
+  ans:- global information tracker
+2.git is which type of version control system ?
+  ans:-git is distributed version control system.
+***
+what are the git servers are available in the market ?
+  ans:- GitHub,BitBucket,GitLab,GitGogs
+These vendors offers several choices of hosting that may vary from vendor to vendor
+1. most of the vendors supports SAAS based offering, where these providers hosts the servers on their cloud and permits us to create repositories and manage source code based on their licensing model
+2. few vendors supports hosting the GIT servers of their own onto our cloud account of a cloud provider
+3. self-hosted (on-premise), allows us to download git server software and host and manage on our organization network
+depends on the requirement we can go with any of the options in using the GIT server
+
+
+***
+3.what are the git client softwares ?
+  ans:- GitBash
+        GIT Gui
+        IDE
+4.how to create empty repository in our local machine ?
+  ans:- go to project dir and enter the command git init
+5.when we enter the git init command what will happen ?
+  ans:-it will creates the empty repository.and it has beed executed by creating an default branch called master.
+6.how to see the status of the repository ?
+  ans:- git status
+
+untracked --> (add) staged
+
+7.how git repository captures the commit info of author who is commiting the files into the repository ?
+  ans:- there are two levels git captures the commit info.
+8.how many levels we can configure the author info to capture the commit info ?
+  ans:- two levels (i).repository level  (ii).global level
+
+(** repository level means directory level (project level)  **)
+
+9.in repository level how to configure the user and email who is commiting the files ?
+  ans:-git config user.name username
+       git config user.email emailaddress
+10.in global level how to configure the user who is commiting the files ?
+  ans:-git config --global user.name username
+       git config --global user.email emailaddress
+-------------------------------------------------------------------------------------------------------------------------------------
+(i).what are the statuses in which a file can exists in git ?
+  ans:- untracked
+	unmodified
+	modified
+	staged
+======================================================================================================================================
+11.git works on which strategy ?
+  ans:- copy-modify-merge
+12.what are the git server softwares available in the market ?
+  ans:- github
+	bitbucket
+	gitgogs
+	gitlab
+13.if you create any new file with in the repository then that file is in which state ?
+  ans:- untracked
+14.all the files in the repository by default in which state ?
+  ans:- unmodified
+15.if you modify the existing file in the repository then it is in which state ?
+  ans:- modified state
+16.committed file will be moved into which status ?
+  ans:- unmodified
+17.after modify the files if you want to commit the files then what we need to do ?
+  ans:- we need to stage the files.
+18.how to add (stage) the files into the repository ?
+  ans:- git add filename
+19.how to commit the repository ?
+  ans:-git commit --author=sriman --emailAddress=tech.sriman@gmail.com -m "msg"
+       note : we can add user only not email.
+20.where the global configuration info will store ?
+  ans:- ~/.gitconfig
+=====================================================================================================================================
+21.how to remove the user.name or user.email that we set globally ?
+  ans:-git config --global --unset-all user.name
+       git config --global --unset-all user.email
+22.how to see the user and email is created in global to the repository ?
+  ans:- git config --list
+23.how to add mulitple files into the repository at one shot ?
+  ans:- git add .
+
+4.how to see user and email is created or not ?
+  ans:- cat .git/config
+25.before commit the repository what we need to do ?
+  ans:- we need to add the files (stage the files ready for commit)
+26.how to stage all untracked and modified files into the repository ?
+  ans:-git add .
+27.how to stage the specified file only ?
+  ans:- git add filename
+28.how to stage only modified files ?
+  ans:- git add -u
+29.how to see all the commits made in the repository ?
+  ans:-git log
+30.how to rollback the changes which is not yet staged ?
+  ans:- git restore filename
+***
+git log contains which info ?
+  ans:- commit hash,author,date,msg.
+
+***
+repositoryFile -> edited -> modified -> staged
+(unmodified)
+git restore --staged filename
+with the above command the file will be unstaged, but the modifications we made still exists in the File
+***
+
+How to remove a commited change into repository
+git reset --hard commithash
+
+git reset --soft , 
+this will keep your files, and stage all changes back automatically.
+
+git reset --mixed , 
+This keeps all files the same but unstages the changes.
+
+ soft     we can do soft --> mixed --> hard   but we can not do hard --> mixed --> soft
+  |
+mixed
+  |
+ hard
+
+
+
+how to remove the commited files ?
+  ans:- we can remove the committed files by using commithash
+	git reset --hard commithash
+how to go to the specific commit and dont want new commits (or) other commits after this commit ?
+ans:- git reset --hard commithash
+
+=================================================================================================================================
+31.when we restore the file then that file contains which content ?
+  ans:- it contains the data of repository version.
+32.how to restore the contents of the file which is staged ? (unmodified --> modified --> staged) --> unmodified
+  ans:- first we need to unstage it then we need to rollback.
+        git restore --staged filename
+	git restore filename
+33.how to move the staged file into untracked state ?
+  ans:- git restore --staged filename (or)
+	git rm --cached filename
+34.how to get latest commit info ?
+  ans:- cat .git/Head
+        cat .git/refs/heads/master
+35.how to see git logs at one line ?
+  ans:-git log --oneline
+36.how to see last n commits in repository ?
+  ans:- git log -3 
+--------------------------------------------------------------------------------------------------------------------------------------
+**
+  git repository directory structure ?
+  ans:- 
+	.git            directories
+	  |-hooks
+	  |-info
+	  |-objects
+	  |-logs
+	  |-refs
+  ---------------------      files
+	  |-config
+	  |-index
+	  |-HEAD
+**
+--------------------------------------------------------------------------------------------------------------------------------------
+37.in which directory it will holds the info about the repository ?
+  ans:- .git
+38.objects info about the project will store in which directory ?
+  ans:- .git/objects
+39.git log contains what ?
+  ans:- it contains commit(in blob file),author,date
+        commit a425da56be7ef958e737099b501a67ba4fc06a78 (HEAD -> master)
+	Author: satheesh <satheesh@gmail.com>
+	Date:   Tue Oct 4 14:13:32 2022 +0530
+
+	added numbers
+
+=====================================================================================================================================
+1.how does git stores the source code inside the repository, how does it maintains multiple versions along with commit logs/history ?
+  ans:- git used hasing technic in storing or organizing the sourcecode and commitlog or history.the source code or commit information
+	will be stored by the git internally as a blob files in the repository directories.
+	organizing the files : hashing
+	storing: blob files
+2.how git will store the file when we commit the file into git ?
+  ans:- it will store the file inside the .git/objects directory as a blob file in encrypted format.while storing these files it uses
+	naming conention as 
+	File=hash(contentsfile) =  hashvalue  the first 2 letters of the hash will be used for creating the directory under         3.git/objects and remaining hashvalue is used as as filename,into which the contents of the file will be stored as a blob.
+4.in a specific commit how to find how many files are there ?
+  ans:- git cat-file -p commitnumber then here it will show tree object then again
+	git cat-file -p treehashvalue
+-------------------------------------------
+5.how commit info will be store ?
+  ans:- (tree,author,commiter) --> hash (contents) --> e3a62f76b3cd51c94b9 --> .git/objects --> e3 (dir) --> a62f76b3cd51c94b(file)
+        binary the contents of the commit information.
+hash(tree,author,commiter) = log 
+---------------------------------------------
+40.how to see info about the commit blob file ?
+  ans:- git cat-file -p a425da56be7ef958e737099b501a67ba4fc06a78 
+	 tree 7138eafc09e06a3bb44f525af495bd1ebdf6bdba
+	 parent d0c9fb248a6644bbc05b4c7bd4b49a0a16eacb31
+	 author satheesh <satheesh@gmail.com> 1664873012 +0530
+	 committer satheesh <satheesh@gmail.com> 1664873012 +0530
+
+	 added numbers
+=============================================================================
+HEAD
+----
+store the information about the current branch we are in MASTER.
+===================================================================================================================================
+
+41.how to see the info about the tree blob file ?
+  ans:- git cat-file -p 7138eafc09e06a3bb44f525af495bd1ebdf6bdba 
+42.tree blob file contains ?
+  ans:-100644 blob b83bdb1469471e08189e3040905b8dcbb99bdc53    numbers.txt
+        it contains info about what files are committed
+43.how to see the contents of the blob file ?
+  ans:- git cat-file -p b83bdb1469471e08189e3040905b8dcbb99bdc53                  
+       it will show the contents of the file
+44.in git repository what are the directories and files ?
+  ans:- dir (objects,logs,ref,hooks)
+	files (Head,config)
+45.iformation about what files are committed will be stored in tree object.
+46.all the commits in the repository will be stored in where ?
+  ans:- git log
+47.for each branch to keep track of the branch is at what commit it stores the information in  where ?
+  ans:- .git/refs/heads/branch
+48.master branch contains ?
+  ans:- it contains latest commit info.(hash into the branch of the repository)
+49.how to keep track of all commits info and their order ?
+  ans:- every commit hash will point to parent commit hash
+50.the initial commit or root commit into the repository the parent commit hash will be ?
+  ans:- 000000000000
+        cat .git/logs/refs/heads/master
+=====================================================================================================================================
+51.how to reset the commit (how to move commit)(how to set the specific commit into the master)?
+9  ans:- git reset --hard commitnumber
+52.how to rewrite the latest commit msg info ?
+  ans:- git commit --amend  (it prompts the editor here we need to edit the msg info)
+53. which files/binaries we don't need to commit/push into the repository ?
+  ans:-which are being generated/computed through a build process of a project.
+54.in maven project which files are generated at the time of build process ?
+  ans:- target/ and it's contents
+55.what are the binaries which are generated at the time of build  the project ?
+  ans:-jar,war, or ide generated directories like .metadata,.settings,.classpath,.project
+56.how to avoid the files being committed or pushed into the repository ?
+  ans:-create .gitignore file into the root directory of the project.and enter file or directories name into that file which we
+       dont want to commit.
+57.how to add the ignore files info into the .gitignore file ?
+  ans:- edit .gitignore file and add the dir or file name   
+     (ex: if it is dir then add dir name :- target/    if it is file means add file name:-   filename)
+note:- once we changed the .gitignore file, add and commit the file into the repository so that git client tool ignores these files        when we stage, commit or push the file
+====================================================================================================================================g.
+1.what is product backlog ?
+  ans:- a reuirement or feature that is broken down to a level where it can be completed within 2 or less weeks of time.
+2.what is user story ?
+  ans:- each product backlog is picked up by the team member and assign to the sprint for development which is called user story.
+3.what is the sprint duration ?
+  ans:- 1 to 4 weeks.
+
+git branches 
+------------
+**
+what is git branch ?
+  ans:- A GIT branch can be viewed as a sub-repository created out of your main, in which a developer can work on an extension or a            feature and can be delivered without breaking the working copy of the code
+
+what is master branch ?
+  ans:- always the code will be released from the master.a working copy of the code always exists as part of the master branch.
+	upon creating an project and initializing the repository in the project we push the changes into the master branch,which means
+	straight the development begins from master. 
+**
+58.how to see all branches info ?
+  ans:- git branch
+59.how to create new branch from existing branch ?
+  ans:-git branch branchname
+60.how to enter into the specific branch ?
+  ans:- git checkout -b branchname
+61.how to check which branch we are in ?
+  ans:- git branch (it will show all brach info here * refers to current branch we are in )
+62.how many ways we can merge the branch into the another branch ?
+  ans:- two ways (i).git merge  (ii).git rebase
+63.in gui mode how to identify it is merge commit or rebase ?
+  ans:-by seeing the swim line (swim line will be drawn showing the branch that has been merged)
+64.git rebase means ?
+  ans:- it re writes the commit of one branch into another branch.+
+65.config.name changed but config.mail not changed when we rebase the another branch into the master branch (commiter info)?
+66.how to get latest commit info in master ?
+  ans:-cat .git/refs/heads/master
+67.how to get all commit info in master ?
+  ans:- cat .git/logs/refs/heads/master
+**
+how to push all brannches into git ?
+  ans:- git push --all
+****
+how to give repo access to another users ?
+  ans:- On GitHub.com, navigate to the main page of the repository.
+Under your repository name, click Settings. ...
+In the "Access" section of the sidebar, click Collaborators & teams.
+To the right of "Manage access", click Add people or Add teams.
+***
+  when to use git merge and when to use git rebase ?
+  ans:- (i). when we want our team to understand logs in a way where they can identify where each commit is coming from.
+	     we use Git Merge when the target and source branch can be viewed by other developers.
+	(ii). when the logs of the repository will not be referred by anyone else. To summarise, we can use Git Rebase, when we are               working on branches, which cannot be seen by other developers. 
+****
+how to create pr request ?
+  ans:- go to the branch which ever you want to merge --> Contribute --> open pull request --> select base as main branch (which is            you want to merge to where) --> select compare is branch which is you want to merge --> create pull request. -->then if you
+	want to add reviewers goto reviewers  add reviewers.
+****
+68.how to merge the feature branch into master ?
+  ans:- git merge featurebranch
+69.when we merge the commits form feature branch to master when it will show fast-forward ?
+  ans:- Fast-forward merges literally move your main branch's tip forward to the end of your feature branch. This keeps all commits            created in your feature branch sequential while integrating it neatly back into your main branch.
+	note:- when we merge the feature branch into master branch by default it will perform fast forward if there is no conflict. 
+***
+what are the advantages of git-merge ?
+  ans:- 1. easy to use and understand
+	2.The commits in the source branch (for eg.. feature branch) are separated from other branch, so we can merge the feature into           another branch if required
+	3. preserves your commit history and keeps the history graph semantically correct
+dis-advantages of git-merge ?
+  ans:- 1. when we do an git merge, the log history will not be clear it doesnt indicate which branch and files are merged through git 	   merge
+	2. when more number of merges happens into the main branch, too many number of merge commits will be added into the main due 	   to which the git log becomes quite messy
+what are the dis-advantages of git-rebase ?
+  ans:- 1. rebase is always slow, because commit by commit comparision is drawn to determine the path at which the commit should be               included
+	2. if there are any conflicting changes across the branches, each commit should be resolved manually takes lot of time
+	3. it is not adviced to rewrite the commit history when we are working in a team!
+what are the advantages of git-rebase ?
+  ans:- advantages:-
+	1. The git history is linear and readable
+	2. easy to track a bug or when a feature is introduced	
+***
+
+for each branch to keep track of the branch is at what commit it stores the information in  where ?
+  ans:- .git/refs/heads/branch
+=====================================================================================================================================
+70.how many ways we can create the repository ?
+  ans:- two ways 
+        (i).create remote repository on git server and clone into the local.
+        (ii).create local repository then set the remote origin server as git server and push it.
+	     create remote repository on git without adding any file and create the directory same as repository in local machine then
+	     then goto project dir   
+	     then run git init command
+	     create file README.md file   (touch README.md)
+	     git add .
+	     git commit -m "msg"
+	     git branch -M master
+	     go to git server create the repository which is matching with project name which is locally created,then get git url 
+	     add git url into local ( git remote add origin remoterepourl )
+	     git push -u origin master
+
+71.origin means ?
+  ans:- remote repository url.
+72.how to see the remote origin server of our project ?
+  ans:-git remote show origin
+73.how to add the remote origin into our project ?
+  ans:-git remote add origin giturl 
+====================================================================================================================================
+74.how to work with repository ? project we created at locally ?
+  ans:-create project directory then goto project dir   
+	then run git init command
+	create file README.md file   (touch README.md)
+	git add .
+	git commit -m "msg"
+	git branch -M master
+	go to git server create the repository which is matching with project name which is locally created,then get git url 
+	add git url into local ( git remote add origin remoterepourl )
+	git push -u origin master
+75.how to get existing remote repository url ?
+  ans:- git clone -b branchname repourl
+76.how to clone the remote repository ?
+  ans:- git clone -b branchname repourl
+77.how to set the remote repository origin to the local repository ? 
+  ans:-git remote add origin url
+78.how to see the remote origin server of an local repository ?
+  ans:-git remote show origin
+79.git push -u origin branchname
+80.git branch -M master
+81.how to push the local repository changes into remote server ?
+  ans:- git push
+**
+when we run the git push what will happen ?
+  ans:-when we run git push command internally git hooks will be executed.git hooks will run maven build.git hooks code checks for
+       success file.if it's not present it abort's the git push.
+**
+82.how to get the new commits from remote repository into the local ?
+  ans:- git pull
+83.when you create the new branch,after checkout that branch and if you create the new file and want to push that file into repository
+   what you need to ?
+  ans:- git add .
+ 	git commit -m "msg"
+	git branch --set-upstream origin branchname     (git branch --set-upstream-to origin branchname)
+	git push	(git push origin HEAD)
+
+How to create a branch while working with remote repositories?
+There are 2 ways are there
+1. create remote branch
+2. git pull
+3. git checkout newbranch
+
+=================================================================================================================================
+** why cherry-pick is used ?
+  ans:- cherry-pick is used for pulling a commit from one branch into another branch of a repository.
+when do we use cherry-pick ?
+  ans:- if 2 developers are working on 2 feature branches,and a developer wants the files changes that are made by another developer	
+	in his feature branch,then since the feature branch is still in progress and not yet completed he can not merge his changes.
+	so 2 nd developer can get the changes made by the 1 st developer using cherrypick.
+
+76.how to pull the files from one branch to another brach (branch is not yet committed) ?
+  ans:- by using cherry-pick
+77.how to use cherry-pick ?
+  ans:-git cherry-pick commitnumber
+===================================================================================================================================
+77.how to switch from one branch to the another branch without commiting after modifying the files in current branch ?
+  ans:-use stash 
+78.what is the use of stash ?
+  ans:- we can save temporarily changes in current branch.
+79.after stash what will happen ?
+  ans:- it will give stash hash value.
+80.how apply the stash ?
+  ans:- git stash apply
+81.how to see the list of stash ?
+  ans:- git stash list
+====================================================================================================================================
+82.what is mean by PR ?
+  ans:- pr means pull request.
+83.what is pull request ?
+  ans:-we have develop branch which is at master level.we need to merge the changes into the develop branch but before moving the        changes into the develop branch we need to check the code.this is called code review.so for code review we need to do 
+	pull request. 
+84.how to create pull request ?
+  ans:- goto pull request --> new pull request --> select base as develop --> select compare as feature branch
+
+
+
+
+=====================================================================================================================================
+19,49,33,80
+git merge
+git rebase
+=====================================================================================================================================
+1.how to change the git commit author's name and email ?
+  ans:- (i).set the correct name and email of the author 
+	git config --global user.name satheeshkumar
+	git config --global user.email satheeshkumarreddy1998@gmail.com
+	(ii).make sure you are on the current branch and have locally downloaded all changes from the repository.
+	(iii).create file in the root directory git-author-rename.sh
+              #!/bin/sh
+		git filter-branch --env-filter 'if [ "$GIT_AUTHOR_EMAIL" = "satheesh@email" ]; then
+		GIT_AUTHOR_EMAIL=satheeshkumarreddy1998@gmail.com;
+		GIT_AUTHOR_NAME="satheeshkumar"
+		GIT_COMMITTER_EMAIL=$GIT_AUTHOR_EMAIL;
+		GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"; fi' -- --all'
+
+	(iv).run shell script file
+	(v).push the changes into repository  (git push -f)
+====================================================================================================================================
+2.git config user.name usernamer
+  git config user.email email       here username and email will be only one user and one email will store in .git/config file.
+3.how many levels we can configure the user in git ?
+  ans:-3 levels it has hirarchy
+	(i).repository/project level
+	(ii).user account (Global level)
+	(iii).System level (Git installation)
+4.git configuration locations ?
+  ans:- (i).repository level   (repository/.git/config)
+	(ii).Global (user account) (~/.gitconfig)
+	(iii).System (Installation) /etc/gitconfig
+5.how to see user level and repository level configuration info ?
+  ans:- git config --list --show--origin 
+6.what are the availability of the configurations in git ?
+  ans:- project: Project configs are only available for the current project and stored in .git/config in the project's directory.
+        global: Global configs are available for all projects for the current user and stored in ~/.gitconfig.
+        system: System configs are available for all the users/projects and stored in /etc/gitconfig.
+7.how to add the users different configuration levels ?
+  ans:-  $ git config user.name "John Doe"
+	 $ git config --global user.name "John Doe"
+	 $ git config --system user.name "John Doe"
+8.how to add the user in system level ?
+  ans:- here if we use windows o/s we need to run the git bash as administration (go to gitbash --> run as administrator)
+	if it is linux create by using sudo
+9.when we run git config --list --show-origin what will be change ?
+  ans:- it will not change any values but it will change the repository username and email,it is depends on the location where you run
+	the command.because project to project repository user name and email will change but global user and system user will not         change so those values will not change.
+10.
+======================================================================================================================================
+
+
+
+
+
+
+
+19

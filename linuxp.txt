@@ -1,0 +1,545 @@
+text-processing commands
+------------------------
+1.by using text processing commands what are the operations/actions we can perform on the content ?
+  ans:- (i).we can search for given text
+	(ii).extract the content of a file based on delimeter  (like , .)
+	(iii).we can substitute or replace
+	(iv).we can search and delete
+	(v).we can merge
+2.what are the shell utilities are available to perform the text processing ?
+  ans:- (i).cut    (ii).paste    (iii).awk       (iv).sed      (v).sort
+3.what is delimeter ?
+  ans:- delimeter means field seperator.
+4.what is the syntax of delimeter ?
+  ans:- cut -d delimeter -f fieldno filename
+5.example of cut command ?
+  ans:- results.txt 
+	01,satheesh,24,telugu,pass
+	cut -d "," -f 5 results.txt
+6.how get 3 fields by using cut commands ?
+  ans:- cut -d "," -f 2-4 results.txt
+7.what is paste command ?
+  ans:- by using paste we can merge the content of two files.
+8.what is the syntax of paste ?
+  ans:- paste -d delimetor file1 file2
+9.what is the syntax of awk command ?
+  ans:- awk [options] 'selection criteria {action}' file
+10.what we can perform by using awk ?
+  ans:- 1. searching and extracting the matching lines of content
+	2. extracting the fields of data based on delimeter
+	3. perform transformations
+	4. applying actions on the data
+11.what are the predefined variables are there in awk ?
+  ans:- NR = Nth record
+	NF = number of fields
+	FS = field seperator (default : space)
+	RS = record/row seperator (default : newline)
+	OFS = output field seperator (default : space)
+	ORS = output record seperator (default : newline)
+	
+12.how to work with awk like cat ?
+  ans:- awk '{print}' filename
+13.print the records based on selection criteria
+  ans:- awk '/former/ {print}' filename
+14.how to print the specific fields ?
+  ans:- awk -F "," '{print $0 $1}' filename
+15.how to process specific records of data ?
+  ans:- awk -F "," 'NR>=3 && NR<=6 {print $1 $4}'
+16.how to display the record which has atleat 4 fields ?
+  ans:- awk -F "," 'NF>=4 {print}' filename
+17.how to display the recors which are having more than specied value ?
+  ans:- awk -F "," '$5>=60000 {print}' filename
+18.how to display the records who has more than 30 characters ?
+  ans:- awk 'length($0)=>30 {print}' filename
+	awk 'length($5)=5 {print}' filename
+
+19.how to print 1 st line only ?
+  ans:- awk 'NR<=1{print}' filename
+20.what is advantage of using awk ?
+  ans:- we can get specific field or specific row in the text file by using filter actions.
+21.what is sed stands for ?
+  ans:- sed stands for streaming editor.
+22.sed supports how many types of operations ? what are those ?
+  ans:- 3 (i).print  
+	  (ii).delete
+          (iii).substitute or replace
+23.how to print the content using sed ?
+  ans:- sed 'p' filename
+24.how do supress the default print ?
+  ans:- sed -n 'p' filename
+25.how to print specific line only ?
+  ans:- sed -n '2p' filename
+26.how to print form line to specific line ?
+  ans:- sed -n '2,4p' filename
+27.how to print from line to till no.of line we specified ?
+  ans:- sed -n '2,+3p' filename
+28.how to print the lines along with skipping the specified no.of lines ?
+  ans:- sed -n '1~2p' filename
+29.why sed is streaming editor ?
+  ans:- The sed command takes the contents of a file apply the action on the in-memory contents and writes the output to the STOUT by          default  without modifying the source file, that is why it is called 'streaming editor'
+30.how to delete the line using sed ?
+  ans:-sed '2d' filename
+31.how to delete the line in source file permanantly ?
+  ans:- sed -i '2d' filename
+32.how to substitute the content in a file ?
+  ans:- sed 's/text1/text2/' filename
+33.how to permanantly substitute the values ?
+  ans:- sed -i 's/text1/text2/' filename
+34.how to replace the content every nth occurence of each line ?
+  ans:- sed 's/text1/text2/n' filename
+35.what is diff b/w   sed 's/text1/text2' filename'  and   sed 's/text1/text2/n' filename ?
+  ans:- when we dont specify the number it will replace the first occurence in each line and move to the next but,if you use number		it will replace n th occurence of the text in a line and move to the next line.
+36.how to replace all the occurence globally in a file ?
+  ans:- sed 's/text1/text2/g' filename
+37.what is the syntax of sed command ?
+  ans:- sed 'action/operation' filename
+38.how to print the content without using p in sed ?
+  ans:- sed '' filename
+======================================================================================================================================
+disk-management commands 
+------------------------
+39.what is mounting ?
+  ans:- the process of regestering an physical hardware resource of a computer into the linux operating system is called mounting
+40.how to display all the hardware devices attached to the computer ?
+  ans:- lshw
+41.how to see disks connected to the computer ?
+  ans:- fdisk -l
+42.how to see all device blocks ?
+  ans:- lsblk
+43.hwinfo
+44.du
+45.how to see the disks connected and their usage also ?
+  ans:- df
+======================================================================================================================================
+symlinks
+--------
+46.what are symlinks ?
+  ans:-Symlinks are the pointers to the original file of the filesystem which are similar to the shortcuts in windows operating system
+47.how many types of symlinks are there ?
+  ans:- two types (i).softlink    (ii).hardlink
+48.softlink can create for ?
+  ans:- files and directories
+49.what is the default permissions for softlink ? what is use of them ?
+  ans:- default permissions for softlink is 777.but there is no use b/c file/floder user can access based on original file permissions
+	only.
+50.what is difference b/w original file and softlink file ?
+  ans:- inode value of the original file and softlink file will be different.
+51.what is the drawbacks of softlink ?
+  ans:- the softlinks are broken when original file has been modified.
+--------------------------------------------------------------------------------------------------------------------------------------
+52.hardlink can be create for ?
+  ans:- files only,not directories.
+53.what is the permissions of hardlink ?
+  ans:- permissions of hardlink file same as original only.if you modify the original file permissions it reflects on hardlink.
+54.what is inode values of original file and hardlink file ?
+  ans:- same
+55.if you modify the original file like move/rename what will happen ?
+  ans:- hardlink will not be broken.
+56.what is main advantage of softlink ?
+  ans:- we can create softlinks for the files across the filesystem(remote also).
+57.how to create softlink ?
+  ans:- ln -s sourcefile destfile/linkfilename
+58.how to create hardlink ?
+  ans:- ln sourcefile destfile/linkfilename
+59.what is inode number in linux ?
+  ans:- the inode number refers to the physical file,the data stored in a perticular location.a file also has a device number,and the
+	combination of its inode number and device number is unique throught all the file systems in the hirarchial file system.
+======================================================================================================================================
+process_management 
+------------------
+60.what is process ?
+  ans:- A Process is nothing but a program under execution for which operating system identifies and allocates resources to execute. 
+61.how linux will identify the processes uniquely ?
+  ans:- it will assigns the process id.
+62.in linux each process information will be stored in which file ?
+  ans:- /proc  directory
+63. what is the command for displaying the running processes in linux ?
+  ans:- top (table of processes)
+64.what are the possible statuses in which a process can exists ?
+  ans:- D : daemon
+	S : sleep
+	T : traced/terminated
+	R : running
+	I : idle   (cpu is allocated, but the process is not performing any operation)
+	Z : zombie
+65.what is zombie process ?
+  ans:- a process which has finished execution and terminated but kept in memory for another (parent) process to use it
+66.what is cpu scheduling algorithms means ? what are those ?
+  ans:- to allocate cpu to the processes that are running on o.s will use cpu scheduling algorithms.	
+	(i).round-robin
+	(ii).time-sharing
+	(iii).shorted job first
+	(iv).priority based scheduling
+	(v).weighted route
+	(vi).largest job first
+67.linux uses which model for allocating cpu to the processes ?
+  ans:- round robin/time sharing + priority based scheduling
+68.how to ask linux to allocate more cpu to the process ?
+  ans:- use priority (pi)
+69.in linux how many types of processes are there ? what are those ?
+  ans:- 2 types    
+	(i).system process
+	(ii).user process
+70.what are the system processes ?
+  ans:- System processes are the mandatory process that are lauched by the linux operating system during the bootup and 
+        runs under system process space and are terminated along with the operating system.
+71.what are user processes ?
+  ans:- these are the processes launched by the user of linux operating system and runs under user space and can managed by the user
+====================================================================================================================================
+72.what is the range of a process in linux o.s ?
+  ans:- 0 to 139
+73.what is the range of running system processes ?
+  ans:- 0 to 99
+74.what is the range of running user processes ?
+  ans:- 100 to 139
+75.what is the default priority of a user process ?
+  ans:- 120
+76.how to change the priority of a process ?
+  ans:- using nice value (this is controlled way)
+77.which process range we can modify ? which we can not ?
+  ans:- user process range we can chage but system process we can not change.
+78.lowest priority of a process indicates what ?
+  ans:- highest priority for the process.based on the priority cpu will allocate to the process.
+79.what is the range of nice value ?
+  ans:- -20 - 0 - 19
+80.how to change the priority of a existing process ?
+  ans:- renice -n nicevalue pid
+81.how to launch a process with specific priority ?
+  ans:- nice -n nicevalue command        (note : if nicevalue is minus we need to use sudo)
+82.what is the default nice value of a process ?
+  ans:- 20
+83.as a normal user we can increase the priority (or) decrease the priority ?
+  ans:- we can decrease the priority by increasing the nice value.we can not increase the priority by decreasing nice value.
+84.how to stop running process ?
+  ans:- sudo kill -9 processid
+85.pr is calculated based on ?
+  ans:- pr calculated based on nice value  pr = nicevalue + 20
+==================================================================================================================================
+86.how to see the process status ?
+  ans:- use top.
+87.what is the another way to see the processes ? diff b/w top and ps ?
+  ans:- use ps. top will display live processes which is used for monitoring.ps will display the snapshot of the running processes.
+88.what are the process statueses ?
+  ans:- 
+	ps = displays all the running process of the current user within the TTY (Terminal)
+	ps -a = display all the process of all the terminals of the user
+	ps -u username = display all the process of a specific user
+	ps -e = display everyone process in the linux system
+	ps -f = show all the columns
+	ps -eo pid,ppid,ni,command = -e = everyones process, -o = output specific columns only
+89.what is kill pid will do ?
+  ans:-  will sends an signal to the process asking to terminate
+90.what is kill -SIGNAL_NUMBER pid ?
+  ans:- indicates how a process has to be terminate
+91.what is kill -9 pid ?
+  ans:- process terminate forcefully
+92.how to see all the supported signals of the kill command ?
+  ans:- kill -l
+93.if you dont specify the signal the dafault signal with which kill will send is what ?
+  ans:- 15
+=====================================================================================================================================
+foreground process  vs background process
+-----------------------------------------
+94.what is foreground process ?
+  ans:- The foreground process are the processes that requires user interaction during the execution and may take user input while              executing  the program.these are always attached to the TTY (terminal) and blocks until the program completes the execution.
+95.by default when we run a program in linux operating system by default the program executes in which process ?
+  ans:- foreground only
+96.what is background process ?
+  ans:- These are the processes that doesnt requires user interaction or doesnt take any input from the user and executes the                 instructions of  the program and generates the output and terminates
+97.if these processes/programs are executed as foreground, even though they dont need user input still they block terminal and runs
+   unnecessarily 2 process.what are those ?
+  ans:- (i).program process
+	(ii).terminal process
+98.How to run a program as background process in linux?
+  ans:- ./run.sh &     (here & indicates run the program in background)
+99.how to redirect the output of a background process ?
+  ans:- we can redirect the output of the program to an file using nohup command
+	ex:- nohup ./run.sh &
+100.when we run nohup where it will redirect the output ?
+  ans:- no hangup will redirects the output of the program into by default nohup.out file under the current directory
+101.how to redirect the output of a background process into a specific file ?
+  ans:- nohup ./run.sh > file &
+==================================================================================================================================
+linux utility commands
+----------------------
+102. How to find the user in which we are are executing the shell commands?
+  ans:- whoami
+103.how to find the logged-in user of the linux operating system?
+  ans:- logname
+104.How to get the list of users who are currently logged-in to the linux?
+  ans:- who
+105.How to know the name of the operating system?
+  ans:- uname 
+	uname -a
+	lsb_release -a
+106.How to find the hostname of the linux computer?
+  ans:- hostname 
+107.how to get the loop back ipaddress ?
+  ans:- hostname -i
+108.how to display all the ipaddresses of all network adapters pulgged into the computer ?
+  ans:- hostname -I
+109.How to change the name of your computer?
+  ans:- sudo vi /etc/hostname
+110.How to find all the network adapters and their physical and logical ip address of the adatpers on the machine?
+  ans:- in windows ipconfig     (or)  ipconfig /all
+	in linux   ifconfig     (by default ifconfig not available we need to instll net-tools "sudo apt install -y net-tools")
+111.How to check whether another computer is reachable or not?
+  ans:- ping ipaddress
+112.How to list down all the hardware devices of our computer?
+  ans:- lshw
+113.How to get the cpu information of your computer?
+  ans:- /proc/cpuinfo
+114.how to reboot/shutdown the linux operating system?
+  ans:- poweroff  = shutdown
+        reboot    = normal restart = waits for process to be terminated to restart
+        reboot -f = fast restart = it force terminates the process and restarts the operating system quickly
+115.what is loop back ipaddress ?
+  ans:- the loop back device is a special,virtual network interface that your computer uses to communicate with itself.it is used 
+	mainly for diagnostics and troubleshooting,and to connect to servers running on the local machine
+116.what are the run levels in linux os ?
+  ans:- 
+	init 0 = shutdown
+	init 1 = single user mode, with no network, not multi-tasking and only root access
+	init 2 = no network, but multi-tasking support 
+	init 3 = network, with multi-tasking but no gui (headless)
+	init 4 = it is same as init 3, but reserved for research purpose
+	init 5 = network, multi-tasking with gui and sound
+	init 6 = restart
+======================================================================================================================================
+file permissions 
+================
+117.when a user create a file/folder in linux system how many levels he can grant the permissions ?
+  ans:- 3 levels 
+	(i).user level
+	(ii).group level
+	(iii).others level
+118.what are default permissions will assign to a file or folder ?
+  ans:- (i).owner as user who created
+	(ii).group as primary group of the user who created
+119.what are the default permissions for a file/folder ?
+  ans:- file : 664
+	dir : 775
+120.how to see files/folders with their permissions ?
+  ans:- ls -l
+121.what is reason behind creating an user by default with the group as username group only ?
+  ans:- user will be created with a  default group as username group.so that only user would exists in his group by which by default           any file/dir we create on the machine has access by the owner by himself as he is the only one who exists in that group.
+122.How many levels at which we assign permissions to a file/folder in Linux?
+  ans:- 3 levels 
+	(i).user level
+	(ii).group level
+	(iii).others
+123.how many types of permissions we can assign to a file/folder ?
+  ans:- rwx
+124.when we list the files/folder using ls -l what is the first letter contains ?
+  ans:- d = directory
+	- = regular file
+	l = link file	
+	b = block special file
+	c = character special file
+	p = pipe file
+	s = socket file
+125.what is the 3 rd cloumn indicates ?
+  ans:- how many hard links are there for a file.
+126.how to change the owner and group of the file ?
+  ans:- sudo chown user:group filename
+127.if we want to modify the owner/group of all the files in a directory ?
+  ans:- sudo chown -R user:group filename
+128.chmod supports how many modes of changing the file permissions ?
+  ans:- 2 modes	
+	(i).octal mode
+	(ii).symbolic mode
+129.in octal mode what is the number assigned to each permission ?
+  ans:- read : 4 
+	write : 2
+	execute : 1
+130.in symbolic notation what are the symbols assigned to a each permission ?
+  ans:- read : r
+	write : w
+	execute : x
+131.the permissions assigned to 3 types of people which are also indicates symbols ?
+  ans:- u = user (or) owner
+	g = group
+	o = others
+132.in symbolic notation how we can change the permissions ?
+  ans:- we need to use operators.
+        + = add
+	- = remove
+	= = reset permissions
+133.what is the difference b/w +,- and = ?
+  ans:- +,- will add or remove the existing permissions,but = will reset the existing permissions.
+134.how does linux derives default permission for a file/folder while creating ?
+  ans:- using umask
+135.what is umask ?
+  ans:- which is used for computing the default permissions while create a file/folder.
+136.what is the default umask value for the root user ?
+  ans:- 0002
+137.what is the default umask value for normal user ?
+  ans:- 0022
+138.what are the dafault max permissions allowed to a file ?
+  ans:- 666
+139.what are the default max permissions allowed to a directory ?
+  ans:- 777
+140.how to compute the default permissions to a file ?
+  ans:- default max permissions : 666
+	umask : 0002
+	666
+	022
+	---
+	644     similarly dir also 777 and substract umask.
+141.how to change the umask value permanently ?
+  ans:- vi ~/.bashrc   here add
+	umask 0022
+
+*****************
+142.why root user and normal user have different umask values ?
+  ans:-
+always a root/super user will be created in his username/own group only, since he is the only user who exists in his group, there is
+ no point in allocating a different permission for the group so the umask value for the user/group will be same which is = 002
+
+whereas a normal user can be created other than the usergroup by using -g option in such case we want to differentiate file/folder
+ permissions from owner to group so the default umask = 022
+======================================================================================================================================
+USER MANAGEMENT 
+---------------
+143. The normal user of the linux operating system will have access to which directory of files/folders ?
+  ans:- his home directory files and folders only.
+144.how many types of users are there in linux ?
+  ans:- two types (i).normal user     (ii).root user
+145.who is the root user ?
+  ans:- During the installation of the operating system, the user we create becomes the Root of the linux operating system.
+146.what is group ?
+  ans:- Groups are meant for grouping the related set of users together so that we can grant access to the group level.
+147.when we add a new user into the linux what will happen ?
+  ans:- uid by incre +1
+	gid by incre +1
+	default home dir
+	assigns default shell
+148.a user can exists without any group ?
+  ans:- no,can not.
+149.how to see the users info in linux ?
+  ans:- cat /etc/passwd
+150.how to see group info ?
+  ans:- cat /etc/group
+151.what is the id of the root ?
+  ans:- 0
+152.what is the home directory or root user ?
+  ans:- /root
+153.what are the attributes of a user ?
+  ans:- username,uid,password.
+154.what are the attributes in group ?
+  ans:- group,groupid
+155.how to switch from normal user to root user ?
+  ans:- sudo su
+156.why root only can add the users ?
+  ans:- because all the commands related to managing the users are part of /sbin directory
+157.how to add user ?
+  ans:- useradd -m homedir -p password -s shell username 
+158.in ubuntu what is the another way to add users ?
+  ans:- sudo adduser username
+159.how to see the details of auser ?
+  ans:- id username   (ex: id satheesh)
+160.how to see user is there in which groups ?
+  ans:- groups username
+161.How to create a user with a different home directory location other than default /home/$USER
+  ans:- sudo useradd -m -d /dir username
+162.How to create a new user with an existing group?
+  ans:- sudo useradd -m -g 1003 username
+163.how to create new group ?
+  ans:- sudo groupadd groupname
+164.how to create a new user with a specified user id?
+  ans:- sudo useradd -u uid username
+165.how to delete user ?
+  ans:- sudo userdel username
+166.when we delete the user home directory will delete or not ?
+  ans:- will not delele.
+167.when will be the group will not be delete ?
+  ans:- if it is an primary group of any user, the group will not be allowed to delete.
+168.How to add an existing user into one more group?
+  ans:- sudo usermod -aG grp1 grp2 grp3 username
+169. How to rename a existing user?
+  ans:- sudo usermod -l newUser oldUserName
+170.How to rename the home directory of the user?   (or)
+    hot to changes the home directory of the user ?
+  ans:- sudo usermod -d /home/joseph -m joseph
+171.How to change the uid of an existing user?
+  ans:- sudo usermod -u 1003 username
+172.How to reset the group of the user instead of adding?
+  ans:- sudo usermod -G groupname username
+173.How to remove a user from a group?
+  ans:- sudo gpasswd -d user group
+174.How to check the document of any command?
+  ans:- man commandname
+======================================================================================================================================
+sudoers
+-------
+175.what is sudoers ?
+  ans:- The few normal users of the linux operating system can be promoted as sudoers, so that they can act as Root and can perform 	        operations  onbehalf of the Root user on the linux operating system.
+176.what is diff b/w root and sudoers ?
+  ans:- a sudoer can act as an Root, but Root user can enfore restrictions on sudoer allowing him to perform certain operations only
+177.how many ways we can promote  normal user as a sudoer ?
+ ans:- two ways 
+	(i).add an entry into /etc/sudoers file
+	(ii).create file with name called username and add
+178.what is the syntax of promoting normal user as a sudoers ?
+  ans:- username ALL=(ALL:ALL) ALL
+	1 st ALL = any location ,
+	2 nd ALL = any user
+	3 rd ALL = any group
+	4 th ALL = any command
+179.how many sections are there in sudoers file for making user as a sudoer ?
+  ans:- 2 sections (i).user section
+		   (ii). group section
+180.how to add group into the sudoers ?
+  ans:- %groupname ALL=(ALL:ALL) ALL
+181.in sudoers file how to differentiate the user and group ?
+  ans:- group contains % (% indicates group)
+182.While modifying the sudoers file if in case if we have written sudoers entry wrongly/syntactical mistake what will happen ?
+  ans:- all the users of the linux operating system will looose sudoers access
+183.how can we validate the changes we made in sudoers file before apply?
+  ans:- 
+	1. copy the contents of the sudoers file into /tmp directory
+	cp /etc/sudoers /tmp
+	2. make the changes into the /tmp/sudoers file
+	3. validate the changes we made are correct or wrong in /tmp/sudoers using
+	visudo -cf /tmp/sudoers
+	parsed ok
+	4. copy the tmp file replacing the original file under /etc/sudoers
+
+	-c = check
+	-f = file to be checked
+184.in case if we modify the sudoers file with a syntax mistake then everyone will loose sudoers access then how to fix the sudoers 	error?
+  ans:-use pkexec command
+	pkexec visudo /etc/sudoers
+185.sudo = executing a command onbehalf root only
+    pkexec = executing any linux command onbehalf any user (even you are not sudoer)
+186.How to enforce restrictions on the sudoers in granting permissions?
+  ans:-
+	To enforce restrictions on sudoers to execute the commands on a 
+        1. From specific host
+        2. specific user/group
+	3. commands
+187.for enforcing restrictions what we need to declare in sudoers file ? how many types are there ?
+  ans:- we need to declare alias.there are four types of aliases are there
+	(i).user alias
+	(ii).Runas_alias
+	(iii).Host_alias
+	(iv).Cmnd_alias
+188.what is Cmnd_alias ? how to declare it ?
+  ans:- command alias are used for defining list of commands that are allowed for sudoer to execute onbehalf of root user.
+	Cmnd_Alias FILE_MGMT_CMD=/usr/bin/ls,/usr/bin/touch,/usr/sbin/useradd
+	username ALL=(ALL:ALL) FILE_MGMT_CMD
+189.who can execute the pkexec command ?
+  ans:- root user.
+190.what is host alias ? how to declare it in sudoers file ?
+  ans:- we can grant the permissions to the sudoer to connect through specific hostname of the computer for executing commands.
+	Host_Alias REMOTE_HOST=192.168.10.5
+	username REMOTE_HOST=(ALL:ALL) ALL
+191.what is user alias ? how to declare it ?
+  ans:- we can specify a set of users to grab sudo/root access to perform operations 
+  	User_Alias DEVOPS_GROUP=joe,bob,stephen
+	DEVOPS_GROUP ALL=(ALL:ALL) ALL
+192.how to configure password less sudo access ?
+  ans:- username ALL=(ALL:ALL) NOPASSWD:ALL
+193.
+
+ 

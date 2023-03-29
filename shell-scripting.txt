@@ -1,0 +1,672 @@
+1.what is shell scripting ?
+  ans:- Shellscript is a file in which we write bunch of shell commands/instructions that we wanted to execute repeatedly over the 		period of time in sequence order and pass it as an input to the shell interpreter. The shell interpreter reads the shell 		commands from the file and executes them from top to bottom in linear/sequential order one after of the another one is called 		"shellscripting"
+2.what is shell script file ?
+  ans:-The file in which we wrote the shell commands/instructions is called "Shell script file"
+3.what is the extension for saving shell script file ?
+  ans:- .sh
+4.what is the purpose of shell scripting ?
+  ans:-We may have some job that has to be performed repeatitively over the period of time,so repeatively enter these 	commands/instructions on bash terminal in carrying out the activities of the job Instead of executing these bunch of 	instructions manually at the bash terminal, we can write all these instructions into a file called "shell script file" and 	pass it as an input to the bash interpreter asking him to read and execute them.
+5.every shell script file should written with first line called ?
+  ans:- shebang
+6.how to write shebang ?
+  ans:- #!/bin/bash
+7.how many ways we can execute the shell script file ? what are those ?
+  ans:- 2 ways 
+	(i).give execute permissions chmod u+x filename   then run the shell file  ./program.sh
+	(ii).we can execute the shell file without giving execute permissions if the file have read permissions
+             bash shellfile
+8.what is the drawbacks of running the shell program using different shell (bash)?
+  ans:- if you run the shell program using bash shell we can not read the env variables because we are running shell program in
+	different shell than the current shell.
+9.if the shell file is not under pwd how to execute the shell file ?
+  ans:- by passing full path of the shell file
+10.what is shebang ?
+  ans:-it is a special instruction indicating the shell interpreter to use a special shell command/interpreter in executing the 
+       shell instructions written in that file.
+11.examples of shebang ?
+  ans:- #!/bin/bash    (or)  #!/bin/sh
+12.without execute permissions with read only permissions how to execute the shell script file ?
+  ans:- use bash shell
+13.how to install the downloaded file ?
+  ans:- sudo apt install -f pkg.deb 
+14.what are literals ?
+  ans:-values that we write directly in our program is called literals.
+15.what are the types of literals ?
+  ans:- (i).string literal = "satheesh"
+	(ii).integer literal = 10
+	(iii).float literal  = 12.5
+16.to avoid using literals what introduced ?
+  ans:- variables
+17.what are variables ?
+  ans:-variables are named place holders into which we can store the values.
+18.how to declare the variables in shell script file ?
+  ans:- variable_name=value
+19.what is recommended way to declare the variables in shell script file ?
+  ans:-capital letters
+20.how to access the variables ?
+  ans:- $variablename
+21.how to take the input from the user interactively ?
+  ans:- by using READ command.
+22.how give read instruction to the user to enter the inputs ?
+  ans:- read -p "enter a value" A
+23.how to pass the data non-interactively ?
+  ans:- while running the shell program pass the data
+        ./sum.sh 10 20
+24.touchless execution means ?
+  ans:- pass the input at the time of launching the shell script file . ./sum.sh 10 20
+25.count the number of characters in variable ?
+  ans:- echo $variablename | wc -c
+26.what are program arguments ?
+  ans:- the values that we passed at the time of running program are called program arguments.
+27.how to pass mutliple argumets at the time of running the program ?
+  ans:- arguments should be seperated by space.
+28.how to get the first argument that we passed at the time running the program  inside the shell script file ?
+  ans:- $1
+28.how to print the file name that we are running ?
+  ans:- $0
+29.how to count the number of arguments that we passed as an input ?
+  ans:- $#
+30.how to print all the inputs ?
+  ans:- $@
+31.diff b/w $@ and $* ?
+  ans:-run.sh
+#!/bin/bash
+for i in $*
+do
+	echo "i is $i"
+done
+for i in $#
+do
+	echo "j is $i
+done
+
+./run.sh abc def ghi jkl
+output:-
+------
+i is abc def ghi
+j is abc
+j is def
+j is ghi
+==================================================================================================================================
+32.how many ways we can instruct the shell interpreter to it's an expression ? what are those ?
+  ans:- 3 ways   
+	(i).using expr keyword       sum=`expr $x + $y`
+	(ii).using $(())             sum=$((x+y))
+	(iii).using $[]		     sum=$[x+y] 	
+33.for multiply the two values using expr keyword how to do ?
+  ans:- multiply=`expr $x \* $y`
+34.how many ways we can write the output in console/STDOUT in linux program ?
+  ans:- two ways (i).echo   (ii).printf
+35.by default what is the different b/w echo and printf ?
+
+  ans:- printf will not print the new line at the end of the line.
+36.what are the escape characters that are supported by printf ?
+  ans:- \n =  it will print new line
+	\t = it will print tab
+	\r = it will not print the current line
+	\b = back space means one backspace before.
+	\\ = it will print single \
+37.what are the format specifiers supported by the printf ? why format specifiers are used ?
+  ans:- format specifiers are used for indicate the format specifier indicating the type of the values we want to print.
+	%d = it is used for printing integer numbers
+	%f = it is used for printing floating numbers
+	$s = it is used for printing string values
+	%c = it is used for printing characters
+	%x = it is used for printing hexadecimal small letters
+	%X = it is used for printing hexadecimal capital letters
+	%o = octal numbers
+38.how to print values using printf and decimal ?
+  ans:- printf "x value is %d" $x
+***
+39.what is the syntax of format specifier ?
+  ans:- printf "message format specifiers" substitution
+***
+40.how to suppress the default new line produced by the echo ?
+  ans:- echo -n "msg"
+41.how to parse escape sequence in echo ?
+  ans:- echo -e "hello \n satheesh"
+	echo -e "good\tmorning"
+=====================================================================================================================================
+42.how to store the output of shell command ?
+  ans:- by using command substitution
+	variable=$(shellcommand) 
+43.write a program that stores the files and folders info in a give directory ?
+  ans:- printfiles.sh
+	#!/bin/bash
+	directory=$1
+	files=$(ls $directory)
+	echo "files in dir are : $files"
+	printfiles.sh dir
+or
+	read -p "enter dir" dir
+	files= ls $dir
+======================================================================================================================================
+45.what are the operators ?
+  ans:- operators are special symbols defined with special meaning we can perform operations using operators.
+46.what are the operators supported by the shell program ? what operations we can do by using them ?
+  ans:- (i).arthematic operations   (addition,substraction,multiplication,division)(+,-,\*,/,%)
+	(ii).Relational operations  (greaterthan,lessthan,equalTo,notequal,greaterThanEqual,lessThanEqual)(-lt,-gt,-le,-ge,-eq,-ne)
+	(iii).logical operations  (AND,OR,NOT)(-a,-o,!)
+	(iv).string operatorions (length,empty,blank,equal)(>=,<=,>= =,<= =,== =,-z,-n)(-n if string is non-zero return true,)
+											(-z if given string is zero return true)
+	(v).files operations (exists,writable,readble,executable)
+47.what are the files operators ?
+  ans:- -e = file/directory exists or not
+	------------------------------------
+	file=$1
+	if [ -e "$file" ]
+	then
+		echo "file exists"
+	else
+		echo "file does not exist"
+	fi
+ 	------------------------------------
+	-f = is it a regular file
+	-d = is it a directory
+	------------------------------------
+	if [ -d $dir ]
+	then
+		echo "it is dir"
+	else
+		echo "it is not dir"
+	
+	fi
+	------------------------------------
+	-r = read permission
+	-w = write permission
+	-x = execute permission
+	-c = character special file
+	-s = size of the file is greather than zero
+	-b = block special file
+	-o = is he the owner of file or not
+	-of = f1 is older than f2
+	-nf = f1 is newer than f2	
+48.how to add float values ?
+  ans:- #!/bin/bash
+	x=10.45
+	y=50.46
+	add=$(echo $x + $y | bc)                    here bc means basic calculator
+	echo "add : $add"
+=====================================================================================================================================
+49.what are the string operations supported by expr ?
+  ans:- (i).length
+	(ii).substring
+	(iii).compare
+50.how to get the length of the string ?
+  ans:- #!/bin/bash
+	name=satheeshkumarreddy
+	length_of_name=`expr length $name`
+	echo "length of name is : $length_of_name"
+51.how to get sub string value ?
+  ans:- #!/bin/bash
+	fullname=duddukuntasatheeshkumarreddy
+	first_name=`expr substr $fullname 1 10`
+52.how to compare two string values ?
+  ans:- #!/bin/bash
+	first_name=satheesh
+	last_name=reddy
+	call_name=satheesh
+	compare_value1=`expr $first_name : $last_name`
+	compare_value2=`expr $first_name : $call_name`
+	echo "$compare_value1 and $compare_value2"
+====================================================================================================================================
+control statements 
+------------------
+53.what is control statements ?
+  ans:-control statements are used for controlling the flow of execution.based on some decisions or conditional evaluations we wanted        to control what control what instructions to be executed and for how many times.
+54.how many types of control statements are there ?
+  ans:- 2 types   (i).conditional control statements
+			(a).if conditional control statements
+			(b).if-else
+			(c).case
+		  (ii).loop control statements
+			(a).while
+			(b).for
+			(c).until
+55.what is the syntax of if conditional statements 
+  ans:- if [condition]
+	then
+		statement1;
+		statement2;
+	fi
+56.$A + $B here what is operator and what is operand ? what is operation ?
+  ans:- + is operator   and a,b are operands.put all these together called expression.
+57.what is arithmatic expression and what is relational expression ?
+  ans:-if we use arithmatic operators in writing expression then it is called arithmatic expression,if we use relational operators 
+	then it relational expression.
+58.write a program to find biggest number in two number ?
+  ans:- #!/bin/bash
+	read -p "enter A value" A
+	read -p "enter B value" B
+	if [ $A -lt $B ]
+	then 
+	echo "B is big"
+	else
+	echo "A is big"
+	fi
+59.write a program to find adhar is valid or not ?
+  ans:- #!/bin/bash
+	read -p "enter adhar number" adharnumber
+	count_char=`expr length $adharnumber`
+	if [ $count_char -eq 8 ]
+	then
+	echo "your adhar is valid
+	else
+	echo "your adhar is not valid"
+	fi
+60.write a program using case
+  ans:- #!/bin/bash
+	read -p "enter bike model : " bike_model
+	case $bike_model in
+	"activa")
+		echo "bike model selected is activa"
+		echo "EX_SHOWROOM_PRICE=125000"
+	;; 
+	"pulsar")
+		echo "bike model selected is pulsar"
+		echo "EX_SHOWROOM_PRICE=175000"
+	;;
+	"unicorn")
+		echo "bike model selected is unicorn"
+		echo "EX_SHOWROOM_PRICE=145000"
+	;;
+	esac
+61.How to work with floating/decimal numbers as part of shellscripting ?
+  ans:- using bc (basic calculator)
+62.adddecimalnumbers.sh
+#!/bin/bash
+A=$1
+B=$2
+SUM= $(echo "$A+$B"|bc)
+echo "SUM: $SUM"
+63.what is the syntax of using bc ?
+  ans:- add=$(echo "$x + $y" | bc)
+64.why case statement is used ?
+  ans:- it is preffered to use case staetement only for pickuping a block of code to executed based on matching outcome, since there
+        is a performance optimization while using case statement.
+65.what is the syntax of case statement ?
+  ans:- 
+	case $input in
+	"value1")
+		statements
+		statements
+	;;
+	"value2")
+		statements
+		statements
+	;;
+	esac
+	
+-------------------------------------------------------------------------------------------------------------------------------------
+Nested if condition
+-------------------
+with in if condition we can write another if condition it is called Nested if condition.
+66.if [ $CN_TYPE == "domestic" ]
+then
+	if [ $UNITS -le 100 ]
+	then
+		BILL_AMT=$(echo "$UNITS * 2.20" | bc)
+	elif [ $UNITS -gt 100 -a $UNITS -le 300 ] 
+	then
+		BILL_AMT=$(echo "(100 * 2.20) + (($UNITS-100) * 3.30)" | bc)
+	else
+		BILL_AMT=$(echo "(100 * 2.20) + (200 * 3.30) + (($UNITS-300) * 4.5)" | bc)	
+	fi
+else
+	if [ $UNITS -le 200 ]
+	then
+		BILL_AMT=$[UNITS * 6]
+	elif [ $UNITS -gt 200 -a $UNITS -le 500 ]	
+	then
+		BILL_AMT=$[(200 * 6) + (($UNITS-200) * 10)]
+	else
+		BILL_AMT=$[(200 * 6) + (300* 10) + (($UNITS-500)*15)]
+	fi
+fi
+=====================================================================================================================================
+67.what is conditional statements ?
+  ans:- based on the conditional evaluation, we want to execute a block of code,this can be done using conditional control statements.
+68.what is loop control statements ?
+  ans:- if we want to repeatedly execute a line/block of code within our program then we need to use loop control statements
+69.how many loop control statements are there ?
+  ans:- 3 types
+	(i).while
+	(ii).for 
+	(iii).until
+70.what is while loop ? how it will execute ?
+  ans:- while loop is a loop control statement that is used for executing a block of code based on the condition. 
+	in the while loop we will specify the condition, it will executes the block of code written between do and done util the               condition is true
+71.what is the syntax of while loop ?
+  ans:- while [ condition ]
+	do
+		statements
+	done
+72.what is for loop ?
+  ans:- for loop is also an loop control statement, which is used for executing a block of code repeatitively. 
+73.for loop supports how many types of iterations ? what are those ?
+  ans:- two types  #1. loop through fixed list of values
+                   #2. loop based on counter conditions
+74.wap for fibonacci series ?
+  ans:- 
+	#!/bin/bash
+	read -p "enter the number : " number
+	previous_number=0
+	current_number=1
+	next_number=1
+	while [ $next_number -lt $number ]
+	do
+	  prevoius_number=$current_number
+	  current_number=$next_number
+	  next_number=$[previous_number+current_number]
+	  echo "next_number : $next_number"
+	done
+75.multiplication.sh
+#!/bin/bash
+read -p "enter the number : " number
+multiply=1
+while [ $multiply -le 10 ] 
+do
+	value=$[number*multiply]
+	echo "$number * $multiply = $value"
+	multiply=$[multiply+1]	
+done
+76.even.sh
+#!/bin/bash
+read -p "enter the number : " number
+start=2
+end=0
+while [ $end -lt $number ]
+do
+	start=$end
+	end=$[start+2]
+	echo "$end"
+done
+77.countnum.sh
+#!/bin/bash
+read -p "enter the number : " number
+reminder=0
+total_value=0
+while [ $number -gt 0 ]
+do
+	remove=$[number%10]
+	reminder=$[number/10]
+	total_value=$[remove+total_value]
+	number=$reminder
+done
+echo "total_value : $total_value"
+78.palindrome.sh
+--------------------
+read -p "n : " N
+T=$N
+R=0
+
+while [ $T -gt 0 ]
+do
+	REM=$[T%10]
+	R=$[(R*10)+REM]
+	T=$[T/10]
+done
+if [ $N -eq $R ]
+then
+	echo "given number $N is palindrome"
+else
+	echo "$N is not palindrome"
+fi
+=====================================================================================================================================
+79.what is for loop ?
+  ans:- for loop is also an loop control statement,which is used for executing a block of code repeatetively.
+80.loop supports how many types of iterations ?
+  ans:- two types (i).loop through fixed list of values
+		  (ii).loop based on counter conditions
+81.what is the syntax of loop through fixed list of values ?
+  ans:- for var in list
+	do
+		statements
+	done
+82.print 1 to 10 numbers
+  ans:-  #!/bin/bash
+	  i=0
+	  for i in 1 2 3 4 5 6 7 8 9 10
+	  do
+		echo "$i"
+	  done
+83.how to print the files (only) in given directory (not directories) ?
+  ans:-
+#!/bin/bash
+dir=$1
+for F in $dir/*
+do
+	if [ -f $F ]
+	echo "$F"
+	fi
+done
+85.wap to print non-empty files with in the directory ?
+  ans:- 
+#!/bin/bash
+dir=$1
+for F in $dir
+do
+	if [ -f $F -a -s $F ]
+	then
+		echo "$F"
+	fi
+done
+======================================================================================================================================
+86.what is counter based for loop ?
+  ans:- initialization,condition,and incremetation of a loop will inside for loop statement itself.
+87.what is the syntax of forloop ?
+  ans:- for ((initialization;condition;increment))
+88.print the number 1 to 10 using counterbased for loop ?
+  ans:- 
+#!/bin/bash
+for((x=0;x<=10;x++))
+do
+	echo "x : $x"
+done
+89.diff of while and until ?
+  ans:- in while condition if condition is true it will iterate if condition is false it will stop.	
+	but until loop if condition is false it will iterate if condition is true it will stop loop.
+90.what is the syntax of until ?
+  ans:- until [condition]
+	do
+	done
+91.wap to print the numbers sequentially from 1 util the user enters "q" ?
+  ans:- #!/bin/bash
+	x=0
+	result=f
+	until [ $result == "p" ]
+	do
+		read -p "enter result : " result
+		x=$[x+1]
+	done
+92.print the numbers in reverse order ?
+  ans:- 
+#!/bin/bash
+x=$1
+until [ $x == 0 ]
+do
+	echo "x : $x"
+	x=$[x-1]
+done
+======================================================================================================================================exit
+----
+85.what is exit statement ? why is it used ?
+  ans:- exit is instruction/statement.which is used for terminating or stopping the execution of a shell program.
+86.what we need to pass to the exit statement ?
+  ans:- we need to pass the integer number indicating the successfull/failure termincation of the program.
+87.when we dont specify the exit statement and program executed successfully at the time what is the exit status of the program ?
+  ans:- 0
+88.by default what is the exit status code of the program ?
+  ans:- 0 means success
+	other than 0 means failure
+89.how to see exit code of last program (or) last operation ?
+  ans:- $?
+90.
+
+======================================================================================================================================
+ARRAYS
+------
+91.what are arrays ?
+  ans:- Arrays are used for storing bunch of identical values inside a variable  (or)
+        Arrays are used for storing collection of same datatype values inside a variable
+92.how to access the array values ?
+  ans:- by using array index.
+93.array index begins with what and ends with what ?
+  ans:- begins : 0   ends with : n-1
+94.how many ways we can declare the arrays in shell-script ?
+  ans:- 
+	(i).array with collection of values
+	    product_prices=(10 20 30 40 50)
+	(ii).index based declaration of array
+	     product_prices=[10]
+	     product_prices=[20]
+	     product_prices=[30]
+	     product_prices=[40]
+	     product_prices=[50]
+	(iii).use -a
+	     read -a product_prices         (note: not reap -p)
+95.how to interactively write and store the array values ?
+  ans:- use read -a
+96.how to access the all the array elements ?
+  ans:- ${values[*]}       (or)     ${values[@]}
+97.how to find the number of elements in an array ?
+  ans:- ${#values[@]}
+98.how to access specific values in array ?
+  ans:- ${values[index]}
+99.how many ways we can print the array values ?
+  ans:- two ways (i).using for loop   (ii).using while loop
+100.how print the array values using while (or) for loop
+  ans:-
+#!/bin/bash
+read -a values
+length=${#values[@]}
+x=0
+while [ $x -lt $length ]
+do
+	echo "${values[$x]}
+	x=$[x+1]
+done
+
+for i in ${values[@]}
+	do
+   echo "${values[i]}"
+   i=$[i+1]
+done
+for ((i=0;i<length;i++))
+do
+   echo "${values[i]}"
+done
+101.write a program that take array values interactively and print  ?
+  ans:-
+#!/bin/bash
+read -p "enter values : " -a values
+length=${#values[@]}
+for ((i=0;i<length;i++))
+do
+	echo "${values[i]}
+done
+====================================================================================================================================
+102.how to access the array elements from specific location to till end of the array ?
+  ans:- ${values[@]:startindexvalue}
+103.how to access the elements from an array specific location to end of specific index ?
+  ans:- ${values[@]:startindex:endindex}
+104.how to search and replace an element in an array ?
+  ans:- ${values[@]/20/22}
+====================================================================================================================================
+functions
+---------
+1.what are funcions ?
+  ans:- functions are reusable block of code that can be executed at different places within our shell program
+2.while working with functions shell programs devided into how many blocks ?
+  ans:- two blocks (i).main block   (ii).function block
+3.shell programs begins execution with which block ?
+  ans:- main block
+4.by default functions will execute or not ?
+  ans:- by default functions will not execute.functions will execute only when those are called in main block.
+5.what is the syntax of function block ?
+  ans:-  function functionname(){
+	  statement	
+	}
+6.what are function arguments ?
+  ans:- function arguments are the input values we passed to the function at the time of calling functions.
+7.add and substract two numbers ?
+  ans:- 
+#!/bin/bash
+function add(){
+	x=$1
+	y=$2
+	add=$[x+y]
+	echo "add : $add"
+}
+function sub(){
+	x=$1
+	y=$2
+	sub=$[x-y]
+	echo "sub : $sub"
+}
+read -p "enter a value : " a
+read -p "enter b value : " b
+add $a $b
+sub $a $b
+
+function return values
+----------------------
+8.how to get the exit code of the function ?
+  ans:- by using $?
+9.what is the success exit code of the function ?
+  ans:- 0
+10.what is the filure exit code of the function ?
+  ans:- any value except zero
+11.why return value is used ?
+  ans:- upon function performing the operation, the output of the execution has to be returned as an input to the callee, so that the          output can be used the callee in performing further operation.This can be done by returning the output generated by the                function to the callee
+12.add two values and get return value
+  ans:-
+#!/bin/bash
+function(){
+	a=$1
+	b=$2
+	if [ $# -eq 2 ]
+	then
+	add=$[a+b]
+	return 0
+	else
+		return 12
+	fi
+}
+x=10
+y=20
+add $x $y
+return_status=$?
+if [ $return_status -eq 0 ]
+then
+	echo "add: $add"
+else
+	echo "pass two values"
+fi
+======================================================================================================================================
+scope of variables 
+------------------
+1.what are the variable scopes ?
+  ans:- two scopes (i).global scope  (ii).local scope
+2.what is the default scope of variables ?
+  ans:- global
+3.difference b/w global and local variable ?
+  ans:- global variables we can access them entire program.
+	local variables we can access them with in function.
+4.where we can declare the local variables ?
+  ans:- within function only we can declare the variables.in main block we can not declare the local variables.
+5.where we can declare the global variables ?
+  ans:- we can declare the global variables any where in the shell program.
+6.how to declare the local variable ?
+  ans:- by using the local variable.
+	local variablename
+=======================================================================================================================================================================================================================================================================
+78,
+8
+===================================================================================================================================
+47Q
+wap to find biggest number in the given array?
+wap to find second biggest number in the given array?
+wap to find the sum of odd position elements in the array?
+wap to remove negative numbers in the given array and return new array?
+https://teams.live.com/l/invite/FEAOCLOg1-MiaibhQE

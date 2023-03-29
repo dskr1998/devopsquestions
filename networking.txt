@@ -1,0 +1,443 @@
+1.how to connect two computers with wired connection ?
+  ans: use rj45 network cable.
+2.if you want plugin netowork cable to the computer what should be there in the computer ?
+  ans: nic card
+3.for modern computers where the nic card will be installed ?
+  ans: motherboard
+4.how to insert multiple nic cards into the computer ?
+  ans: insert into pci slots of the motherboard
+5.a computer can have how many nic cards ?
+  ans:- any number of nic cards
+6.for each computer which is connected to the network will have 2 types of identifications what are those ?
+  ans:- ip address,mac address
+7.which is physical address ,which is logical address ?
+  ans:-physical address [mac address]
+       logical address [ip address]
+8.how to assign the ipaddresses to the large  number of computers ?
+  ans:- use dhcp (dynamic host configuration protocal)
+9.ip address is devided into how many parts ?
+  ans:- 4 parts (4 octects)
+10.what is the ranges for ip address ?
+  ans: 0.0.0.0 to 255.255.255.255
+11.is one nic have one mac address ?
+  ans:- yes 1 nic = 1 mac 
+            ethernet = 1 mac
+            wifi = 1 mac
+12.what is ethernet card (nic card)?
+  ans:- it connects to the network using network cable.it plugs into the slot on the motherboard.it enables a computer to access to 
+        the ehternet network(LAN).
+13.two computers can communicate with each others ?
+  ans:- no only programs can communicate with each other.
+14.program of one computer want to communicate with program of another computer,ip address is sufficient ?
+  ans:- no port number is required 
+15.who will assign the port number to the program  ?
+  ans:-operaing system will assign the port number.
+16.every program running on the computer requires port number ?
+  ans:- no,only few programs who wishes to be communicated by other programs over the network.
+17.inorder to communicate to another program running on a another computer over the network we need 2 things
+  ans:- (i). ip address (ii).port number
+18.How does the data transmission takes place between the programs over the network?
+  ans:- data encode into binary representation (using charset encoding standard)--><--here receiver decode the binary data into symbol
+        notation using same charset
+19.what is firewall ?
+20.what are the parameters based on which firewall open the port ?
+  ans:- (i).trusted ip range
+        (ii).trusted vendor application
+21.what is protocal ? what is the purpose of it ?
+  ans:-protocols are set of rules that has to be followed by both the parties inorder to effectively communicate with each other
+22. what is application layer ?
+   ans:The server application defines the message structure and semantics in exchanging the data with client. The client application          has to adhere/follow the rules laid by the server in communicating with the server application
+23.The data exchanged between these 2 parties usually contains how many types of data ?
+   ans:- two types (i).business data  (ii).meta data
+24.what is a portno, why do we need it?
+   ans:-portno is a logical address assigned to program by the operating system of the computer to uniquely identify the program 
+        among other programs on that computer inorder to receive data over the network
+25.for exchanging the html pages over the network what is protocal,server,client,port we need to use ?
+  ans:- protocal : http protocal
+          server : http/web server
+	  clent  : bowser
+	 port no : 80
+26.for file transfering over the network what is protocal,server,client,port we need to use ?
+  ans:- protocal : file transfer protocal
+          server : ftp server
+	  clent  : ftp client
+	 port no : 20/21
+27.for email exchanging over the network what is protocal,server,client,port we need to use ?
+  ans:- SMTP = Simple Mail Transfer protocol (sending/receiving) (port: 25)
+	POP3 = Postoffice Protocol (reading the mails) (port: 110)
+	IMAP = Internet Message Access Protocol (advanced multi-media email sending/receiving) (port: 143)
+	Server: Email Exchange Server
+	Client: outlook, thunderbird, lotusnotes
+28.Remote Desktop application (RDP) for connecting computers remotely over the network:
+	uses RDP protocol, remote desktop application protocol
+	Server: Microsoft inbuilt server program (or third-party server programs are available)
+	Client: Windows RemoteDesktop client program 
+	port: 3389
+	
+29.for connecting remote linux computer over the network what are protocal and portnumber ?
+  ans:- ssh protocal and 22 port number.
+30.what is the url pattern we are using for connecting remote computer over the network ?
+  ans:- schema://serverip:portnumber/resource
+31.here schema means ?
+  ans:- protocal which we are using like http,https,ftp,smtp,pop3,imap
+32.what operations will perform by the presentation layer ?
+  ans:-(i).data convertion    (ii).data compression/decompression   (iii).data encryption/decryption
+33.data convertion means ?
+  ans:- data converts into bits/bytes using charset encoding standard
+34.data compression/decompression means ?
+  ans:- to reduce the size of the data to be transmitted over the network.
+35.what is data encryption means?
+  ans:- encrypt the data to securly transmit the data
+36.what operations will be performed by the session layer ?
+  ans:- (i).authentication & authorization      (ii).session management
+37.Authentication and Authorization means ?
+  ans:-session layer keep track of the authentication and authorization info about the client,so server application can authorize 
+       the application for accessing
+38.what is mean by session management ?
+  ans:-The session layer keeps track of the data packets that has to be send from the client to the server, it tracks how many packets        has been transmitted and still how many packets has to be transffered and at the receiver side the session layer reorder the        data packets that are recieved in re-constructing the data back
+39.what are the responsibilities of transport layer ?
+  ans:-(i).segmentation   (ii).flow control   (iii).error control
+40.data segmentation means ?
+   ans:- The Transport layer takes the data from the Session layer and breaks the data into smaller packets 
+	 1. To avoid network congession in transferring large data volumes
+	 2. to quickly retransmit the lost data over the network
+	 Then attached to each data packet, the portno of the receiver application along with sequenceno of the package.
+	 These packets are sent over the network
+41.how the reciever will reconstruct the data that is send by the sender ?
+  ans:-Based on the sequenceno the message can reconstructed back by reordering the packets at the receiver side.
+42.what is flow control ?
+  ans:-Instructions the sender to reduce the speed at which the data is being tranmitted to the reciever, when the receiver is                connected to the low-speed network in receiving the data, so that it protects the loss data over the tranmission
+43.what is error control ?
+  ans:- transport layer will computes a checksum no based on the contents of the message and appends the end of the message while 
+        transmitting. so that the receiver upon receiving the data will computes the checksum on the message he recieved and compares          with the original checksum to identify the corrupted packets which is called "Error Control"
+44.what are the operations performed by the network layer ?
+  ans:-(i).logical addressing   (ii).routing  (iii).path determination
+45.what is logical addressing ?
+  ans:-The network layer takes the data segment from transport layer and appends/adds source/destination computer ip address to it,           which is called "ip packet" or "data packet" 
+46.what is mean by routing ?
+  ans:-The network layer identifies the destination network to which the data packet should be routed to based on ip address
+	1. it takes the ip address of the destination computer
+	2. identifies from the ip address, the network address and host address
+	3. based on network address it determins to which network the packet has to be routed to
+	The process of sending the data packets to the right network of computers is called "Routing"
+47.path determination means ?
+  ans:-The network layer identfies shortest path based on various parameters like (traffic, distance in transmission etc) and        determins the right path for transferring the data
+48.what is data link layer ?
+  ans:- it is s/w embedded as part of nic card.and is programmed by the manufacture of the nic card.
+49.what is the responsibilities of datalink layer ?
+  ans:- data linklayer is responsible of transfering the data b/w the computers over the same network.
+50.what are the responsibilities of data link layer ?
+  ans:-(i).Physical addressing  (ii).media access control      (iii).Error control
+51.what is physical addressing ?
+  ans:- it will takes the data/ip packet from the network layer and add mac addres of the source and destination computers to it.
+        in addition it adds some head/tail bits to it make it as data frame.
+52.what is media access control ?
+  ans:- it is responsible for encoding the data into signal format that can be transmittable over the medium.
+53.what is error control ?
+  ans:- there are 2 types of error control taken care by datalink layer
+        (i).collision detection :- datalink layer keeps an eye on the network channel to identify the line is busy or available for 	    transmission, to avoid collision while sending the data over the channel 
+	(ii).fault detection :-  due to hardware faiures the packets might recieved in corrupted state, so to detect these packets the
+                              head/tail bits added are used
+54.what is physical layer ?
+  ans:- responsible for transferring the data over the physical channel of communication
+======================================================================================================================================
+55.topologies means ? how many types are there ?
+  ans:- topologies means the way the computers are interconnected with each other. 2 types of topologies are there 
+	(i).logical topology  (ii).physical topology
+56.what is logical topology ?
+  ans:-refers to the way the messages are moved b/w the computers within the network.
+57.what is physical topology ?
+  ans:- indicates how the computers are physically arranged and interconnected with each other
+58.how many types of topologies are there ?
+  ans:- 5 types are there  (i).bus topology    (ii).ring topology   (iii).star topology   (iv).mesh topology  (v).hybrid topology
+59. in star topology to interconnect the computers on the network what we need to use ?
+  ans:- we need to use centralized device called hub.
+60.how the data transfer takes place in star topology ?
+  ans:-Whenever a computer sends the data to another computer, it will be recieved by the hub and the hub distributes the data to all         the other computers it has been connected to, in this way the computers communicates in star topology
+61.the number of computers that can be connected to the network in star topology what ?
+  ans:- it depends on the capacity of the hub. if it is 8 port hub we can interconnect 8 computers on the network
+62.what are the dis-advantages of using star topology ?
+  ans:- there is a single-point of failure,where if the hub goes down the entire network will come down
+63.what is mesh topology ? mesh topology is used for LAN or WAN ?
+  ans:- each computer on the network is inter-connected with n-1 computers on the network forming a robust network, usually used for
+        interconnect WAN.
+64.what is hybrid topology ?
+  ans:-interconnecting network of networks together is called hybrid topology
+65.what is the example of hybrid topology ?
+  ans:-internet
+======================================================================================================================================
+66.what are the network devices ?
+  ans:-(i).repeater (ii).hub  (iii).switch  (iv).bridge  (v).router  (vi).firewall  (vii).modem
+67.what is repeater ?
+  ans:-A repeater is a device that can be installed between the source and destination somewhere else in the middle which receives the        data from source, amplifies or regenerates and forward to the destination
+68.what is hub ?
+  ans:-Hub is a network device used for interconnecting the computers in a star network. Hub  operates at Physical layer and copies        the data it has recieved to all the other ports connected to the hub
+69.how many types of hubs are there ? what are those ?
+  ans:- two types (i).passive hub   (ii).active hub
+70.what is passive hub ?
+  ans:- it is not connected to the power, and doesnt regenerates the signal, it just copies the recieved signals to all the ports         connected
+71.what is active hub ?
+  ans:- Requires power supply and amplifies/regenerates the signals and copies to the other ports connected
+72.what is switch ? switch uses what for transfering the data ?
+  ans:- Switch is an intelligent hub, that works at datalink layer used for transerring the data between the computers within the         network
+73.hub maintains what ?
+  ans:- hub maintains mac address table.in which it stores the mac address of the computer and port number of the hub.
+74.how the switch will transfer the data to the specific computer ?
+  ans:-Whenever the datapacket arrives to the switch it reads the mac address of the destination computer in the frame, and identifies        the hubport to which the computer is plugged in and forward the data to the corresponding computer
+75.what is bridge network ?
+  ans:-Bridge is a device used for inter-connecting 2 different networks. Bridge also works at physical layer only.
+76.bridge has how many ports ?
+  ans:- two ports.
+77.how the bridge will work ?
+  ans:-  whenever the data comes to oneport it just copies to the other port to forward the data to the other network of computers
+78.bridge in-conjuction with ?
+  ans:- bridge in-conjunction with hub.
+79.router is which type of device ?
+  ans:- router is intelligent device than bridge.
+80.router operates the which layer on the osi model ?
+  ans:- router operates at network layer on the osi model.
+81.how the router will work ?
+  ans:-Whenever the data packet arrives to the Router, it identifies the packet belongs to which network based on the destination ip          address  within the data packet and routes the data packet only to that specific network of computers.
+82.how to control the flow of data between the networks ?
+  ans:- router will maintain the routing table.in which we can configure the routing rule (traffic patterns).
+83.what is modem ?
+  ans:-Modem is a device capable of performing modulation and demodulation in coverting analog signals to digital signals and              viceversa. It is used for connecting computers over the dial-up network
+84.what is firewall ?
+  ans:- Firewall is used for controlling, restricting and monitoring the network traffic on a computer.
+85.firewall operates at how many levels ? what are those ?
+  ans:- firewall operates at two levels (i).host firewall  (ii).network firewall
+86.what is host firewall ?
+  ans:-it is software that is installed on the computer through which we can monitor,control and restrict the network traffic to the
+       programs of our computer.
+87.what is network firewall ?
+  ans:-it is hardware device.installed on the computer network through which we can control the network traffic to the group of 
+       computers of our network centrally rather than configuring the firewall restrictions on each computer.
+  ex:-software firewall (installed local to the computer) = security group
+      hardware firewall (device setup on network) = nacl
+====================================================================================================================================
+88.what is ip address ?
+  ans:-ip address acts as an identification to access the computer over the group of computers on a network
+89.what is physical address and what is logical address ?
+  ans:- physical address --> mac address
+	logical address --> ipaddress
+90.mac address will be assigned to whom ?
+  ans:- it will be assigned to network interface card by the manufacturer.
+91.what is hardware identification number ?
+  ans:- mac address
+92.ip address is permanant ?
+  ans:- no it will change based on the network to which your computer is connected to.
+93.how many ways we can assign the ipaddress ?
+  ans:-two ways (i).manually   (ii).using dhcp server
+94.what static ip address ?
+  ansL:- the ip address assigned to the computer manually are going to be fixed/static.
+95.what is the use of assigning static ip address ?
+  ans:-the computers are assigned with static ip address we can access them by using their ip address quickly
+96.is static ip address we assigned manually permanant or it will change ?
+  ans:- it is permanant.it will not change after restart also.
+97.what is dynamic ip address ?
+  ans:-use dhcp server for assiging the ip address to the computers.
+98.dhcp server component built in where ?
+  ans:- which is built into switch or router of every network.
+99.how many types of addresses are there for every computer ?
+  ans:- two types (i).physical address  (ii).logical address
+100.logical address/ip address will be assigned to the computer when ?
+  ans:- when it is connected to the network.
+101.how many versions of ip address are there ?
+  ans:- two types (i).ipv4     (ii).ipv6
+102.what is the length of ipv4 addressing ? and how many computers we can connect using ipv4 ?
+  ans:- 32 bits   (we can connect 4.1 billion computers)
+103.what is the length of ipv6 addressing ?
+  ans:- 128 bits
+=================================================================================================================================
+104.ip address schema is designed to which representation ?
+  ans:- it is designed to be hirarchial-representation (means parent and child)
+105.what is the length of ip address and ip address devided into how many parts ?
+  ans:- 32 bits length. and ip address is devided into 4 octets.
+106.with in 8 bits what is max number we can represent ?
+  ans:- 255
+107.what is the range from ipv4 addressing ?
+  ans:- 0.0.0.0 to 255.255.255.255
+108.ip address contains how many parts ? what are those ?
+  ans:- two parts (i).network address  (ii).host address
+109.what is network address ?
+  ans:-network address is nothing but the computer is connected/part of which group of network computers.
+110.what is host address means ?
+  ans:-the address of computer with in the given network
+=====================================================================================================================================
+111.How do we identify for an given ip address, what is the network address and host address of it ?
+  ans:-based on Classfull ip addressing schema we can identify.
+112.the classfull ip addressing has been classified into how many parts ? what are those ?
+  ans:- 5 classes. A,B,C,D,E
+113.in classfull ip addressing how to identify the ip address is belongs to which class ?
+  ans:-based on the first 3 bits of first octect we can define the ip address belongs to which class.
+Range        Ip Class        Network Bits   Host Bits
+1   - 126        A              8              24
+128 - 191        B              16             16
+192 - 223        C              24              8
+224 - 239        D              used for multicasting and the bits are not classified
+240 - 254        E              reserved for experimental use for future
+
+114.0 means for what ?
+  ans:- it is for gateway
+115.what is the loop back ip address ?
+  ans:- 127.*.*.*
+116.255.* what is the use of this ip address ?
+  ans:- data goes to all the computers on the network.
+117.192.168.1.29 in this ip address what is the host address and what is the network address ?
+  ans:-it is belongs to class c,so 24 bits are network address and 8 bits are host address
+        network address : 192.168.1.0
+	host address    : 29
+118.what is the broadcast ip address ?
+  ans:- 255.*.*.*
+119.in classfull ip addressing what is the subnetmask ?
+  ans:- A 255.0.0.0
+	B 255.255.0.0
+	C 255.255.255.0
+120.in classfull ip addressing how to compute the network address ?
+  ans:- by using subnet mask
+121.how to compute the network address by using subnet mask ?
+  ans:- ex:-1. ip address : 110.23.40.129
+	       subnetmask : 255.0.0.0
+	0 1 1 0 1 1 1 0 . 0 0 0 1 0 1 1 1 . 0 0 1 0 1 0 0 0 . 1 0 0 0 0 0 0 1
+	1 1 1 1 1 1 1 1 . 0 0 0 0 0 0 0 0 . 0 0 0 0 0 0 0 0 . 0 0 0 0 0 0 0 0
+        ---------------------------------------------------------------------
+	0 1 1 0 1 1 1 0 . 0 0 0 0 0 0 0 0 . 0 0 0 0 0 0 0 0 . 0 0 0 0 0 0 0 0 
+	---------------------------------------------------------------------
+	110             .        0        .        0        .       0
+
+	ex:2 
+	ip address : 192.168.45.21
+	subnetmask : 255.255.255.0
+        1 1 0 0 0 0 0 0 . 1 0 1 0 1 0 0 0 . 0 0 1 0 1 1 0 1 . 0 0 0 1 0 1 0 1
+	1 1 1 1 1 1 1 1 . 1 1 1 1 1 1 1 1 . 1 1 1 1 1 1 1 1 . 0 0 0 0 0 0 0 0
+	---------------------------------------------------------------------
+	1 1 0 0 0 0 0 0 . 1 0 1 0 1 0 0 0 . 0 0 1 0 1 1 0 1 . 0 0 0 0 0 0 0 0
+	---------------------------------------------------------------------
+               192              168              45                0
+	---------------------------------------------------------------------
+122.how to compute network address and host address in a given ip address ?
+  ans:- 1. identify the IP CLASS of the ip address
+	2. choose the relevant subnet mask of that IP CLASS
+	3. represent both ip address and subnet mask in binary format
+	4. do an bit AND operation to derive the network address
+====================================================================================================================================
+CIDR :-
+----
+123.in cidr how to distribute the network and host address ?
+  ans:-In CIDR we dont allocate network and host bits based on IP CLASSES, we distribute network and host bits based on requirement.
+124.how to represent the ipaddress in cidr notation ?
+  ans:- 192.168.44.28/22
+125.192.168.44.28/22 in this cidr what is the subnet mask and how to compute network address and host address ?
+  ans:- here 22 means number of bits assigned to the network address.
+        192.168.44.28   1 1 0 0 0 0 0 0 . 1 0 1 0 1 0 0 0 . 0 0 1 0 1 1 0 0 . 0 0 0 1 1 1 0 0
+	subnetmask      1 1 1 1 1 1 1 1 . 1 1 1 1 1 1 1 1 . 1 1 1 1 1 1 0 0 . 0 0 0 0 0 0 0 0 
+	-------------------------------------------------------------------------------------
+			1 1 0 0 0 0 0 0 . 1 0 1 0 1 0 0 0 . 0 0 1 0 1 1 0 0 . 0 0 0 0 0 0 0 0 
+	------------------------------------------------------------------------------------- 	
+				192 		168 		44 		     0
+	-------------------------------------------------------------------------------------
+	network address : 192.168.44.0
+	starting ip : 192.168.44.0
+	ending ip : 192.168.47.255
+126.cidr stands for ?
+  ans:- class less inter domain routing 
+127.why cidr is introduced ?
+  ans:-In classfull ip addressing the network bits and host bits are distributed over fixed octets, due to which we will not have        flexibility of creating network of computers with varied size.To overcome the above problem, CIDR has been introduced. So CIDR         allows us to assign flexibily the network and host bits in an ip address,so there is no ip classification.
+128.in cidr how to compute network address and host address ?
+  ans:-#1. represent the ip address in binary format
+       #2. represent the subnet mask in binary format by turning on the network bits specified in the ip notation and remaining bits 	           as off
+       #3. do an BIT AND operation on these bits
+       #4. convert the result into decimal notation based on place value of the BIT
+       #5 This will provide network address and starting ip of the network
+
+2^0 1
+2^1 2
+2^2 4
+2^3 8
+2^4 16
+2^5 32
+2^6 64
+2^7 128
+====================================================================================================================================
+129.ip address classified into how many types ? what are those ?
+  ans:-ip addresses are classified into 2 types
+	(i).public ip address (ii).private ip address
+130.what is the private ip range ?
+  ans:- CLASS A : 10.0.0.0  - 10.255.255.255
+	CLASS B : 172.16.0.0 - 172.31.255.255
+	CLASS C : 192.168.0.0 - 192.168.255.255
+131.what is broadcasting ? and multicasting ?
+  ans:- broadcasting : computer can send the data to all the computers with in the same network
+	multicasting : computer can send the data to all the computers of across the networks.
+132.ip 192.160.135.10/21  in this cidr what is network address,starting ip and ending ip ?
+  ans:-   192.160.135.10   1 1 0 0 0 0 0 0 . 1 0 1 0 0 0 0 0 . 1 0 0 0 0 1 1 1 . 0 0 0 0 1 0 1 0
+			   1 1 1 1 1 1 1 1 . 1 1 1 1 1 1 1 1 . 1 1 1 1 1 0 0 0 . 0 0 0 0 0 0 0 0
+			   ----------------------------------------------------------------------
+		                 192              160                128 1 1 1 . 1 1 1 1 1 1 1 1
+	
+network address : 192.160.128.0
+starting ip : 192.160.128.0
+ending ip : 192.160.135.255		
+133.ip 110.10.230.45/19 in this cidr what is network address ,starting ip and ending ip ?
+  ans:- 110.10.230.45   0 1 1 0 1 1 1 0 . 0 0 0 0 1 0 1 0 . 1 1 1 0 0 1 1 0 . 0 0 1 0 1 1 0 1
+			1 1 1 1 1 1 1 1 . 1 1 1 1 1 1 1 1 . 1 1 1 0 0 0 0 0 . 0 0 0 0 0 0 0 0 
+			---------------------------------------------------------------------
+				110 		10		224
+	network address : 110.10.224.0
+	starting ip : 110.10.224.0
+	ending ip : 110.10.255.255
+	subnetmask : 255.255.224.0
+134.the ip address starting with 224 and 239 are used for what ?
+  and:- it is used for ip multicast.ip multicast is a technology for efficiently sending the same content to multiple destinations.
+	it is commonly used for distributing financial information.
+135.vpn
+====================================================================================================================================
+136.what is public ip and private ip ?
+  ans:-A computer assigned with a private ip address can communicate only with other computers of the same network. 
+       A computer assigned with public ip address can communicate and send/receive the data to any computer around the world
+137.what is the scope of public and private ip ?
+  ans:- private ip: The computer assigned with private ip range is visible and accessible within the network only
+	public ip: The computer assigned with public ip is accessible across the network from any where
+138.what is the network type ?
+  ans:- private ip: can used for setting up an LAN (private network).
+	public ip: public ip address is issued by an ISP (internet service provider)
+
+139.what is the cost of using private and public ip addresses ?
+  ans:- private ip: can be used free of cost
+	public ip: we need to pay to the isp and purchase to use it for our computer
+140.what is the range of private ip address ?
+  ans:- CLASS A : 10.0.0.0 - 10.255.255.255
+	CLASS B : 172.16.0.0 - 172.31.255.255
+	CLASS C : 192.168.0.0 - 192.168.255.255
+===================================================================================================================================
+Virtualbox network 
+------------------
+141.oracle virtual box hypervisor supports how how many networking modes (interface cards) ?
+  ans:-7
+142.what are networking modes available in virtual networking ?
+  ans:- Not attached
+	NAT 
+        NAT network
+        Bridge 
+        Internal network
+        HOST-ONLY adapter
+	
+dgeneric driver
+
+**143.what are the inbound and outbound rules are there in virtual networking ?
+144.which network we need to choose for only outbound access ?
+  ans: NAT
+145.in bridge how the vm's are interconnected with each other ?
+  ans:-The virtualbox hypervisor will brings all the guest machines onto the host network adapter forming a brige allowing them to 
+        interconnect with each other.Here all the guest machines will be assigned with an ip address within the range of host
+        network adapter
+146.in bridge network the ip address assigned to the guest machines in which range ?
+  ans:- with in the range of host network adapter.
+147.in which mode only vm to vm communication only happen ?
+  ans:- internal network
+148.in which network mode vm to vm and vm to host ,host to vm communication is possible ?
+  ans:-host-only adapter
+149.
+
+
+

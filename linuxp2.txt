@@ -1,0 +1,400 @@
+packaging and compressing
+-------------------------
+1.what is packaging ?
+  ans:- packaging is a technic of combining multiple files into one single file.
+2.package compress the size of the original files ?
+  ans:- The packging doesnt really compress the size of the original file rather it just bundles multiple files into one single file 	only.
+3.what is the syntax of packaging ?
+  ans:- tar -cvf tarname dir/files
+4.how to package files ?
+  ans:- tar -cvf pkg.tar dir/
+	tar -cvf pkg.tar dir/file1 dir/file2
+5.what is the extension of package file ?
+  ans:- .tar
+6. cvf means ?
+	c - create
+  	v - verbose
+	f - filename
+7.how to unpack the contents of a files ?
+  ans:- tar -xvf file.tar
+	-xvf	means 
+	 x  - extract
+	 v  - verbose
+	 f  - filename
+8.how to see the contents of a tar file ?
+  ans:- tar -tvf file.tar
+	(without extracting it will display the content)
+9.how to compress the contents of a file ?
+  ans:- we need tar file to compress the contents of a file/dir
+	gzip file.tar
+10.when we compress the file what will be the output ?
+  ans:- file.tar.gz     (then original file no more exists)
+11.how to uncompress the file ?
+  ans:- gunzip file.tar.gz
+12.when we unzip the file what will be the output ?
+  ans:- filename.tar
+======================================================================================================================================
+tr
+===
+13.what is tr ? what is the purpose ?
+  ans:- tr is used for performing 3 types of operations on a text content
+	1. replace a single character in a give string
+	2. we can delete a single character in a give string
+	3. we can apply transformations on the entire string passed. 
+14.how to replace a single character in given string ?
+  ans:- echo "string" | tr char1 char2
+	echo "hallo" | tr "a" "e"
+15.how to delete a character in given string ?
+  ans:- echo "good moarning" | tr -d "a"
+16.what are the trasformations supported by the tr ?
+  ans:- :upper:
+	:lower:
+	:space:
+	:digit:
+	:alnum:
+17.how to display full string in uppercase ?
+  ans:- echo "good morning" | tr "[:lower:]" "[:upper:]"
+18.how to replace space with - ?
+  ans:- echo "hello good morning" | tr "[:space:]" -
+19.how to replace the number ?
+  ans:- echo "rank2" | tr "[:digir:]" 1
+20.replace all numbers with alphabetes ?
+  ans:- echo "rank1" | tr "[:alnum:]" x
+21.how to replace single character in content of a file ?
+  ans:- echo "$(<filename)" | tr char1 char2
+=====================================================================================================================================
+****
+how to read the content of a file using echo ?
+  ans:- echo "$(<file.txt)"
+****
+======================================================================================================================================
+text editors
+------------
+22.by default the vim editor opens in which mode ?
+  ans:- command mode
+23.how to return back to the command-mode from other modes ?
+  ans:- press esc
+24.how to enter the input mode ?
+  ans:- enter i
+25.in vi what is the key we need to use for insert mode ? in vim what is the key ?
+  ans:- in vi we need to press i.but in vim any command rather than command key it will go for insert mode.
+26.how to go to the exit mode ?
+  ans:- esc + :
+27.how to quit the editor without saving the changes ?
+  ans:- q!
+28.how to save,quit and quit ?
+  ans:- w - save
+	q - quit
+	wq - save & quit
+29.The below list of commands are available in command mode:
+A = append the data at the end of the line
+a = append the data to the right side of the cursor position
+I = insert the data at the begining of the line
+i = insert the data at the current cursor position
+O = open a new line above the cursor position
+o = open a new line below the cursor position
+r = replace a character
+R = Replace the text from current position
+S = replace the current line
+yy = yanking (copy a line)
+#nyy = copy n number of lines
+p = paste
+x = to delete a character
+dw = delete a word
+dd = delete a line
+#ndd = delete n number of lines
+u = undo the previous action
+b = back to the begining of the word
+w = begining of the next word
+e = end of the current word
+:linenumber = jump to the given line number
+G = moves the cursor to the end of the file
+ctrl + f = one page forward
+ctrl + b = one page backward
+
+/phrase + enter = search for the text in the file
+press n = to show next matching content
+shift + n = shows previous matching content
+======================================================================================================================================nano
+====
+	ctrl + o =writes the unsaved changes onto the file
+	ctrl + x = quit = when we press ctrl+x with unsaved changes it ask for confirmation to save or not (y/n).
+	ctrl + w = search for a word in the file
+	ctrl + \ = to replace a text pharse with a different
+	ctrl + k = cut the line
+	ctrl + u = paste line
+	ctrl + c = displays line number, character in the file
+	ctrl + underscore(_) = jump to a specific line in the file
+	alt + e = redo
+	alt + u = undo
+	alt + a = goto selection mode or mark the content
+	alt + 6 = copy selected text
+30.how to work with nano?
+  ans:- nano filename 
+======================================================================================================================================
+file management 
+---------------
+31.How to create a File on the Filesystem of Linux?
+  ans:- touch filename
+32.How to see the list of files/folders within a directory?
+  ans:- ls
+33.How to see the directory in which we are in?
+  ans:- pwd
+34.How to print message on to the terminal?
+  ans:- echo "msg"
+35.How to create a file with data inside it?
+  ans:- echo "hello" > file.txt
+36.how to see the contents of the File?
+  ans:- cat filename
+37.how to create a directory?
+  ans:- mkdir dirname
+38.How to change between directories
+  ans:- cd
+	cd -
+	cd ..
+	cd ~
+39.How to see all the files/folders of a directory including their sub-directories?
+  ans:- ls -R dir
+40.how to displays files in white color and folders in blue color ?
+  ans:- ls --color=always
+41.how to displays all the files/folders in white color only ?
+  ans:- ls --color=none
+42.How to create a folder along with parent ?
+  ans:- mkdir -p dir1/dir2/dir3 
+=====================================================================================================================================
+43.How do we know in which shell we are in?
+  ans:- echo "$0"
+44.what is the default bash when we launch terminal ?
+  ans:- bash
+45.what is bash command structure ?
+  ans:- command [options] [arguments]
+46.example of bash command ?
+  ans:- ls -l dir/
+47.how to pass options ?
+  ans:- by using - 
+48.what are arguments ?
+  ans:-arguments are the inputs to the command on whom the command should be executed/performed and is even optional in few commands
+49.how to distinguish b/w options and arguments ?
+  ans:- -
+50.how to remove/delete an existing file?
+  ans:- rm filename
+51.How to remove a file forcibily?
+  ans:- rm -f filename
+52.How to delete a folder/directory?
+  ans:- rmdir dirname
+53.how to delete dir along with sub-directories ?
+  ans:- rm -r dirname
+54.How to write a message to the STDOUT or terminal?
+  ans:- echo "msg"
+55.How to create a file with data inside it?
+  ans:- echo "data" > filename
+
+56.How to see the contents of a File?
+  ans:- cat filename
+57.How to copy a File?
+  ans:- cp filename destination/
+58.how to copy recursivley ?
+  ans:- cp -R dir/ destination/
+=====================================================================================================================================
+redirect operators
+------------------
+59.how many types of redirect operators are there ?
+  ans:- 2 types (i). >  output redirector  (ii). <  input redirector
+60.why input redirectors are used ?
+  ans:- if we want a shell command to read the input other than the STDIN we need to use input redirector operator.
+61.why output redirectors are used ?
+  ans:- if we want a shell command to write/produce the output to a different destination than STDOUT, we can use output redirector
+62.how to copy the contents of a directory (not directory) ?
+  ans:- cp dir/* dest/
+63.how To move a file from one location to another ?
+  ans:- mv file dest/
+64.how to rename file/dir ?
+  ans:- mv oldname newname
+65.how to identify the type of the file ? (like text,tar,image etc..)
+  ans:- file filename
+66.How to see statistics information about a file?
+  ans:- stat filename
+=====================================================================================================================================
+regular expressions
+===================
+67.what are the regular expressions in bash command ?
+  ans:- *
+	?
+	[]
+   ex:- ls *.txt
+	ls ???.txt
+	ls[jc]*.txt
+=====================================================================================================================================
+68.how to work with ranges ?
+  ans:- touch file{1..10}.txt
+69.how to create hidden file and hidden dir ?
+  ans:- touch .password
+	mkdir .secreates
+70.how to see the hidden files ?
+  ans:- ls -a
+71.how to use more ?
+  ans:- cat filename | more
+	ls -l | more
+=====================================================================================================================================
+72.how to see the top content of a file ?
+  ans:- head filename
+73.how to see top n number of lines in a file ?
+  ans:- head -n filename
+74.how to see the data inside the file from the end/bottom of the file ?
+  ans:- tail filename
+75.how to see only specified number of lines from the bottom ?
+  ans:- tail -n filename
+76.How to see the generated log output of a program under execution?
+  ans:- tail -f filename
+77.how to see n number of lines along generated output ?
+  ans:- tail -nf logfile
+======================================================================================================================================
+compare 
+-------
+78.how to compare the contents of a files ?
+  ans:- we can use shell commands for compare
+	(i).diff 
+	(ii).cmp
+79.how to comapre the contents of two files using cmp ?
+  ans:- cmp file1 file2
+80.what is the default behaviour of compare the files using cmp ?
+  ans:- it compares the 2 inputs files and displays the first byte difference between the 2 files.
+81.if both files are same then what will be the output ?
+  ans:- no output
+82.how to display the difference byte position along with differing character ?
+  ans:- cmp -b file1 file2
+83.how to skip the number of positions to comapare ?
+  ans:- cmp -i n1:n2 file1 file2
+84.how list the all the byte differences in both files ?
+  ans:- cmp -l file1 file2
+85.what is diff ?
+  ans:- diff also used for comaparing the contents.
+86.diff b/w cmp and diff ?
+  ans:- unlike cmp the diff command compares line by line contents of 2 files and displays the output.
+87.what are the special symbols used by the diff ? 
+  ans:- a = add
+	c = change
+	d = delete
+88.how to compare the contents using diff ?
+  ans:- diff -c file1 file2
+	diff -u file1 file2
+------------------------------------------------------------------------------------------------------------------------------------
+89.how to count no of lines in a given file ?
+  ans:- wc -l filename
+90.how to count no of words in a given file ?
+  ans:- wc -w filename
+91.how to counts and displays no of characters ?
+  ans:- wc -c filename
+92.how to print lines and words ?
+  ans:- wc -lw filename
+93.how to print characters and words ?
+  ans:- wc -cw filename
+94.how to count the number of users are registered in linux machine ?
+  ans:- cat /etc/passwd | wc -l
+====================================================================================================================================
+pipes
+=====
+95.what is the use of pipe ?
+  ans:- We can send the output of a linux command as an input to another linux command by using pipe(|) symbol.
+96.how to know the number of files/folders within a give directory?
+  ans:- ls | wc -w
+97.how many users are currently logged in into the linux operating system?
+  ans:- who | wc -l
+98.total number of users in linux system ?
+  ans:- cat /etc/passwd | wc -l
+99.how to see the top 5 files/folders in a give directory?
+  ans:- ls -l | head -5
+100.how to see the bottom 5 files/folders in a give directory
+  ans:- ls -l | tail -5
+101.when using pipe how many commands we can combine ?
+  ans:- any no.of commands.
+	The evaluation of the commands will begin from left to the right and we can join any number of shell commands using pipe
+102.what is diff b/w pipe and redirections ?
+  ans:- In case of pipe (|) always the 2nd part, that appear after the pipe should be an another shell command.
+	shellcommand | shellcommand
+	In case of redirection (<,>) 
+	input redirection = always the source should be a file
+	output redirection = the destination should be a file
+======================================================================================================================================
+find
+----
+103.what is find ?
+  ans:- find is used to find/search for files/folders using their names
+104.what is the syntax of find ?
+  ans:- find directory -name pattern
+105.what is the default options in find ?
+  ans:- print
+	find directory/ -name pattern
+105.how to display all matching files in single line ?
+  ans:- find directory/ -name pattern -print0
+106. how to count the number of text files under a directory library/ ?
+  ans:- find library/ -name *.txt | wc -l  (or wc -w)
+107.how to find the matching files and print it ?
+  ans:- find dir/ -type f -name "*.txt" 
+108.how to print the directories which matching ?
+  ans:- find dir/ -type d -name "dir"
+109.how to print the files/directories which are empty ?
+  ans:- find dir/ -name "*" -empty
+110.how to search files/floder which are multi-pattern match ?
+  ans:- find dir/ -name "pattern1" -o -name "pattern2"
+	find dir/ -name "pattern1" -empty -o -name "pattern2" -empty
+111.how to use exec command along with find ?
+  ans:- find dir/ -name "pattern" -exec command {} \;
+	find library/ -type d -name "b*" -exec ls {} \;
+	find library/ -type f -name "b*" -exec cat {} \;
+112.how to search for the file/dir based on pattern and permissions ?
+  ans:- find dir/ -name "*" -perm 764
+113.what is the another way execute a shell command on each matchingm pattern insted of -exec ?
+  ans:- use -ok
+	ex:- find dir/ -name "pattern" -ok shell {} \;
+114.what is the difference b/w pipe and exec/ok when we are using them along with find ?
+  ans:- when we are using pipe
+	all the matching files/folders will be passed as an input to the shell command at one shot, if the shell command accepts 	 	multi-line input it works otherwise it will fail
+	when using exec/ok
+	it passes each matching file/directory as input and execute the shell command line by line
+ 	
+	ex:- find dir/ -name "pattern" | wc -l
+	     find dir/ -type d -name "pattern" -exec ls {} \;
+	     find dir/ -type f -name "pattern" -exec cat {} \;
+****
+if we are using a shell command that works on multi-line input use pipe (|) operator
+if you command works per line or a single-line input then use -exec or -ok 
+****
+======================================================================================================================================
+grep
+----
+115.how to search for the content in a file ?
+  ans:- grep "content" filename
+116.how to search recursively matchig content in a dir ?
+  ans:- grep -R "text" dir/
+117.how display the matching data along with line number ?
+  ans:- grep -R -n "text" dir
+	grep -n "text" filename
+118.how to avoid the case sensitive while searching the matching content ?
+  ans:- grep -i "text" filename
+119.how to search the word which matches full word not partially ?
+  ans:- grep -w "word" filename
+120.output only the matching words not the entire line ?
+  ans:- grep -o "text" filename
+121.how to display the count of matching phrase in the file ?
+  ans:- grep -c "text" filename
+122.how to print along with matching line a line above and below as well. ?
+  ans:- grep -1 "text" filename
+	grep -digit "text" filename
+123.how to print the error along with after n number of lines ?
+  ans:- grep -Adigit "text" filename
+	grep -A2 "text" filename
+124.how to print n number of lines before the matching line ?
+  ans:- grep -B2 "text" filename
+	grep -Bdigit "text" filename
+125.how to display all the lines which doesnt matches with the given phrase ?
+  ans:- grep -v "text" filename
+126.what are regular expressions supported by grep ?
+  ans:- [] any one of the matching character
+	[1-10] any one of the range of matching characters
+	^ pattern should appear at the begining of the line
+	$ patterh should appear at the end of line
+	.* any characters of any number of times
+	* occurences of any pattern zero or once
+	\ escape sequence
+	. matches single character

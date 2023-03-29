@@ -1,0 +1,782 @@
+1.kubeconfig
+------------
+apiversion: v1
+kind: config      (type of the file) 
+preferences: {}
+clusters:
+  - cluster: 
+    name: testcluster
+      server: http://host:port
+      certificate-authority-data: key   (ssl key incase of ssl)
+  - cluster:
+    name: stagecluster
+      server: http://host:port
+      certificate-authority-data: key    (ssl key)
+users:
+  - name: testclusteruser
+    user:
+      client-ceritificate-data:          (username)(privatekey)
+      client-key-data:			 (password)
+  - name: stageclusteruser
+    user:
+      client-certificate-data:
+      client-key-data:
+contexts:
+  - context:
+    name: testcontext
+      cluster: testcluster
+      user: testclusteruser
+      namespace: default    (or any namespace)
+  - context:
+    name: stagecontext
+      cluster: stagecluster
+      user: stageclusteruser
+      namespace: ns1
+current-context: testcontext       (when we run kubectl command it will use current context which we declared)
+
+
+2.context info in kubeconfig file
+---------------------------------
+contexts:
+  - context:
+    name: testcontext
+      cluster: testcluster
+      user: testclusteruser
+      namespace: default
+  - context:
+    name: stagecontext
+      cluster: stagecluster
+      user: stageclusteruser
+      namespace: ns1
+
+
+3.pod.yml
+---------
+	apiVersion: v1
+	kind: Pod
+	metadata:
+	  name: urotaxipod
+	  labels: 			(identification purpose)
+    	    appName: urotaxi
+            version: 1.0
+            env: stage
+          annotations:			(documentation purpose)
+            license: GPL license	
+            Warranty: product comes under limited warrenty.
+	spec:
+	  containers:
+ 	    - name: urotaxi
+	      image: techsriman/urotaxi:1.0
+	      ports:
+	        - name: tomcatport
+		  containerPorts: 8089
+		  protocol: TCP
+	      readinessProbe:
+	        httpGet:
+		  path: /actuator/health/readiness
+		  port: 8080
+		initialDelaySeconds: 5
+		timeoutSeconds: 10
+		failureThreadShold: 3
+	      livenessprobe:
+		httpGet:
+		  path: /actuator/health/liveness
+		  port: 8080
+		initialDelaySeconds: 5
+		timeoutSeconds: 10
+		failureThreshold: 3 
+	      resources:
+		requests:
+		  cpu: "500m"
+		  memory: "512Mi"
+		limits:
+		  cpu: "1000m"
+		  memory: "1024Mi"
+
+4.configmap.yml
+---------------
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: guidelinesconfigmap	(name of the configmap)
+  labels:
+    appName: corona
+    
+data:
+  oxygenLevels: "85"
+  quarantine: "20"
+  liters: "5"
+  temparatureLevels: "99 - 100"
+-----------------------------
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: healthinspectorconfigmap	(name of the configmap)
+  labels:
+    appName: corona
+    
+data:
+  district-healthinspectors.properties |
+  WestGodavari=Ravi
+  EastGodavari=Rajesh
+  krishna=mahesh
+
+5.pod file along with env varaibles 
+  --------------------------------
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: coronapod
+  labels:
+    app: corona
+    version: "1.0"
+spec:
+  containers:
+    - name: corona
+      image: techsriman/corona:1.0
+      ports:
+	- name: tomcatport
+	  containerPort: 8081
+	  protocol: TCP
+      readinessProbe:
+        httpGet:
+          path: /actuator/health/readiness
+	  port: 8081
+	initialDelaySeconds: 10
+	timeoutSeconds: 10
+	failureThreshold: 3
+      livenessProbe: 
+	httpGet:
+          path: /actuator/health/readiness
+	  port: 8081
+	initialDelaySeconds: 10
+	timeoutSeconds: 10
+	failureThreshold: 3
+      resources:
+        requests:
+	  cpu: 1
+	  memory: 512Mi
+	limits:
+	  cpu: 1
+	  memory: 1024Mi
+      env:
+	- name: guidelines.oxygenlevels
+	  valueFrom: 
+	    configMapKeyRef:
+	      name: guidelinesconfigmap		(which configmap it is reffering)
+	      key: oxygenLevels			(which key value)
+	- name: guidelines.liters
+	  valueFrom: 
+	    configMapKeyRef:
+	      name: guidelinesconfigmap
+              key: liters
+	- name: guidelines.temparatureLevels
+	  valueFrom: 
+	    configMapKeyRef:
+	      name: guidelinesconfigmap
+              key: temparatureLevels
+	- name: guidelines.quarantine
+	  valueFrom: 
+	    configMapKeyRef:
+	      name: guidelinesconfigmap
+              key: quarantine	
+      volumeMounts:
+        - name: healthinspectorvolume
+	  mountPath: /config
+	  readOnly: true
+  volumes:
+    - name: healthinspectorvolume
+      configMap: 
+        name: healthinspectorconfigmap
+ ===================================================================================================================================
+6.speed-deployment.yml
+----------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: speeddeployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: speed       ---
+      version: "1.0"
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: speed
+      version: "1.0"
+  template: 
+    metadata: 
+      labels: 
+        app: speed     ---
+	version: "1.0"
+    spec:
+      containers:
+        - name: speedcontainer
+	  image: techsriman/speed:1.0
+	  ports:
+            - name: tomcatport
+	      containerport: 8080
+	      protocol: TCP
+          readinessProbe:
+	    httpGet:
+	      path: /speed/health/readiness.htm
+	      port: 8080
+	    initialDelaySeconds: 10
+	    timeoutSeconds: 10
+	    failureThreshold: 3
+	  livenessProbe:
+            httpGet:
+	      path: /speed/health/liveness.htm
+	      port: 8080
+	    initialDelaySeconds: 10
+	    timeoutSeconds: 10
+	    failureThreshold: 3
+	  resources:
+	    requests:
+	      cpu: 500m
+	      memory: 512Mi
+	    limits:
+	      cpu: 1
+	      momory: 1024Mi
+====================================================================================================================================
+SERVICE   
+-------
+(note: while creating the ingress controller first we need to create clusterip service).
+sailor-deployment.yml
+---------------------
+apiVersion: v1
+kind: Deployment
+metadata: 
+  name: speeddeployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: speed
+      version: "1.0"
+  strategy: Recreate
+  template: 
+    metadata:
+      labels:
+        app: speed
+        version: "1.0"
+    spec:
+      containers:
+        - name: speedcontainer
+	  image: techsriman/speed:2.0
+          ports:
+	    - name: tomcatport
+	      containerPort: 8080
+	      protocol: TCP
+
+          livenessProbe:
+            httpGet:
+	      path: /speed/health/liveness.htm
+              port: 8080 
+            initialDelaySeconds: 15
+	    timeoutSeconds: 10
+	    failureThreshold: 3
+          readinessProbe: 
+            httpGet:
+	      path: /speed/health/readiness.htm
+	      port: 8080
+	    initialDelaySeconds: 15
+	    timeoutSeconds: 10
+	    failureThreshold: 3
+          resources:
+	    limits:
+	      cpu: 1
+	      memory: 512Mi
+	    requests:
+	      cpu: 500m
+	      memory:512mi
+
+speed-nodeport-service.yml
+---------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: sailorservice
+spec:
+  type: NodePort
+  ports:
+    - port: 8088            (service port)      (here service port is mandate,nodeport is optional)
+      targetPort: 8080     (container port)
+      nodeport: 31000
+      name: sailorport
+  selector;
+    app: sailor
+    version: "1.0"
+
+=====================================================================================================================================
+PERSISTENT VOLUME PERSISTENT VOLUME CLAIM
+-----------------------------------------
+mysql-pv.yml
+--------------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysqlpv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  storageClassName: mysqlstorageclass
+  accessModes+: 
+    -ReadWriteMultiple
+  hostPath:
+    path: /u01/data #location on the workernode the volume should be created.
+ 
+  mysql-pvc.yml
+-------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysqlpvc
+spec:
+  storageClassName: mysqlStorageClass
+  accessModes:
+    -ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+  volumeMode: Filesystem
+
+
+mysql-pod.yml
+-------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysqlpod
+  labels:
+    app: mysql
+    version: "8.0.32"
+spec:
+  containers:
+    - name: mysqlcontainer
+      image: mysql:8.0.32
+      ports:
+	- name: mysqlport
+	  containerPort: 3306
+	  protocol: TCP
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+	  	valueFrom:
+		  secretKeyRef:
+                    name: mysqlsecret
+		    key: password
+      volumeMounts:
+        - name: mysqlvolume
+	  mountPath: /var/lib/mysql      (/var/lib/mysql is pointing to /u01/data)(mysql volume dir mounting on to /var/lib/mysql loc)    
+  volumes:
+    - name: mysqlvolume
+      persistentVolumeClaim:
+        claimName: mysqlpvc
+
+mysql-configsecret.yml
+----------------------
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysqlsecret
+type: kubernetes.io/basic-auth
+stringData:
+  username: root
+  password: welcome#123
+
+mysql-nodeport.yml
+------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+spec:
+  selector:
+    app: mysql
+    version: "8.0.32"
+  type: NodePort
+  ports:
+  - port: 3306
+    targetPort: 3306
+    nodePort: 31000
+
+mysql-replicaset.yml
+--------------------
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: mysqlreplica
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+      version: "8.0.32"
+  template:
+    metadata:
+      name: myapp
+      labels: 
+        app: mysql
+        version: "8.0.32"
+     spec:
+       containers:
+         - name: mysqlcontainer
+           image: mysql:8.0.32
+           ports:
+	     - containerPort: 3306
+	       name: mysqlport
+	       protocol: TCP
+	     env:
+	       - name: MYSQL_ROOT_PASSWORD
+		 valueFrom:
+		   secretKeyRef:
+		     name: mysqlsecret
+		     key: password
+              volumeMounts:
+	        - mountPath: /var/lib/mysql
+		  name: mysqlvolume
+ 	volumes:
+	  - name: mysqlvolume
+	    persistentVolumeClaim:
+	      claimName: mysqlpvc
+
+==================================================================================================================================
+covido-mysql-pv.yml
+-------------------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: covidomysqlpv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  storageClassName: covidostorageclass
+  hostPath:
+    path: /u01/data
+
+covido-mysql-pvc.yml
+-------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: covidomysqlpvc
+spec:
+  resources:
+    requests:
+      storage: 512Mi
+  accessModes: 
+    - ReadWriteMany
+  storageClassName: covidostorageclass
+ 
+covido-mysql-secrets.yml
+------------------------
+apiVersion: v1
+kind: Secret
+metadata:
+  name: covidomysqlsecret
+type: kubernetes.io/basic-auth
+stringData:
+  username: root
+  password: root
+
+covido-mysql-deployment.yml
+-------------------------
+apiVersion: apps/v1
+kind: deployment
+metadata:
+  name: covidomysqldeployment
+spec:
+  replicas: 1
+  selector:
+    matchLables:
+      dbname: mysql
+      version: "8.0.32"
+  template:
+    metadata:
+      name: covidomysqlpod
+      labels:
+        dbname: mysql
+        version: "8.0.32"
+    spec:
+      containers:
+	- name: mysqlcontainer
+	  image: mysql:8.0.32
+	  ports:
+            - containerPort: 3306
+	      name: mysqlport
+	      protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+	      name: covidomysqlvolume
+          env:
+	    - name: MYSQL_ROOT_PASSWORD
+	      valueFrom:
+	        secretKeyRef:
+		  key: password
+		  name: covidomysqlsecret
+      volumes:  
+        - name: covidomysqlvolume
+	  persistentVolumeClaim:
+	    claimName: covidomysqlpvc 
+
+covido-mysql-service.yml
+------------------------
+apiVersion: v1
+kind: Service
+metadata: 
+  name: covidomysqlservice
+spec:
+  type: ClusterIp
+  selector:
+    dbname: mysql 
+    version: "8.0.32"
+  ports:
+  - port: 3306
+    targetPort: 3306
+
+covido-configmap.yml
+--------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: covidoconfigmap
+data:
+  mysqlurl: "jdbc:mysql://covidomysqlservice:3306/covidodb"
+  
+covido-deployment.yml
+---------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: covidodeployment
+spec:
+  replicas: 2
+  selector:
+    matchlabels:
+      app: covido
+      version: v1
+  template:
+    metadata:
+      name: covidopod
+      labels:
+        app: covido
+	version: v1
+    spec:
+      containers:
+        - name: covidocontainer
+          image: techsriman/covido:1.0
+          ports:
+            - containerPort: 8080
+	      name: tomcatport
+	  env:
+	    - name: spring_datasource_url      (application.yml)
+	      valueFrom:
+		configMapKeyRef:
+		  key: mysqlurl
+		  name: covidoconfigmap
+	    - name: spring_datasource_username
+	      valueFrom: 
+	        secretKeyRef:
+		  key: username
+		  name: covidomysqlsecret
+	    - name: spring_datasource_password
+	      valueFrom:
+		secretKeyRef:
+		  key: password
+		  name: covidomysqlsecret
+	  readinessProbe:
+	    httpGet:
+	      path: /covido/actuator/health/readiness
+	      port: 8080
+	    initialDelaySeconds: 15
+	    timeoutSeconds: 25
+	    failureThreshold: 3
+	  livenessProbe:
+	    httpGet:
+	      path: /covido/actuator/health/liveness
+	      port: 8080
+	    initialDelaySeconds: 15
+	    timeoutSeconds: 25
+	    failureThreshold: 3
+
+covido-service.yml
+------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: covidoservice
+spec:
+  type: NodePort
+  selector:
+    app: covido
+    version: v1
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 31000         
+
+covido-clusteripservice.yml
+------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: covidoclusteripservice
+spec:
+  type: clusterIp
+  selector:
+    app: covido
+    version: v1
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+
+covido-ingress.yml
+------------------
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: covidoingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target /$1
+spec: 
+  rules:
+    - host: covido.org
+      http:
+	paths:
+	- pathType: Prefix
+          path: "/"
+	    backend:
+	      service:
+		name: covidoclusteripservice
+		port: 
+		  number: 8080
+====================================================================================================================================
+HEADLESS SERVICE
+----------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: speeddeployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: speed
+  template: 
+    metadata:
+      labels:
+	app: speed
+    spec:
+      containers:
+      - name: speedcontainer  
+	image: techsriman/speeddep:4.0
+	resources:
+	  limits:
+	    memory: "128Mi"
+	    cpu: "500m"
+	ports:
+	- containerPort: 8080
+	  name: tomcatport
+	  protocol: TCP
+	
+speed-service.yml
+-----------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedservice
+spec:
+  clusterIp: None
+  selector:
+    app: speed
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+
+nginx-pod.yml
+-------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginxpod
+  labels:
+    name: nginxpod
+spec:
+  containers:
+  - name: nginxcontainer
+    image: nginx:latest
+    resources:
+      limits:
+	memory: "128Mi"
+	cpu: "500m"
+    ports:
+      - containerPort: 80
+	name: http
+	protocol: TCP  
+
+
+==================================================================================================================================
+JOB
+---
+numbers-job.yml
+-------
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: numbersjob
+spec:
+  template:
+    metadata:
+      name: numberspod
+    spec:
+      containers:
+        - name: numberscontainer
+	  image: ubuntu:20.04
+	  command:
+	    - "bin/bash"
+	    - "-c"
+	    - "for i in 1 2 3 4 5 6 7 8 9 0 ; do echo $i ; done"
+      restartPolicy: Never
+=====================================================================
+DaemonSet
+---------
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginxdaemonset
+spec:
+  selector:
+    matchLabels:
+      name: nginx      (execute this on specific pod)
+  template:
+    metadata:
+      lables:
+        name: nginx
+    spec:
+      containers:
+	- name: nginx
+	  image: nginx
+
+
+======================================================================================================================================
+
+
+docker images
+-------------
+techsriman/corona:3.0
+	   roadster
+	   sailor
+	   baedalcustomer
+	   usermgmtservice
+	   partnerstoreservice
+	   pickupdeliverymgmtservice
+	   speed:2.0
+	    

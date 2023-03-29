@@ -1,0 +1,265 @@
+1.how many types of programming languages are there ?
+  ans:- 2 types of programming languages are there
+	(i).low-level programming languages
+	(ii).high-level programming languages
+2.example of low level programming language ?
+  ans:- shell scripting
+3.what are the dis-advantages of low level programming language ?
+  ans:- Platform dependent, these are not platform (operating system) portable
+4.what is java ?
+  ans:- Java is an platform independent programming language, it will compile the code to produce an intermediate executable code 	(bytecode), that can be shipped across any platforms.
+5.how to compile the java class ?
+  ans:- javac Main.java
+6.how to execute the java class ?
+  ans:- java com.example.Main
+7.how to compile the java class and put it on specified directory ?
+  ans:- javac -d . Main.java
+8.what is class path ?
+  ans:- CLASSPATH is an environment variable, used by the java compiler and java interpreter to identify the location of the .class 	files of the other projects we are using for compiling and running our application.
+9.in linux how to set the class path ?
+  ans:- export CLASSPATH=$HOME/workspace/taxhelper/bin
+10.what is the recommended dir for place .class files ?
+  ans:- bin
+11.what is package ? why it is used ?
+  ans:- packages are used for uniquley identifying the classes.without packages naming collision b/w classes will arise.
+12.how to execute the java class ?
+  ans:- use fully qualified name of the class while running.
+13.what is mean by javac -d . Main.java ?
+  ans:- -d = create the project directory
+	. = under the current directory.
+14.if you didn't set the class path, while compiling the program what will happen ?
+  ans:- if we dont set any classpath variable,the java compiler and java interpreter looks for the .class files under the current 	working directory from where we are compiling and executing the java programs
+=====================================================================================================================================
+
+15.how many types of jar distributions are there in java ?
+  ans:- 2 types 
+	(i).library jar
+	(ii).application/executable jar
+16.what is library jar ?
+  ans:- we can package bunch of classes into a jar packaging structure and can distribute to the other people, so that others can         reuse our classes within their application
+17.how does the jar structure ?
+  ans:- |-META-INF
+		|-manifest.mf
+	|-packages
+		|-.class
+18.For eg.. we want to distribute a utility called pdfmaker with below directory structure
+pdfmaker
+|-com
+  |-pdfmaker
+		|-document
+			|-*.class
+upon packaging the above directory into a jar, the jar file structure looks as below.				
+				
+pdfmaker.jar
+|-META-INF
+	|-manifest.mf
+|-com
+  |-pdfmaker
+		|-document
+			|-*.class
+
+19.how to directory of classes into jar ?
+  ans:- jar -cvf file.jar dir/
+	c = create
+	v = verbose
+	f = filename
+20.how to generate the jar file in another directory insted of bin directory ?
+  ans:- jar -cvf file.jar -C bin/ newdir
+21.what is application jar ?
+  ans:- A jar created for delivering an application to the enduser, so that enduser can directly run the application out of the Jar 	itself.
+*******************************************
+22.how to devliver the application to the enduser ?
+  ans:- 
+To deliver the application to the enduser, we need to package the application as an Application Jar.
+In an Application Jar along with bytecode (.class files), we need to add instructions that are required for jvm to run the
+ application as well.
+For eg.. for jvm interpreter to run an application it requires Main class as an input, so while creating the Jar file we need to
+ add the Main classname within the jar itself inside the manifest.mf
+
+How to add information about the jar inside the manifest file?
+1. create an manifest.txt file with all the information we want to include in manifest.mf while packaging the jar
+manifest.txt
+Main-Class: com.ngconnect.runner.Main
+
+2. package the application as a jar along with manifest.mf as below.
+jar -cvfm ngconnecthealth.jar manifest.txt -C bin com
+
+with the above command the jar will be created with manifest.mf added with Main-Class entry also. now deliver the jar to 
+customer/enduser
+
+Now the enduser can quickly execute the java application by using below command
+java -jar ngconnecthealth.jar
+*******************************************
+23.how many types of web applications are there ?
+  ans:- two types 
+	(i).static
+	(ii).dynamic
+24.what is dynamic web application ?
+  ans:- the application takes the data as an input from the user/client over the network using HTTP protocol. perform operation on the 	data and builds a dynamic response (as a HTML) and dispatches as a response back to the client
+	So per each request, the response that is returned by the application would vary or change, so it is called dynamic web 	application
+25.what are the java language web servers are there ?
+  ans:- 1. Tomcat
+	2. Weblogic Server
+	3. Websphere Server
+	4. Jboss Wildfly Server
+	5. Jetty
+	6. Netty
+	7. Glassfish
+26.what is war file ?
+  ans:- war stands for web application archive.it comprises of
+	(i).application code
+	(ii).libraries
+	(iii).descriptor files
+27.application code contains ?
+  ans:- business logic
+28.libraries means ?
+  ans:- it has reusable code 
+29.descriptor files contains ?
+  ans:- information about the classes of our application provided as an input to java web server
+30.what is the standard directory structure of the web-application project ?
+  ans:-
+project/  (git repository)
+|-src
+	|-*.java
+|-WebContent
+	|-*.html
+	|-*.css
+	|-*.js
+	|-WEB-INF
+		|-lib
+			|-*.jar
+		|-web.xml
+|-build
+  |-classes
+	|-dist
+
+
+31.
+project/    (here created the war dir structure from the project) so go to the project dir and create war.
+
+|-*.html
+|-*.css
+|-*.js
+|-*.images
+|-WEB-INF
+	|-classes
+		|-*.classes
+	|-lib 
+		|-*.jar
+	|-web.xml
+
+warfile.war
+----------
+|-*.html
+|-*.css
+|-*.js
+|-*.images
+|-WEB-INF
+	|-classes (application code: *.class)
+	|-lib (*.jar libraries)
+	|-web.xml (descriptor)
+
+
+
+
+32.how to create war file ?
+  ans:- to build a war file we need to use jar utility.so if we want to create war, we need to create directory structure of the war	 	manually and pass it as an input to the jar tool.
+33.how to create war file ?
+  ans:- jar -cvf project.war project/
+======================================================================================================================================
+
+=====================================================================================================================================
+How to deploy the fithealth application?
+#1. install the git package
+sudo apt update -y
+sudo apt install -y git
+
+#2. clone the project into the workstation/machine, you want deploy the code
+mkdir workspace
+cd workspace
+git clone https://github.com/techsriman/fithealth.git
+
+#3. install mysql-server-8.0 and configure the secure access
+#4. install openjdk-11-jdk and tomcat server 10 on the machine
+
+#5. create the dbschema by running/executing the sql scripts provided by the developer as part of the project
+location: src/main/db/db-schema.sql
+mysql -uroot -proot < src/main/db/db-schema.sql
+The above sql file creates an fithealthdb schema/database on mysql server.
+	
+#6. add an mysql server user granting the access to the fithealthdb, remotely
+1. mysql -uroot -proot
+2. sql: create user 'fithealthuser'@'%' identified by 'welcome1';
+3. sql: grant all priviliges on 'fithealthdb'.'*' to 'fithealthuser'@'%';
+
+**** flush priviliges****
+****sudo systemctl restart mysql ****   
+
+
+#7. update the project configuration files reflecting the deployment environment
+1. goto src/main/java/db.properties, here update the dbserver ipaddress, port, username and the password the java application should use to connect to database
+
+db.properties
+--------------
+db.driverClassName=com.mysql.cj.jdbc.Driver
+db.url=jdbc:mysql://10.0.2.15:3306/fithealthdb
+db.username=fithealthuser
+db.password=welcome1
+
+#8. compile and package the application and deploy on the server
+~/workspace$	
+fithealth
+|-src
+  |-main
+		|-java
+			|-*.java
+			|-db.properties
+		|-db
+			|-db-schema.sql
+		|-WebRoot
+			|-*.jsp
+			|-*.css
+			|-WEB-INF
+				|-lib
+					|-*.jar
+				|-web.xml
+|-build
+	|-classes
+	|-dist
+	
+	
+1. compile the project
+export CLASSPATH=~/workspace/fithealth/src/main/WebRoot/WEB-INF/lib/servlet-api.jar:~/workspace/fithealth/src/main/WebRoot/WEB-INF/lib/mysql-connector-java-8.0.26.jar:~/workspace/fithealth/src/main/WebRoot/WEB-INF/lib/jsp-api.jar
+	
+2. 
+~/workspace/fithealth$
+javac -d build/classes "src/main/java/*.java"
+cp src/main/java/db.properties build/classes
+
+3. create the war file
+goto the dist directory and create war structure
+
+mkdir -p fithealth/WEB-INF/lib
+mkdir -p fithealth/WEB-INF/classes
+cp -R src/main/WebRoot/assets build/dist/fithealth
+cp "src/main/WebRoot/*.jsp" build/dist/fithealth
+cp -R build/classes/* build/dist/fithealth/WEB-INF/classes/z
+cp src/main/WebRoot/WEB-INF/lib/*.jar build/dist/fithealth/WEB-INF/lib
+cp src/main/WebRoot/WEB-INF/web.xml build/dist/fithealth/WEB-INF/
+
+cd build/dist/fithealth
+jar -cvf fithealth.war *
+mv fithealth.war ..
+
+
+	
+|-fithealth
+  |-assets
+  |-.jsp
+  |-WEB-INF
+    |-classes
+      |-.class
+    |-lib
+      |-.jar
+    |-web.xml	
+	

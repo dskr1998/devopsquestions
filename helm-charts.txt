@@ -1,0 +1,177 @@
+1.what are the kubernetes objects that are acts as a resources for running an application ?
+  ans:- pv,pvc,configmap,configsecrets.
+2.to run the application which object we need to create ?
+  ans:- deployments,service(ClusterIP,Ingress)
+3.where the kubernetes configurations files we need to store ?
+  ans:- git server (ci repository)
+note:- while creating the manifest files we need to write the logic for pertaining the environment.
+4.what is helm ?
+  ans:- helm is an package manager for kubernetes applications.helm has been awarded as an official package manager for kubernetes 
+	by cloud native computing foundation.
+	we can package the kubernetes specs into helm charts and get them deployed easily on the kubernetes cluster through the help
+	of helm.
+5.what are the tools that are there in other domains similar to the helm ? 
+  ans:- Maven = java
+	Pip = phython
+	apt/yum = ubuntu/redhat
+	these are the build/package management tools that takes care of identifying the dependencies,downloading them from                 repositories, build the application using those dependencies and makes them ready for deployable.
+
+HELM ARCHITECTURE
+-----------------
+1.what is heml chart represents ?
+  ans:- one helm represents one application to be deployed on the cluster.(one package application that readily deployable on the 
+	cluster).
+2.how to deploy the application using helmchart ?
+  ans:- heml install helmchartname
+3.which type of helm charts are available in heml repository ?
+  ans:- public heml repositories.which are common that can be reuse by anyone.
+4.helm contains how many types of repositories ?
+  ans:- two types (i).public repository		(ii).remote repository. (internal to the organization).
+5.where we can host the helm remote repository ?
+  ans:- remote helm repository can be hosted using jfrog or httpd server.
+note:- when we ask the helm to deploy the charts it will go to the remote repository and pulls the charts and it's dependent charts 
+	and apply it.
+6.how many versions of helm is available ?
+  ans:- 2 versions (i).helm2 	(ii).helm3
+7.differnece b/w helm2 and helm3 ?
+  ans:- there is no difference interms of helmcharts from helm2 and helm3 all the things like
+        (i).packaging (ii).structuring the charts  (iii).manifests  etc. are exactly same b/w helm2 and helm3 that means helm3 is 
+	backward compatible with helm.(means helm charts which are from helm can support helm3 also).
+	the only difference is interms of helm components architecture and how helm runs to deploy the application on the cluster.
+8.where the helm utility we need to install ?
+  ans:- in workstation (like kubectl).
+9.when we try asking the helm to deploy a chart what does the helm will do ?
+  ans:-	helm2
+	-----
+        it will not directly talk to the controlplane rather there is an additional component there incase of helm2 called tiller.
+	it sits on the controlplane (it is deployed like a pod).
+	helm --> tiller --> apimanager  (here tiller has the orchestrate the logic to perform the operation).
+	dis-adv :- because of tiller security breach will come.
+	helm3
+	-----
+	in helm 3 there is no tiller component at all.
+====================================================================================================================================
+1.what does the devops engineer has to do to deploy the application using helm on the kubernetes cluster ?
+  ans:- (i).prepare the helm chart for the application we want to deply
+	(ii).incase if we want to deploy an public helmchart application the helm takes care of downloading from the repository we 	             dont need to create an chart.
+	(iii).writes the values.yml overriding the default values in the helm package these values should be written pertaining to 
+	      the target env on which we want to deploy the application.
+	(iv).run the helm passing the helmchart name as an input along with value.yml
+	the devops engineer dont need to have any knowledge of the chart being deployed helm takes of deploying the chart deriving 
+	the dependent charts downloading them and deploys the cluster.
+2.how does the helm deploys the application ?
+  ans:- (i).helm downloads the charts and dependent charts from chart/helm repository 
+	(ii).extract the chart zip file and replaces the configuration values we supplied in values.yml in the templatized manifest
+	     files we package in the chart and generates the final manifest files ready to be deployed.
+	(iii).validates the manifests.
+	(iv).determine the dependency order in which the objects has to be created.
+	(v).applies them on to the cluster environment .
+	this is called helm release.
+3.what is helm release ?
+  ans:- one helm chart being installed on the target environment is called one helm release.
+4.if we want to deploy the application on various different environment using helm what we need to do ?
+  ans:- we need to create different different values.yml
+5.how to deploy an application using helm ?
+  ans:- in general we need to write deploymentspec and service spec file and run them manually based on their dependency order to         deploy the application.
+	insted of we manually writing the deployment and service manifest/specfiles in packaging the helm chart we can make
+	use of helm utility to build the helm chart.
+	helm create chartname
+	up on running the above command helm cli creates the standardized chart directories with default manifest files within ir
+	as below.
+	chartName (directory)
+	|-charts.yml (info about the chart)	
+	|-values.yml (default values)
+	|-templates (here we write the spec files)
+	|-charts (dependent charts to be packaged)
+	|-helmignore (ignore files which we dont want)
+
+6.charts.yml contains 
+  ans:- basic info about the helm chart like author,description,license etc.
+7.values.yml contains ?
+  ans:- default values with which the helm charts has to deployed onto the cluster,this file is written by the chart author while 
+	preparing the chart and packaged inside the chart.
+	while installing the chart helm picks the values from values.yml and substitutes with the place holders or templates we wrote
+	inside the spec files to deploy the objects on the cluster.
+	the user can explicitly pass the values.yml file overriding the default values.yml so that helm ignores this file.
+8.charts directory contains ?
+  ans:- the direct dependent charts can be placed inside the charts/ directory.the charts placed inside charts/ directory will be         installed locally itself without downloading the dependents from helm.
+9.template directory contains ?
+  ans:- template directory contains kubernetes spec/manifest files (template files in helm) for deploying the objects on the cluster.          helm generates default common manifest files that are generally used for many applications.
+	by default under the templates directory helm provides 3 objects.
+	(i).deployment.yml
+	(ii).service.yml
+	(iii).ingress.yml
+10.how to verify the chart spec files are valid or not ?
+  ans:- helm lint chartName
+11.how to install the chart ?
+  ans:- helm install chartName directoryofthechart
+12.how to create helm chart ?
+  ans:- helm create chartname
+
+===================================================================================================================================
+***how to install helm ?
+  ans:- install helm on windows --> download the helm binary --> after install --> extract it --> then rename it as helm and paste         into c drive
+	goto environment variables --> add the helm directory.	(C:\helm)
+	then goto cmd chech helm version by running helm version command.
+note:- after installing the helm we dont need to anything because kubeconfig file will automatically populated with minikube start command.and helm also uses same kube config file for connecting to the cluster.
+=================================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

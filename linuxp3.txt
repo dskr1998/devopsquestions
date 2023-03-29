@@ -1,0 +1,554 @@
+systemd
+-------
+1.what is systemd init service ?
+  ans:- The systemd init service is a software package that helps us in managing the programs to be as services within linux system.
+2.how many ways a program can register as a systemd service ?
+  ans:- two ways
+	(i).Through packaged software installations, the manufacturers they themself ships the service unit definition files along                 with software binaries in their packaged software distribution. The package managers while installing the software package             will read the definition file and register the software program/package with systemd init system automatically
+	(ii).we need to write service definition files describing the details of the program,and passed it as an input to systemd               manually.
+3.initd system pickup and read the service definition files so what are the standard directories it will check ?
+  ans:-  /usr/lib/systemd/system
+	/etc/systemd/system
+4.what is the extension we need to use for writing service definition file ?
+  ans:- .service
+5.how many sections are there into which we need to declare the info about the program ?
+  ans:- 3 sections
+	Unit
+	Service
+	Install
+6.what is the recommended way to write the section names ?
+  ans:- [sectionname]
+7.what is Unit section ? what are the directives we need to declare in Unit section ?
+  ans:-  In the Unit section, we need to describe the basic information about the program and the hard/soft dependencies it has in              order to  run/manage are placed here 
+	directives :
+	Description="documentation or description information about the service to be written here"
+	After= we may have our service being dependent on another service, unless the dependent service has been started successfully                 we dont want our service to be started
+	Requires=what are all the other services must be installed and available mandatorily to have this service being registered
+	Wants=expresses the soft dependencies between the services, run the service after these services has been started, but the                   dependent service expressed in Wants is failed or not available also ignore it and run the service.
+8.what is hard dependency,soft dependency ?
+  ans:- hard :- if the dependent service we specified has failed, then  our service will not be executed.
+	soft :- dependent service expressed is failed or not available also ignore it and run the service.
+9.what is Service section ? here what are the directives we need to declare ?
+  ans :- here we describe the information about how to start/stop/restart the program
+	ExecPreStart=The commands that should be executed before the actual service program is launched or executed
+	ExecStart=command to run the program
+	ExecStartPost=command to run after starting the program
+	Restart=always
+	ExecStop=command to stop the program
+	Type=Indicates the Type of the Service
+10.in service how many types of services are there ? what are those ?
+  ans:- There are 5 different service types are there
+	1. simple = Simple Service that can be launched by running ExecStart
+	2. forking=The ExecStar command launches another process from the current process and that has to be managed initd system
+	3. dbus=The service is registed as a daemon process with name
+	4. oneshot=run the service only once and upon completion dont start
+	5. notify=our service notifies other service to be started
+11.what is Install section ? what are the directives are there ?
+  ans:- How does this service need to be installed on the initd system
+	WantedBy=multi-user.target
+	multi-user.target = indicates our service should be installed and started immediately after the runLevel=3 which is nothing 	but once the console has been up
+
+
+12.how to monitor, manage the initd system service ?
+  ans:- the initd system has provided an tool called systemctl.
+======================================================================================================================================
+13.#1. sudo systemctl daemon-reload = will reload the unit definition files
+#2. sudo systemctl start serviceName
+#3. sudo systemctl stop serviceName
+#4. sudo systemctl restart serviceName
+#5. sudo systemctl status serviceName
+#6. sudo systemctl disable serviceName = it will not be executed anymore as part of bootup
+#7. sudo systemctl enable serviceName = to bring back the service
+#8. sudo systemctl list-units = shows all the services registered with initd system
+====================================================================================================================================
+static-webapplication
+---------------------
+13.to host an static we application what we need ?
+  ans:- we need httpd server.
+14.what are the popular httpd servers are there ?
+  ans:- (i).nginx
+	(ii).apache2
+15.what is http client program ?
+  ans:- web browser.
+16.web application can be hosted in how many ways ?
+  ans:- (i).through intranetwork (with in the organization) (LAN/WAN network)
+	(ii).over the internet and making it accessible to the public world.
+17.how to host an static website on apache2 server in ubuntu/guest machine ?
+  ans:- (i).install apache2 server
+	(ii).copy the static website root directories into /var/www
+	(iii).write apache2 site configuration file
+	(iv).enable the sites we configured (before the dissable the default site)
+	(v).reload the daemon
+	    sudo systemctl daemon reload
+18.what is the default location of the apache webserver ?
+  ans:- /var/www/html
+19.how to find the folder name for all the multiple sites published in the server ?
+  ans:- grep -R "DocumentRoot" /etc/apache2/sites-enabled
+20.how to disable the default site ?
+  ans:- sudo a2dissite 000-default.conf
+21.how to enable the sites newly we configured ?
+  ans:_ sudo a2ensite *.conf
+22.how to write apache2 site configuration file ?
+  ans:- <VirtualHost *:80>
+		ServerName toyland.com
+		DocumentRoot /var/www/toyland
+	</VirtualHost>
+23.how to create site configuration file ?
+  ans:- *.conf
+24.which location is recommended to place the root directory of the static application ?
+  ans:- /var/www
+======================================================================================================================================
+25.How to host an static web application on a virtual machine environment? 
+
+Prepare host machine[windows] to forward the request to the apache2 server upon sending the request using domainname through web 
+browser.
+	
+host machine [windows]:
+#1. In our guest machine we need to configure network adapter (virtualbox management console)
+	For Network adapter 
+		- Mode: NAT
+		- Port Forwarding: host: 8082, guest: 80
+#2. setup local dns cache with domainnames and ipaddress
+c:\windows\system32\drivers\etc\hosts
+127.0.0.1 crazyeats.com
+127.0.0.1 toyland.com 
+(127.0.0.2 .com)
+
+======================================================================================================================================
+fire wall
+---------
+26.what is firewall ?
+  ans:- firewallas are used for enforcing traffic restrictions allowing your software programs to be accessible over the network.
+27.firewall can be scoped at how many places ?
+  ans:- 2 places 
+	(i).host level
+	(ii).network level
+28.what is host level firewall ?
+  ans:- In a personal computer or a single-user systems we use host-level firewall for protecting the applications not to be accessed  	from the outside world, unless permitted
+29.what is network level firewall ?
+  ans:- Within an organization, instead of configuring the firewall at the individual host level, we can setup firewall at the network 	level which will protect any of the computers connected to the network not to be exposed or accessed from outside world.
+30.how many types of firewalls are there ?
+  ans:- two types (i).software applications
+		  (ii).hardware device
+31.what is the default firewall software provided by the ubuntu ?
+  ans:- iptables
+32.to manage/work with iptables ubuntu provided which s/w ?
+  ans:- ufw
+33.ufw stands for ?
+  ans:- uncomplicated firewall
+34.how to install ufw ?
+  ans:- sudo install ufw
+35.how to enable ufw ?
+  ans:- sudo ufw enable
+36.what is the default behaviour of ufw ? when we enable ?
+  ans:- 1. deny all the inbound traffic
+	2. allow all the outbound traffic
+37.How to know the status of the firewall or ufw?
+  ans:- sudo ufw status
+38.how many levels we can enforce traffic restrictions ?
+  ans:- 3 levels 
+	(i).source ip address
+	(ii).portno
+	(iii).protocol
+39.how to see what traffic restrictions are enforced through the firewall ?
+  ans:- sudo ufw status verbose
+40.how to allow/deny traffic to the programs from a specific sourceip address ?
+  ans:- sudo ufw allow from sourceip
+	sudo ufw deny from sourceip
+41.how to allow/deny traffic restrictions based on protocol ? 
+  ans:- sudo ufw allow protocol
+	sudo ufw deny protocol
+42.how to allow/deny access based on portno ?
+  ans:- sudo ufw allow portno
+	sudo ufw deny portno
+43.how to allow/deny traffic to a range of portno ?
+  ans:- sudo ufw allow 8080:8088/tcp
+44.How to see the list of rules with numbers applied ?
+  ans:- sudo ufw status numbered.
+
+======================================================================================================================================
+SSH
+===
+45.what is ssh ?
+  ans:- accessing the remote computer shell in a secured way, so that we can perform administrative activities on the remote computer 	like installing/uninstalling software, manage configurations, controlling the process etc can be done on the remote computer
+46.before ssh what is the protocol people used in connecting the remote computer ?
+  ans:- telnet
+47.what is drawbacks of using telnet ?
+  ans:- telnet will share the info in b/w the client and server in plaintext format,so any one can steal the information.
+48.how does ssh makes secured ?
+  ans:- ssh to ensure the information exchanged b/w the client/server secured it uses cryptographic technics.
+49.what is the example of cryptographic technic ?
+  ans:- encryption/decryption.
+50.ssh uses how many types of encryption techniques for exchanging the data ?
+  ans:- 3 ways
+	(i).symmetric encryption
+	(ii).asymmetric encryption
+	(iii).hashing
+51.what is symmetric encryption ?
+  ans:- a single encryption key is used for encrypting/decrypting the data b/w the both parties for exchanging the data.
+52.what is asymmetric encryption ?
+  ans:- here two keys are there.public key and private key.the data that is encrypted by using public key will dycryptable by 
+	using private key only.
+53.what is hashing ?
+  ans:- hashing is a technique used for verifying the integrity of data.
+54.when we pass the same value as an input to the hashing what will be the hash values will be generate ?
+  ans:- same hash value will be generate.
+55.how does ssh connection would be established with a remote server ?
+  ans:- there are two stages ssh connection would be established 
+	(i).a session would be established b/w both the parties to communicate with each others
+	(ii). authenticating the client to allow access to the server machine
+56.how does the session would be established b/w the server and client ?
+  ans:- the session will be established b/w the both parties by computing a shared session key.
+	(i).client will send the request to the server to initiate the session,upon server accepts the request.
+	(ii).both parties will agree upon and generates an large prime number which is shared key.
+	(iii).both parties agrees upon an encryption algorithm to encrypt the data.
+	(iv).each party independently generates an prime number which is kept as an private key.
+	(v).each party independently generates their own public key with combination of shared key,private key,and algorithm.
+	(vi).exchange their public key with each others.
+	(vii).upon recieving the public key of each others, by using private number(own private),public key of other person,and
+	      shared key generate a session key where both parties would end up in computing the same session key through this 
+	      process.
+	(viii).use the computed session key for encrypting the data during the communication.
+-----------------------------------------------------------------------------------------------------------------------------------
+	5(shared)
+3(private)		6(private)
+5+3=8(public)			6+5=11 (public)
+11+3+5=19		8+6+5=19
+-----------------------------------------------------------------------------------------------------------------------------------
+
+
+57.what is password authentication ?
+  ans:- the client has to send the username/password onbehalf of the user for whom he wanted to access the remote server by encrypting 
+ 	the data with shared session key.
+	the server will validates the username/password by decrypting with shared session key and grants the access to the client if
+	the credentials are valid.
+58.what is passwordless authentication ?
+  ans:- the client will send the username and the public key of the user onbehalf of whom he wanted to connect to the remote computer.
+	the server upon recieving the username/public key,it checks whether the public key provided is in authorized keys of the user
+	if not rejects the connection.
+	if the public key provided is in authorized keys then server will generates random text,encrypt that with the public key of 
+	the user and send back to the client challenging him to prove wheather the client poses the private key or not.
+	client upon recieving the encrypted text will dycrypt it using private key,then encrypt the dycrypted with shared session key
+	along with MDS hash combined together will send back to the server proving it's authenticity.
+	the server upon recieving the text from the client will dycrypt using shared session key and validates with the original,if
+	matches grant the access to the client.
+	
+59.what is the ssh configuration file ?
+  ans:- /etc/ssh/sshd_config
+60.what is The default authentication mechanism granting the client to access the server ?
+  ans:- passwordAuthentication
+61.how to disable the passwordAuthentication ?
+  ans:- by modifying the sshd_config file and add passwordauthentication no
+62.how to generates the public and private keys ?
+  ans:- ssh keygen
+63.how many ways we can copy the public key on to the remote computer ?
+  ans:- 3 ways
+	(i).manually copy paste
+	(ii).through scp 	(scp sourcefile username@ip:/path)
+	(iii).ssh-copy-id 	(ssh-copy-id -i keyfile user@ip)
+64.in windows and linux why do we need to generate the keys,and how to generate ?
+  ans:-  To ssh onto the remote machine based on passwordlessAuthentication we need to generate keys. there are 2 technics are there            in generating keys
+	 (i).ssh-keygen = windows/linux
+	 (ii).puttygen = windows
+65.through scp how to copy the files from client to server and server to client ?
+  ans:- client - server
+	scp filename user@ip:/path
+	server - clinet
+	scp user@ip:/source /dest
+66.how to copy the public key directly in authorizedkeys of remote machine ?
+  ans:- ssh-copy-id -i publickey user@ipaddress
+67.how many ways we can generate the keys ?
+  ans:- two ways (i).ssh-keygen
+		 (ii).puttygen
+68.what are the keys and extension when we generate using ssh-keygen ?
+  ans:- .pub and .pem
+69.what are the keys and extension when we generate using puttygen ?
+  ans:- .ppk .pub
+70.cloud providers provides which type of keys ?
+  ans:- .pem
+71.pem stands for ?
+  ans:- privacy enhanced mail
+72.how to connect the remote machine when we have .pem file through putty ?
+  ans:- through putty by using .pem file we can not ssh into the remote machine, so by using .pem file we can generate .ppk and .pub 	in putty.
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

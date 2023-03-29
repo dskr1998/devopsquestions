@@ -1,0 +1,76 @@
+Ubuntu Software Installation installation
+
+run all the below commands using root user only
+
+java -version
+
+Command 'java' not found, but can be installed with:
+apt install openjdk-11-jre-headless  # version 11.0.18+10-0ubuntu1~22.04, or
+apt install default-jre              # version 2:1.11-72build2
+apt install openjdk-17-jre-headless  # version 17.0.6+10-0ubuntu1~22.04
+apt install openjdk-18-jre-headless  # version 18.0.2+9-2~22.04
+apt install openjdk-19-jre-headless  # version 19.0.2+7-0ubuntu3~22.04
+apt install openjdk-8-jre-headless   # version 8u362-ga-0ubuntu1~22.04
+
+
+apt install -y default-jre
+
+/usr/lib/jvm/java-11-openjdk-amd64
+
+vim /etc/environment
+JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+source /etc/environment
+
+echo $JAVA_HOME
+
+====================================
+Maven Installation
+mvn -v
+apt install -y maven
+which mvn
+MAVEN_HOME="/usr/bin/mvn"
+vim /etc/environment
+source /etc/environment
+====================================
+install gradle
+
+gradle -v
+apt install -y gradle
+which gradle
+
+/usr/bin/gradle
+vim /etc/environment
+GRADLE_HOME="/usr/bin/gradle"
+source /etc/environment
+====================================
+Install Jenkins
+
+https://www.digitalocean.com/community/tutorials/how-to-install-jenkins-on-ubuntu-22-04
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key |sudo gpg --dearmor -o /usr/share/keyrings/jenkins.gpg
+sudo sh -c 'echo deb [signed-by=/usr/share/keyrings/jenkins.gpg] http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt update
+
+apt install -y jenkins
+sudo systemctl start jenkins.service
+sudo systemctl status jenkins
+
+sudo ufw allow 8080
+
+sudo ufw allow OpenSSH
+sudo ufw enable
+
+sudo ufw status
+
+http://your_server_ip_or_domain:8080
+
+cat /var/lib/jenkins/secrets/initialAdminPassword
+
+====================================
+Tomcat Installation
+
+cd opt
+wget https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.86/bin/apache-tomcat-8.5.86.tar.gz
+tar -xvzf apache-tomcat-8.5.86.tar.gz
+mv apache-tomcat-8.5.86 tomcat
+
+===================================

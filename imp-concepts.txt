@@ -1,0 +1,102 @@
+***
+how to automate the process of installing s/w packages 
+***
+1.different s/w packages requires different keys as an input during the installation, how do we know which s/w package installation       is required which keys as an input ?
+  ans:-we need to use debconf-utils  (ubuntu)
+2.how to use debconf-utils ?
+  ans:- first we need to downaload
+	sudo apt install -y debconf-utils
+3.how to find the inputs that are required for the package ?
+  ans:- sudo dbconf-get-selections | grep mysql-server-8.0
+4.how to read the keys from the repository ?
+  ans:- sudo debconf-get-selections 
+5.how to write the keys into the repository ?
+  ans:- sudo debconf-set-selections
+   
+6.how to set the mysql server root password ?
+  ans:- echo "mysql-server-8.0 mysql-server/root_password password root" | sudo debconf-set-selections
+	echo "mysql-server-8.0 mysql-server/root_password_again password root" | sudo debconf-set-selections
+
+=====================================================================================================================================
+EXPECT
+------
+1.when we are automating the installation process then some software packages requires to run the scritp file during the installation   process,so how to pass the input values ?
+  ans:- we need to use expect shell utility.
+2.how to work wih expect ?
+  ans:- first we need to install
+	sudo apt install -y expect
+3.example of passing values using expect 
+
+	addnum.sh
+	#!/bin/bash
+	read -p "enter number a : " a
+	read -p "enter number b : " b
+	sum : $[a+b]
+	
+	expectaddnum.sh
+	#!/usr/bin/expect -f
+	timeout -1
+	spawn ./addnum.sh
+	expect "enter number a : " 
+	send -- "10\r"
+	expect "enter number b : "
+	send -- "20\r"
+	eof
+	
+here -f specifies a file to read from
+4.we can pass variables also
+
+expectaddnum.sh
+	#!/usr/bin/expect -f
+	timeout -1
+	set A "10"
+	set B "20"
+	spawn ./addnum.sh
+	expect "enter number a : " 
+	send -- "$A\r"
+	expect "enter number b : "
+	send -- "$B\r"
+	eof
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,974 @@
+
+1.what is vagrant ? 
+  ans:- vagrant is a virtualization workflow automation tool.using vagrant we can crete virtual machines on which we install s/w pkgs
+	and deploy the application.
+2.what is terraform ?
+  ans:- Terraform is used for automating the provision of infrastructure resources on the cloud platforms
+3.what are the iac tools ? (infrastructure as a code)
+  ans:- Using iac tools we can achieve automation in setting up the infrastructure either on virtualization env or cloud env
+	ec:- vagrant,terraform
+4.what is software configuration management ?
+  ans:-The software configuration management is the process of installing and configuring the software packages to make the env ready        for deploying and running the applications.
+5.what is idempotency ?
+6.what are the advantages and dis-advantages using shell-script automation ?
+  ans:-
+  advantages:
+        1. we can save lot of time
+	2. no complexity in memorizing the order of installing packages and configurations
+	3. reproducible env
+	4. upgradations and patchings can be automated 
+  dis-advantage:
+	1. need to be a programmer to write shellscript program
+	2. poor error management support, incase of failure there is no way to rollback the system state
+	3. shellscript is platform specific and even distro specific as well
+	4. no logging support so difficult to debug the failures
+	5. its hard to achieve idempotancy
+====================================================================================================================================
+7.what is orchestaration logic ?
+  ans:- output of one task acts as an input to the next task is called orchestration logic.
+8.how many types of software configuration management tools are there ? what are those ?
+  ans:- two types
+	(i).push based architecture
+	(ii).pull based architecture
+9.what is push-based architecture ? what is pull based architecture ?what are the advantages/dis-advantages in pushbased/pullbased   architecture ?
+  ans:-The devops engineer writes the code modules on the local workstation, and uses central server computer to execute the code             modules on  to the fleet of servers. The central server computer can be any machine installed with relevant software that is           distributed by the any software configuration management tool
+
+1. The Central server computer is stateless, it dont know the information about any of the fleet servers on the organizational
+   network, it doesnt keeps track of any of the machines of the information like hardware, or software packages installed on each of 
+   the machines and their version
+2. The ops engineer authenticate himself with central server computer and passes the code modules along with list of fleet servers on
+   whom he wanted to apply the code modules to the central server computer.
+3. Now the central server computer connects to each fleet server on the network, pushes the code modules on to each individual fleet 
+  servers executes them remotely  and collects the outcome of execution and reports to the ops engineer.
+
+advantages:-
+	1. The central server computer is completely stateless, no information about any of the fleet servers are stored, due to which
+           the ops engineer can use any computer as central server computer given it is connected to the same network
+	2. If the central server computer has been comprised there is no problem, because any of the information about the fleet
+           servers are not maintained within the central server computer
+	3. No need of installing any agent software on the individual fleet servers and no need to pre-configure the central server
+           computer with the fleet server information, so it is quick and easy to use
+	4. on-demand execution	of the code modules is supported
+	5. debugging the nodes of the cluster and monitoring them is very easy, because the central node server itself will connects
+           to each fleet server, if there is a problem in connecting it reports back to the ops engineer
+	6. The control of executing the code modules onto the fleet servers lies in the hands of central node server, the ops 
+           engineer can control the execution of the code modules on to the fleet servers by using different strategies
+
+dis-advantages:-
+	1. cannot handle large network of computers, if more fleet servers are there the load on the central server computer is high
+	2. more fleet servers on the network, takes more time in applying the code modules 
+	3. scheduled executions of the code modules is not supported
+	
+It is suitable for handling small or moderate network of computers and is not recommended for large network of computers
+
+pullbased 
+---------
+The devops engineer writes the code modules and uploads them or passes them to the control node server asking them to apply on fleet
+ of servers.
+1. To connect to the control node server and pass the code modules to execute, the ops engineer workstation should be installed and 
+configured with CLI tool on the workstation
+2. The central node server takes the code modules from the ops engineer and stores on the repository with the details of when to
+  execute
+3. each machine/fleet server on the network connects to the control node server and pushes(pull) the relevant code modules to be executed 
+   and reports the state of execution back to the control node server periodically
+
+advantages:-
+	1. as the agent software pulls the code modules from the control node server and executes them locally the load on the control
+           node server is very less
+	2. the pull-based architecture can scale to any of the fleet size
+	3. supports parallel execute as each agent is responsible for executing so we can achieve higher-level of performance
+	4. we can schedule the execution of code modules
+dis-advantages:-
+	1. Master node is the key of the architecture if the master node goes down then entire fleet is gone
+	2. Migrating from one master node to the another is very difficult
+	3. if master node has been comprimised the whole network of computers are comprised
+	4. the architecture is high complex to understand
+	5. each fleet server has to be installed with agent software which takes lot of time
+	6 .each node on the fleet should be preconfigured with control node server, the whole setup of the infra itself takes lot of
+           time
+  
+10.what are the scm tools available in the market based pull-based architecture ? and push based archutecture ?
+  ans:- pull based (i).Chef    (ii).Ansible Tower
+	push based (i).ansible (ii).puppet  (iii).Salt stack
+==================================================================================================================================== 
+11.what is ansible module ?
+  ans:- Ansible modules are the code-blocks written in python language.Each module has been pre-coded to perform a stipulated task or         an operation
+12.what is the architecture of ansible ?
+  ans:- it has 5 components
+	(i).Ansible controlnode server
+	(ii).Ansible managed node
+	(iii).Ansible playbook
+	(iv).inventoryfile
+	(v).Ansible modules
+13.what are the 5 components that are there in ansible ?
+14.ansible modules are written to enforce the which principle ?
+  ans:- idempotency
+15.remote System transfers the outcome of execution back to the ControlNode Server in which format ?
+  ans:- json format.
+16.play books are written in which format ?
+  ans:-yml
+17.when we run an ansible module or playbook, the ansible tries to locate the default inventory file under the which location ?
+   ans:-/etc/ansible/hosts
+18.how to change the default global inventory file location/name by modify the property in ansible.cfg ?
+   ans:-INVENTORY=/etc/ansible/hosts
+19.ansible all -m ping   and 
+   ansible all -i hosts -m ping   differences ?
+   ansible [group] [-i inventoryFile] -m moduleName [-a arguments] 
+   ans:- -i hosts means path of the inventory file we are passing here manually.
+20.When we install the Ansible software on the machine, it creates an directory under where ?
+   ans:- /etc/ansible
+21.how to change the behaviour of the ansible engine ?
+   ans:-by modifying the ansible.cfg file.
+22.how to change keyfile to be used for ssh into managed nodes of the cluster (in ansible.cfg)? 
+   ans:-PRIVATE_KEY_FILE=~/.ssh/ansible
+23.how many ways we can execute the ansible module on managed nodes ?   
+   ans:-2 ways    (i).adhoc commands  (ii).play book
+24.what is the syntax of adhoc command ?
+   ans:-ansible [group] [-i inventoryFile] -m moduleName [-a arguments]
+25.what are the modules provided by the ansible ?
+   ans:- (i).ping module   (ii).shell module     etc...
+26.what is the example of using  module ?
+   ans:-ansible all -m shell -a "echo Good evening"
+27.when to use adhoc commands ?
+   ans:- 1. if we wanted to perform an one-time activity that is not reusable or may have to be executed in future on a different            machines 
+        2. and the activity or the operation we wanted to perform involves executing only 1 or 2 ansible modules
+        3. and does not requires an orchestration in executing the modules
+         then use adhoc commands otherwise we should use playbooks only f or achieving the automation
+***
+where the ansible configuration file is located ?
+  ans:- /etc/ansible/ansible.cfg
+***
+======================================================================================================================================
+28.yaml stands for ?
+   ans:-yet another markup language
+29.yaml supports built-in primitive types, what are those ?
+   ans:-string,number,boolean
+30.yaml supports how many types of data structures ?
+   ans:-2  (i).Map   (ii).List 
+31.how to store the map value ? what is recommended way to write the map ?
+  ans:- key: value
+	key and value seperated by a column and after the key space is mandatory.
+32.map is similar to what type ?
+  ans:-object type
+33.how to store the list of values ?
+  ans:- - Hyderabad
+        - New Delhi
+        - Banglore
+        - Jaipur
+34.yaml file start with what and end with what ?
+   ans:- start with ---   end with ...
+35.what are the extensions of yaml file ?
+   ans:- .yaml  or  .yml
+===================================================================================================================================
+36.what is ansible inventory file ?
+  ans:- in this file we need to declare the list of hosts/managed nodes on whom we wanted to apply the automation
+37.how many ways we can write ansible inventory file format ?
+   ans:-2 ways (i).INI format  (ii).yaml format
+38.what are the default groups in every inventory files
+   ans:- (i).all group  (ii).ungrouped
+39.how to write the inventory file using INI format ?
+   ans:-we can list down all the hosts on whom we wanted to apply the automation each by separated by a line
+40.how to find the groups and list of hosts with in the given inventoryfile ?
+   ans:-ansible-inventory -i inventoryfile --list
+41.how to use host ranges in inventory file ?
+   ans:-192.168.10.[11:25:1]
+42.what is the another way to create host ranges in inventory file ?
+   ans:-using hosts name 
+        javaservers[1:4:1]
+**how to add the hostnames ?
+  ans:- go to /etc/hosts file and here add the ipaddress and domain name
+        like 192.168.10.5   javaserver1
+	     192.168.10.6   javaserver2
+	     192.168.10.7   javaserver3  
+**ansible javaserver[1:3:1] -m ping
+---------------------------------------------------------------------------------------------------------------------------
+work with ansible variables
+43.how many ways we can bind the variables ?
+   ans:-through inventory file
+44.in inventory file how many levels we can define the variables ? 
+   ans:-host level,group level
+45.how to create global variables ? 
+   ans:-declare the variables in inventory file.
+46.how many types of variables are there in inventory file ?
+   ans:-2 (i).ansible predefined-variables  (ii).userdefined -variables
+47.how to change the default ssh port number at host level ?
+   ans:-ipaddress ansible_port=2222
+        192.168.20.10 ansible_port=2222
+48.examples of ansible variables ?
+   ans:-ansible_host
+        ansible_port
+        ansible_user
+        ansible_password
+	ansible_ssh_private_key_file
+	ansible_become:true
+	ansible_become_user
+	ansible_become_password
+	ansible_shell_type
+49.what is the syntax of declaring the userdefined variables ?
+   ans:- hostname/ipaddress variablename=value variablename=value
+    ex:- 192.168.20.10 tomcat_port=8080 applicationName=fithealth
+50.how to declare the variables at group level ?
+   ans:- [javaservers]
+	     hosts
+	        192.168.20.10:
+	        192.168.20.11:
+	     vars
+		tomcat_port= 8080
+		tomcat_admin_user= tomcat
+		tomcat_admin_password= welcome1
+51.how to create alias name to the ip/host name ?
+   ans:-splunk_server ansible_host=192.168.20.11        (in hosts file)
+52.how to declare variables in INI format ?
+   ans:- 192.168.20.10  variablename=value variablename=value
+         [dbserver]
+         192.168.20.11
+	 192.168.20.12
+	 [dbserver:vars]
+	 variablename=value
+	 variablename=value
+53.how to declare variables in yaml format ?
+   ans:-all: 
+	  hosts:
+             192.168.10.11  variablename=value variablename=value
+	  children:
+	     dbservers:
+		hosts:
+		  192.168.10.12:
+		  192.168.12.12:
+		vars:
+		  variablename: value
+		  variablename: value
+----------------------------------------------------------------------------------------------------------------------
+54.what is play ?
+   ans:- set of tasks
+55.in one playbook file how many plays we can write ?
+   ans:-one or any
+56.in which situation is better to write multiple plays in one single playbook file ?
+   ans:-if multiple plays exists  together and cannot be applied independently then it is good practice to write them together
+        in one single playbook file.
+57.in which situation is better to write each play in different playbook file ?
+   ans:-if the automation we wanted to apply are independent and can exist without any dependency we can seperate them and write in 
+        multiple playbook files.
+------------------------------------------------------------------------------------------------------------------------------
+58.playbook contains --> plays, plays contains  --> host(or)group and tasks, tasks contains --> modules
+   playbook
+      |
+    plays
+      |
+    tasks
+      |
+    modules
+------------------------------------------------------------------------------------------------------------------------------
+59.what ping ?
+  ans:- ping is one module.
+60.how to run ansible playbook ?
+  ans:-ansible-playbook playbook.yml    (or)ansible-playbook -i inventoryfile playbook.yml
+--------------------------------------------------------------------------------------------------------------------
+61.how to write basic playbook file using debug module?
+  ans:- ---
+	- name: debug #play name
+	  hosts:all
+	  tasks:
+	    - name: debug task
+	      debug:
+                msg:debug task from ansible playbook
+	...
+62.how to write playbook file using ping module ?
+   ans:- - name: pingmodule
+	   hosts: all
+	   tasks:
+	     - name: ping task
+		ping:
+63.how many possible statuses  in which a task can be there and is reported per each managednode ?
+   ans:- ok, changed,unreachable,failure,skipped. 
+64.what are the popularly used modules in command category ?
+ 					  ----------------
+   ans:-(i).command (ii).shell
+65.why command and shell modules are not recommended to use ?
+   ans:-these will not support idemopotency.
+66.what are the difference b/w command module and shell module ?
+   ans:-in command module we can not use shell capabilities.like pipes and redirections (|,<,>,<<,>>)
+	in shell command it uses by default /bin/sh and also we can use both pipe and redirector operators.
+67.examples of using command module
+   ---
+   - name: command
+     hosts: all
+     tasks:
+      - name: cmdmodule
+        command: ls -la
+        register: listoffiles
+      - name: debugmodule
+	debug: 
+	 msg: {{listoffiles}}
+   ...
+=================================================================================================================================
+=================================================================================================================================
+68.how to declare the hosts in hosts file ?
+   ans:- (i).if all are ungrouped
+        then 192.168.10.5:
+             192.168.10.6:
+	     192.168.10.7:
+
+         (ii).if some are under group
+        then all:
+	       hosts:
+                 192.168.10.5
+	       children:
+	         javaservers:
+		   hosts:
+                     192.168.10.6:
+		     192.168.10.7:
+		 dbserver:
+		   hosts:
+		     192.168.10.8
+
+         (iii).---
+	       all:
+	         hosts:
+                   192.168.10.5
+	         children:
+	           javaservers:
+		     hosts:
+                       192.168.10.6:
+		       192.168.10.7:
+		   dbserver:
+		     hosts:
+		       192.168.10.8:
+		       192.168.10.9:
+               ...
+
+=======================================================================================================
+file category
+69.how to create a file ?
+   ans:- ---
+	 - name: playname
+           hosts: all
+	   tasks: 
+           - name: task name
+             file:
+               path: ~/info.txt
+               state: touch
+	 ...
+70.how to create a directory
+   ans:- ---
+         - name: dirplay
+           hosts: all
+	   tasks:
+           - name: create a directory
+             file:
+               path: ~/dir
+	       state: createdir          //directory
+               mode: 0755
+        ...
+71.how to remove a file
+   ans:-  state: absent
+
+
+how to create symlink 
+--------------------
+---
+- name: symlink play
+  hosts: all
+  tasks:
+  - name: create symlink 
+    file:
+      src: ~/srcfile
+      dest: destfile
+      state: link
+...
+==========================================================================================================
+path
+state  =  link, hard, touch, directory, file, directory, absent, present,createdir
+recurse = yes 
+owner 
+group
+access_time = now, preserve
+modification_time = now, preserve
+mode   0777, 0644, 1777, u+rw, g-rw, o-rwx
+src
+dest
+loop
+====================================================================================================================================
+***
+lineinfile module
+-----------------
+(1).why lineinfile module is used ?
+  ans:-if you want to edit or change the line in an existing file we can use lineinfile module.(like sed)
+(2).how to change mysql bind address using sed ?
+  bind_address=127.0.0.1
+	sed 's/MYSQL_BIND_ADDRESS=127.0.0.1/MYSQL_BIND_ADDRESS=0.0.0.0/g' /etc/mysql/mysqld.conf
+(3).how to change the bind address using lineinfile module ?
+  ans:- ---
+	- name: lineinfile play 
+	  hosts: all
+	  tasks:
+	  - name: lineinfile module
+	    lineinfile:
+              path: /etc/mysql/mysqld.conf
+	      regexp: '^MYSQL_BIND_ADDRESS=.*'
+	      line: 'MYSQL_BIND_ADDRESS=0.0.0.0'
+	...
+(4).how to insert the line in a file after or before specified line ?
+  ans:- ---
+	- name: lineinfile play
+	  hosts: all
+	  tasks:
+    	  - name: insert the line
+	    lineinfile:
+	      path: /etc/ssh/sshd/sshd_conf
+	      line: 'PasswordAuthentication=yes'
+	      insertAfter: 'PermitsEmptyPasswords*'
+	...
+======================================================================================================================================
+packages
+--------
+(i).what are the platform/distro specific package installer modules provided by the ansible ?
+  	ans:-   debian : apt module
+		redhat : yum module
+		mac    : homebrew module
+(ii).how to install the package ?
+  ---
+  - name: pkg play
+    hosts: all
+    task:
+    - name: install pkg
+      apt:
+        name: pkgname
+	update_cache: yes
+	state: present
+  ...
+(ii).how to uninstall the pkg ?
+  ans:- 
+	---
+	- name: pkg play
+	  hosts: all
+	  tasks:
+	  - name: uninstall pkgs
+	    apt:
+	      name: pkgname
+	      state: absent
+	      purge: true
+	...
+				
+(iii).how install the latest version of the pkg ?
+  ans:-
+	---
+	- name: pkg play
+	  hosts: all
+	  tasks:
+	  - name: install latest
+	    apt:
+              name: pkgname
+	      update_cache: yes
+	      state: latest
+	...
+(iv).how to remove unwanted pkgs ?
+  ans:-
+---
+- name: auto remove
+  hosts: all
+  tasks:
+  - name: remove pkgs auto	
+    apt:
+      autoremove: yes
+...	
+(v).how to remove unwanted pkgs on the cache ?
+  ans:- -name: remove cache
+	 apt:
+	   autoclean: yes
+(vi).how to install multipls pkgs ?
+  ans:- apt:
+          name:
+		-pkg1
+		-pkg2
+		-pkg2
+	  state: present
+package
+-------
+(i).insted of using apt we can use package for install and manage s/w pkgs.
+(ii).what is the use of package module insted of apt module ?
+  ans:- package module works any distro of the linux os.
+(iii).how to install pkgs using package module 
+  package:
+    name: pkgname
+    state: [present,absent,latest]
+    use: auto
+(iv).how to install the pkgs by using sudoers access ?
+  ans:- - name: task
+	  apt:
+            name: pkgname
+	    state: present
+	    update_cache: yes
+	  become: yes
+-----------------------------------------------------------------------------------------------------
+work with ansible variables 
+---------------------------
+
+1. ansible variables (pre-defined variables)
+   (i).forks
+   (ii).private_key_file
+   (iii). remote_port
+   (iv).inventory
+2. inventory variables
+	- host
+	- group
+    (i).ansible_ssh_port
+    (ii).ansible_user
+    (iii).ansible_host = alias name
+    (iv).ansible_private_key_file
+    (v).ansible_ssh_password
+    (vi).become
+    (vii).become_user
+    (ix).become_method
+    (x).ansible_connection 
+
+3. playbook variables
+4. var_files in playbooks
+5. vars from command-line
+6. register variables
+7. ansible facts or ansible magic variables
+
+1.registry  
+2.--extra-vars  (ans:- ansible-playbook -i hosts var.yml --extra-vars "uname=satheesh" --extra-vars "password=1234")
+3.vars files 
+ ans:-
+mysql_user_vars.yml
+-------------------
+mysql_user: fithealthsqluser
+mysql_password: welcome1
+perm: '*.*:ALL'
+login_user: root
+login_password: root
+
+mysql-user-playbook.yml
+---
+- name: mysql user play
+	hosts: all
+	vars_file:
+		- mysql_user_vars.yml
+	tasks:
+	- name: create mysql user
+		mysql_user:
+			name: "{{mysql_user}}"
+			password: "{{mysql_password}}"
+			priv: "{{perm}}"
+			login_user: "{{login_user}}"
+			login_passowrd: "{{login_password}}"
+			state: present
+...
+
+
+4.declare  variables in local in playbook- name: copy play
+	hosts: all
+	vars:
+		ownerName: vagrant
+		groupName: vagrant
+		perm: 0644
+	tasks:
+	- name: create file
+		file:
+			name: "{{filename}}"
+			owner: "{{ownerName}}"
+			group: "{{groupName}}"
+			mode: "{{perm}}"	
+			state: touch	
+...
+
+ansible-playbook -i hosts --extra-vars filename=file1.txt newfile-playbook.yml
+
+5.userdefined variables in inventory file
+  ans:- hosts:
+        vars:
+        children:
+          javagroup:
+          hosts:
+            vars:
+6.ansiblefacts or ansible magic variable
+  ans:- you can see the ansible magic variables in cmd
+        ansible all -i hosts ansible.builtin.setup
+        you can see the it will connect to the host or not 
+        ansible all -i hosts -m ansible.builtin.debug
+  ex:- - name:
+         debug:
+           msg: "os name: {{ansible_os_family}}"
+**
+how many ways we can pass the dynamic values as input to the playbook while execution ?
+  ans:- 3 ways
+	(i). --extra-vars 
+	(ii). local variables within the playbook using vars
+	(iii). vars-files
+
+**
+===========================================================================================================================
+1.changed when failed when
+  (i).failed when
+      ----------
+  
+ - name: changed_when_failed_when
+   hosts: all
+   tasks:
+   - name: check disk space
+     shell: "df /dev/sda1 | tail -1 | awk {print $4}'"
+     register: diskspace
+     failed_when: diskspace.stdout | float < 4000000
+   - name: install tree
+     apt:
+       name: tree
+       state: present
+       update_cache: yes
+     become: yes
+
+(ii).changed when
+     ------------
+ ans:-
+===============================================================================================================================
+user module
+-----------
+1.how to add a user with specific id and gid ?
+  ans:- -name: useradd 
+         user:
+           name: username
+	   uid: uid
+	   groupid: gid
+2.how to add a user with default shell ?
+  ans:- - name: useradd
+	  user:
+ 	    name:
+	    uid:
+	    groupid:
+	    shell: /bin/bash
+3.add user with home directory ?
+  ans:- - name: useradd
+	  user:
+	    name: username
+	    create_home: yes|no
+	    password: loginpassword
+	    generate_ssh_key: true|false
+	    remove: yes
+4.how to create a user with home directory password and password less sudoers access ?
+  ans:-
+  
+ ---
+ - name: sudoers play
+   hosts: all
+   become: yes
+   tasks:
+   - name: create user
+     user:
+       name: satheesh
+       password: 12345
+       shell: /bin/bash
+   - name: create sudoer access
+     lineinfile:
+       path: /etc/sudoers
+       line: 'satheesh ALL=(ALL) NOPASSWD:ALL
+       insertafter: '^root*'
+       validate: '/usr/sbin/visudo -csf %s'
+...
+
+===================================================================================================================================
+loop :-
+-----
+1.loop over simple list of values ? how to install multiple s/w packages using loop? 
+ - name: install s/w
+   hosts: all
+   tasks:
+   - name: install s/w pkgs
+     apt:
+     - name: "{{item}}"
+       state:
+       update_cache:
+     become: yes
+   loop:
+     - openjdk-11-jdk
+     - git
+     - maven
+     - tree
+     - vim
+2.loop over hashes  (means here we use two values)
+  ans:- create files with specified permissions
+  - name: loop through hashes
+    hosts: all
+    tasks:
+    - name: create file with permissions
+      file:
+        path: {{item.filepath}}
+        mode: {{item.mode}}
+	state: touch
+     loop:
+       - {filepath: "~/file1", mode: '644'}
+       - {filepath: "~/file2", mode: '600'}
+       - {filepath: "~/file3", mode: '400'} 
+
+3.looping through registered variables
+  ans:- data.txt
+        hp
+        lenovo
+        dell
+	mac
+  - name: find data play
+    hosts: all
+    tasks: 
+    - name: print specified data
+      shell: cat data.txt
+      register: names
+    - name: print the name if the name is available 
+      debug:
+        msg: "{{item}}"
+       loop: "{{name.stdout_lines}}"
+       when: "{{item in 'lenovo'}}" 				here we can search two names also when: "{{item in 'lenovo' 'hp'}}"
+    
+4.looping through dictionaries
+  ans:-
+  - name: loop through dictionaries
+    hosts: all
+    vars:
+      stories:
+        story1: 1
+	story2: 4
+	story4: 6
+    task:
+    - name: print dict values
+      debug:
+        msg: "{{item.key}}, {{item.value}}"
+      loop: "{{stories | dict2items}}"
+5.working with loop until
+  ans:- (i).program1.sh
+        #!/bin/bash
+	i=1
+	while [ i -lt 10 ]
+	do
+		sleep 2s;
+		i= $[ $i+1]
+	done
+	echo "program 1 executed successfully" > ~/pr1info.txt
+	(ii).program2.sh
+	#!/bin/bash
+	echo "program 2"
+	echo "program 2 executed successfully" > ~/pr2info.txt
+
+	(iii). - name: fine file and proceed until
+		 hosts: all
+		 tasks:
+		 - name: copy shell program
+		   copy:
+		     src: "{{item}}"
+		     dest: "~/"
+
+		     mode: 0765
+		   loop:
+                     - program1.sh
+		     - program2.sh
+		- name: run program1
+                  shell: "sh ~/program1.sh &"
+		- name: find the file
+		  find:
+		    paths: "~/"
+		    patterns: "pr1info.txt"
+		    recurse: no
+		  register: findstatus
+                  until: findstatus.matched == 1
+		  delay: 2
+		  retries: 10
+		- name: run program2
+		  shell: "sh ~/program2.sh &"
+================================================================================================================================
+==================================================================================================================================
+ansible_handlers :-
+---------------
+1.by default handlers will execute or not ?     
+  ans:- bydefault will not execute.
+
+2.when we call the handler inside the task then handler will execute or not ?
+  ans:- it is depends on task execution.if the task has executed and the status is changed then only handler will execute.
+3.if tasks not changed but handler called inside the task then handler will execute or not ?
+  ans:-will not
+4.when will be the handler will execute ?
+  ans:- by default handler will not execute.when we call the handler inside the task then only execute.that too if the execution of
+	task is changed then only handler will execute.
+- name: handlers playbook
+	hosts: all
+	tasks:
+	- name: task1
+		module:
+			arg1: val1
+			arg2: val2 
+	- name: task2
+		module:
+			arg1: val1
+			arg2: val2
+		notify:
+			- handler1
+	handlers:
+	- name: handler1
+		module:
+			arg1: val1
+==================================================================================================================================== 
+create files with content
+--------------------------
+- hosts: all
+  tasks:
+  - name: create a files with content
+    copy:
+      dest: "/file"
+      content: |
+        line1
+	line2
+
+note: here if you dont specify | symbol then it will print all the data in single line.
+=============================================================================================================================
+ansible-vault
+=============
+1.how to create encrypted playbook ?
+  ans:-ansible-vault create playbook.yml
+2.how to encrypt the existing playbook ?
+  ans:-ansible-vault encrypt playbook/inventoryFile.yml
+3.how to see the contents of encrypted file ?
+  ans:- ansible-vault view playbook/inventoryfile.yml
+4.how many ways we can execute the encrypted playbook/inventory file ?
+  ans:-2 ways
+  (i).decrypt and execute
+  	ansible-vault decrypt playbook/inventoryfile
+  (ii).decrypt onfly and execute 
+        ansible-playbook -i inventoryfile --ask-vault-pass playbook.yml
+5.ansible-playbook -i inventoryfile --ask-vault-pass playbook.yml by using this approach we have problem ?
+  ans: we can not achieve automation.so we have one solution that is
+       (i).create a file. 
+       (ii).inside the file write the password which we gave for encrypt.and change permission into 600.
+            and pass it as an input to the playbook for decrypt.
+6.how to pass the password files as an input to playbook ?
+  ans:- ansible-playbook -i hosts --vault-password-file=passwordfile playbook.yml      
+====================================================================================================================================
+jinja2 template :
+===============
+1.how to substitute variables in template file ?
+  ans:- {{variable_name}}
+2.how to print list of items using for loop ?
+  ans:- display-list.j2
+	hello dear {{customer}} below are the items you purchased pls check
+	{% for item in items %}
+		{{item}}
+	{% endfor %}
+       playbook.yml
+       - name: print list of items
+	 hosts: all
+	 vars: 
+	   items:
+	   - soap
+	   - brush
+	   - candle
+	   - shirt
+         tasks:
+	 - name: print template
+	   template: 
+             src: display-list.j2
+	     dest: displayitems.txt
+3.
+
+--------------------------------------------------------------------------------------------------------------------------------
+ansible_roles :-
+-------------
+**what are ansible roles ?
+  ans:- ansible roles are used for packaging and distributing the ansible playbook automations in a standardized way, so that people 		can reuse them quickly aspart of their playbook automations.
+1.how to create ansible_role ?
+  ans:- ansible-galaxy init webhosting
+2.what is the tool is used for creating role ?
+  ans:- ansible-galaxy
+3.when we create the role using ansible-galaxy which directories will be created automatically ?
+  ans:- |-default
+	  |-main.yml
+	|-files
+	|-templates
+	|-tasks
+	  |-main.yml
+	|-handlers
+	  |-main.yml
+	|-meta
+	  |-main.yml
+	|-vars
+	  |-main.yml
+	|-tests
+	  |-main.yml
+4.how to override the default values at the time of playbook execution ?
+  ans:- we can override default values at the time of playbook execution which are default/main.yml
+5.files containes ? 
+  ans:- files containes static files.
+6.tasks contains ?
+  ans:-it contains tasks that are executed as part of the task.
+7.tests contains ? 
+  ans:- it contains required files for 	testing the role.
+8.how to reuse ansible roles in playbook ?
+  ans:- - name: play
+          hosts: all
+	  roles:
+	  - rolename
+9.for using ansible roles in our playbook where do we need to place the roles ?
+  ans:- we need to place the roles in 3 standard directories
+	(i).roles/ directory under the playbook directory
+	(ii)./etc/ansible/roles
+	(iii).roles_path in ansible.cfg pointing to the directory where we want to place the roles.	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+====================================================================================================
+playbook execution strategies 
+----------------------------
+1.what is the default execution strategy ?
+  ans:- linear (one by one)
+2.ansible supports how many types of strategies what are those ?
+  ans:- two types (i).liner (ii).free
+3.in which level we can set the strategy ?
+  ans:- at playbook level or global level
+4.how to declare execution strategies at playbook level ?
+  ans:- - name: play
+	  hosts: all
+	  strategy: liner  (or)
+	  strategy: free
+5.how to declare the execution strategies at global ?
+  ans: edit ansible.cfg file 
+6.how to add execution strategies in ansible.cfg file /
+  ans:- 
+7.what is mean by decalring linear in ansible-strategy ?
+  ans:-means if each task succeed on all hosts, before you run the next task use linear strategy.
+8.what is the use of declaring free as a execution stratagy ?
+  ans:-ansible uses available forks to execute tasks on each host as quickly as possible.even if an earlier task is still running on
+       one host,ansible executes later tasks on other hosts.
+forks
+-----
+1.if we have more processing power and want to use more forks in executing the playbook how to do ?
+  ans:- we need to modify the forks in configuration file.
+	ansible.cfg
+	[default]
+	forks=20
+serial
+------
+1.what are the keywords using which we can apply the execution strategy ?
+  ans:- serial: number
+2.which type of values we can pass to the serial ?
+  ans:- number also percentage also.
+=====================================================================================================================================
+
+tomcat service
+--------------
+1.create tomcat.service file in /etc/systemd/system dir
+2.edit the tomcat.service file add the required info for running the service
+
+
+
+======================================================================================================================================
+45.
+shell module
+9.   

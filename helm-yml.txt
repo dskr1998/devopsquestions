@@ -1,0 +1,106 @@
+1.deployment.yml
+---------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "speedchart.fullname" . }}		(when we are referring the values from template we use include)
+spec:
+  replicas: {{ .Values.replicaCount }}           (here Values is the filename and replicaCount is the variable inside the Values file)
+  selector:					 (replce those values)
+    matchLabels:
+      app: speed
+      version: v1
+    template:
+      metadata:
+        labels:
+	  app: speed
+	  version: v1
+      spec:
+	containers:
+	  - name: {{ .Chart.Name }}	
+	    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+	    ports:
+	      - name: tomcatport
+		containerPort: {{ .Values.containerPort }}
+		protocol: TCP
+
+values.yml
+----------
+replicaCount: 1
+image:
+  repository: techsriman/speeddep
+  tag: "4.0"
+containerPort: 8080
+service:
+  type: clusterIP
+  port: 8080
+  targetPort: 8080
+
+service.yml
+-----------
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "speedchart.fullname" . }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: speed
+    version: v1
+
+ingress.yml
+-----------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+

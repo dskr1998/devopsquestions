@@ -1,0 +1,1205 @@
+1.what is vpc ?
+  ans:- VPC is an isolated network of resources of an aws account user, all the resources within an vpc are isolated from other                resources of  another vpc by default.
+2.characteristics of vpc ?
+  ans:- 1. A vpc is created per user account, per region, where all the availability zones of the region are part of the vpc
+	2. by default all the resources within the vpc can communicate with each other
+	3. per aws user account, per region we can create at max 5 vpcs only (soft limit)
+	4. by default a resource in one vpc cannot communicate with another resource of other vpc, even though both vpcs belongs to 	           same aws useraccount of same region, if we want resources across the vpcs to communicate with each other we need to enable 	   vpc peering
+	5. by default per each user account, across all the regions aws will configure one default vpc
+3.in aws how many types of limits are there ?
+  ans:- (i).softlimit :- something by default enforced by the aws cloud platform for each type of service and (if required)  can be 	                 	 extended upon request
+	(ii).hard limit :- the hardlimits cannot be extended or modified.
+4.what is the purpose of vpc ?
+  ans:- vpc is being used in many ways for organizing and controlling the access to the resources at various different purposes
+	1. across the business units/departments of an organization to isolate the resources of them we can create separate vpcs
+	2. across the different projects
+	3. for different environments like dev, test, prod etc
+5.how to create vpc ?
+  ans:- to create vpc network to isolate the resources from others we need to provide the CIDR range along with name of the vpc.
+	
+6.what is subnet ?
+  ans:- vpc is an isolated big network which spans across all the availability zones of a region in which it has created. by default          all the resources created within the vpc are accessible to each other and the same traffic restrictions are applied to all the         resources.But for different group of resources we wanted to apply different security restrictions and accessibility, for eg..          we wanted the rds (database) instance to be private and accessible to the resources within the vpc, but we wanted the ec2        instance to be accessible publicly by anyone, this can be dont be separating and them into 2 subnet works of an vpc
+7.how to create subnet ?
+  ans:- 1. the vpc in which we wanted the subnet to be created
+	2. availability zone in which want to create
+	3. subnet name
+	4. cidr notation within the vpc range
+
+8.how many types of subnets are there ?
+  ans:_ 3 private,public,hybrid
+9.at max we can create 200 subnets within an vpc
+10.private subnet ?
+  ans:- by default when we create a subnet within the availability zone of a vpc within a region, the subnet becomes private subnet            all the resources across the subnets of the vpc can communicate with each other
+	all the resources across the subnets of the vpc can communicate with each other
+11.public subnet ?
+  ans:- The resources within the public subnet will have both inbound/outbound to the external network.
+        To make an subnet as an public subnet we need to attach an internet gateway
+12.what is internet gateway ?
+  ans:- internet gateway is a aws network device which is attached to public network.To make an subnet as a public subnet, we need to 
+	create an internet gateway (IG) and attach to the vpc of our network
+	when we attach an IG to the vpc, the subnets of our vpc will not become public subnets, to make a subnet public subnet we need
+        to configure routing rule
+13.what is route table ?
+  ans:_
+14.how to create public subnet ?
+  ans:- crazyeatsvpc [172.1.0.0/16] [ap-south-1]
+       |-crazyeatspublicsubnet1 [172.1.1.0/24] [az-1]
+       |-crazyeatsprivatesubnet2 [172.1.2.0/24] [az-2]
+
+   2. internet gateway -> attach to crazyeatsvpc
+		|-crazyeatsig 		
+   3. route table [crazyeatspublicroutetable]
+		|-add subnet associate [crazyeatspublicsubnet1]
+		|-add routetable [0.0.0.0/0 -> IG]
+15.hybrid subnet
+  ans:-
+	1. ap-south-1 (region)
+	2. toylandvpc [172.16.0.0/16]
+	3. subnets:
+		- toylandpubsn1 [172.16.1.0/24]
+		- toylandhybridsn2 [172.16.2.0/24]
+		- toylandprivatesn3 [172.16.3.0/24]
+	4. toylandig 
+		- attach to toylandvpc
+		- toylandigrt 
+			- associate: toylandpubsn1
+			- route: 0.0.0.0/0 -> toylandig
+	5. toylandng
+		- attach to the toylandvpc
+		- choose toylandpubsn1
+		- allocate elastic ipaddress
+		- toylandngrt
+			-> associate: toylandhybridsn2 
+			- route: 0.0.0.0/0 -> toylandng
+			
+	ec2 instance - public subnet = external  network we can SSH
+	ec2 instance - hybrid subnet or private subnet = external network we cannot SSH
+               only way is through bastion host/jumpbox from public subnet
+
+16.(bastion host is nothing but connecting to resources of public sn to resources  the private sn)
+
+(how to connect ec2 which is created in private sn)
+(normally we can not connect to the resources which are created in private subnet from outside.if you want to connect,we can connect
+ through public subnet only,so first we need to create public subnet in that subnet we need nat gateway,so first connect to the 
+public subnet then connect to the private subnet through private subnet)
+
+1.first we need to copy the ssh kepair file from host machine to ec2 of public subnet
+  scp -i ~/.ssh/keypair.pem ~/.ssh/keypair.pem ubuntu@ipaddr:/home/ubuntu/.ssh/
+2.ssh to the ec2 which is created in public subnet
+  ssh -i ~/.ssh/keys.pem ubuntu@ipaddress
+3.then ssh into ec2 of public subnet to ec2 of private subnet
+  ssh -i ~/.ssh/keys.pem ubuntu@ipaaddress   (here ip address we need to use cidr which we use)
+17.When do we use hybrid subnet ?	
+when we are hosting the applications behind the loadbalancer, we dont want public network resources to access our subnet resources or
+ application directly, but the resources/application that is running within the subnet should be allowed to access the public network.
+ because all the traffic to our application running within the subnet is routed throught the loadbalancer, so there is no need of our
+ application to be directly exposed to the public. To handle this requirement we need to host our application on hybrid subnet.
+
+18.what is nacl rule 
+
+NACL stands for network access control list, it is a firewall configured at the subnet level to enforce traffic restrictions on the
+ group of resources of a subnet
+1. By default when we create an vpc and subnets, the aws cloud platform creates default nacl rules for all the subnets of the vpc
+2. Through the help of NACL rules we can enforce traffic restrictions on the subnet of resources based on
+	1. source cidr
+	2. protocol
+	3. port
+	allow/deny the network traffic to the resources
+3. NACL rules are stateless
+		1. Stateless refers to the request and response are treated separately. NACL Engine doesnt keep track of a request to
+                   identify and allow the response for that request. so we need to separately configure inbound/oubound rules in 
+                   allowing the network traffic in both the directions
+    2. To allow network traffic in both the directions we need to configure separately 
+			- Ingress = refers to the rules to applied in allowing the in-bound network traffic
+			- Egress = refers to the rules to be applied for allowing the network traffic from subnet of resources to the 
+                                   external network traffic
+4. NACL rules are ordered, which means each rule is given an priority or sequenceno in which the rules has to be applied.
+SECURITY -GROUP
+---------------
+5.how to apply traffic restrictions on ecah individual resource level ?
+  ans:- we need to use security group
+6.what is security groups ?
+  ans:- security groups are used for applying traffic restrictions on each individual resource level.
+7.resources ex:- ec2 instance,loadbalancer,rds instance,autoscaling group,elastic beanstalk.
+8.in which level we can create security group ?
+  ans:- security group created at vpc level.and are attached to individual resources of the vpc/subnet.
+note:-
+-----
+security groups are statefull.statefull means for every ingress to allow response back we dont need egress.
+if we configure an egress rule we dont need to configure ingress rule to receive response from the external network for the request our resource has sent from the vpc/subnet
+
+If the incomming network traffic is coming within private port range means, it is not an inbound request, it is an response for the request we send.
+=====================================================================================================================================
+SERVICE SCOPE
+-------------
+1.how many scopes are there in aws ?
+  ans:- 3 scopes are there (i).global (ii).regional (iii).availablity zone
+2.global scope :- the service is created and accessible across all the regions of the cloud infrastructure platform.
+	Route53,AWS Cloud Front,IAM registry
+3.regional scope :- The service is created to the region level and is accesible and manageable within the region.
+	DynamoDB,Elastic LoadBalancer,S3 Bucket,Virtual Private Cloud Network
+4.Availabiblity Zone :- These services are created per AZ 
+	Elastic Block Storage,EC2 instance,Subnet
+===================================================================================================================================
+1.how to ssh into ec2 instance using public ip and pem file?
+  ans:- ssh -i pemfile ubuntu@publicip
+-----------------------------------------------------------------------------------------------------------------------------------
+vpc peering
+-----------
+1.what is vpc ?
+  ans:- vpc is an private network in which the resources of an vpc are isolated from any other resources of aws cloud platform.
+2.in aws cloud platform for any resource how many types of ipaddresses we can assign ?
+  ans:- two (i).public ip 	(ii).private ip
+3.the resource that is assigned with private ip where we can access ?
+  ans:- we can access the resources from other resources of the same vpc within the aws cloud platform.
+4.why aws cloud platform assigns for every resource a private ip address ?
+  ans:- 1.1 For each resource to identify uniquely over the network and make them accessible internally within the cloud network aws             assigns an private ip address
+	1.2 by using the private ip address the low network lantency and bandwidth speed at which the data transfers takes place will 	    be really high, so it is always recommended to use private ip ony while communicating between the resource of the same 	    vpc.
+ note:- private ip address are local to the aws cloud platform and cannot be used for accessing the resources from external network.
+5.public ip :- public ip address are assigned to the resources of public subnet.
+	       even though we assign public ip address to a private subnet resource, there is of no use, since the network itself is                not connected to a public network using the public ip address the resource cant be reached.
+6.aws platform supports how many types public ip addresses ?
+  ans:- (i).empheral public ip
+	(ii).elastic public ip
+7.empheral ip address :- it is assigned to the resource during provisioning of the resources by aws cloud platform.it is temporary.
+			 every restart it will change.
+  note:- The empheral ip address is not assigned to the resource by default.
+	 by default when we are creating the subnet, the auto assign public ip is disabled.
+	while creating the resource for eg.. an ec2 instance, we need to choose the optional manually in assigning an ip address.
+Post provisioning of the resource also we can assign ip address to an resource. we need to goto network interfaces section of the resource and attach a new nic and choose assign public ip address.
+8.elastic ip address :- if we want the resources to be assigned with an permanent ip address then we need to use elastic ip address.
+  allows us to create an elastic ip address pool in which we reserve the public ip addresses upto a limit of #5.
+  even the resource has been deleted the ip address will be returned to the pool, the ip address will not be deleted.
+  elastic ip addresses are chargeable and if not being used we should release and remove them
+
+9.what are the conditions we need to make sure inorder to perform vpc peering ?
+  ans:- 1. The ip ranges of both the vpcs we wanted to peer should not overlap
+	2. Transitive peering, edge routing, internet gateway access is not supported
+	3. No Nat Routing between the vpcs
+	4. cannot resolve private DNS values across the vpcs
+	5. No cross referencing of security groups between the vpcs
+10.goto peering connections --> create peering connections --> name --> from vpc --> to another account (or) self account --> select region 
+	--> add vpc id --> create peering connection.
+   	reciever --> goto peering connections --> select peering connection --> goto actions --> accept request.
+======================================================================================================================================
+DATABASE DOMAIN
+---------------
+5 types (i).RDS    (ii).Aurora db    (iii)Dynamo db    (iv).Elastic cache	(v).RedShift
+
+1.RDS
+-----
+RDS is not a database software product of Cloud platform.through RDS service we can manage database services on aws cloud platform. 
+2.Aurora db
+-----------
+Aurora database build by aws cloud platform on top of mysql server database.
+it is an relational database management system provided by amazon cloud.
+The Amazon cloud claims the aurora db is 5 times fater than the mysql server database interms of performance and data transfer rates.
+3.Dynamo db
+-----------
+It is an no-sql database management system built by amazon and provided as part of aws cloud platform. we can store petabytes of data in dynamo db and it is highly scalable.
+4.Elastic cache
+---------------
+It is an distributed cache system provided by amazon cloud provider to implement server-side application caching.
+5.RedShift
+----------
+database warehouse service used for processing and analyzing the data and generate reports
+
+======================================================================================================================================
+DATABASE MANAGEMENT SYSTEM
+--------------------------
+Database management system is a pre-built software application that contains the logic for storing/managing the data permanently on the underlying Filesystem of a computer.
+
+database types 
+--------------
+1.Relational database	
+2.No-Sql database
+3.object storage database
+
+1.Relational data base management system
+----------------------------------------
+ex:- sql
+These are called as structured database management system.
+
+sales
+customer_nm  sale_date    mobile_no   email_address    quantity     total_amount    discount    paid_amount
+peter        13/Aug/2022  939373839   peter@gmail.com  10           2500             250         2250
+paul         13/Aug/2022  938339499   paul@gmail.com   11           3500             200         3300
+
+(i).how to filter the data ?
+   ans:-select * from sales where quantity >= 11
+(ii).sql database query syntax
+  ans:- select columns from table where column condition value
+
+(iii).why it is called relational database management system ?
+  ans:-
+
+primary key = a column defined inthe table, which contains unique value among the records of data within that table. no 2 records contains same value in that table, so that we can identify the record using the primary key value and can be used as foreign key in another table to establish relationship
+
+foreign key = a column  defined in a table referring to the primary key column of another table through which we can establish relationship
+
+===================================================================================================================================
+RDS service 
+-----------
+rds stands for relational database service.it is not  a database server,rather it is managed service provided by the aws cloud platform.that supports provisioning and managing popular relational database server products on aws clous platform.
+rds takes care
+ 1. installing database software
+2. configuring
+3. security
+4. high availability
+5. scalability (storage/performance)
+6. backup and restore
+7. patching
+8. upgradation
+
+2.rds supports provisioning and managing which servers on aws cloud platform ?
+  ans:- 1. MySql Server
+	2. Oracle database
+	3. Postgres
+	4. MariaDB
+	5. Microsoft SqlServer
+	6.auroradb
+3.rds is PAAS service.
+
+
+4.How to provision MySql Server datatabase instance using RDS Service of AWS?
+  ans:-
+1.create vpc (172.16.0.0/16)
+2.create subnets.(2 private subnets,1 public subnet) (which are ranging from (172.16.1.0/24,172.16.2.0/24,172.16.3.0/24))
+3.create internet gateway(attach vpc)
+4.create route table (attach vpc,add rule 0.0.0.0/0 to target is ig),edit subnet association add public subnet.
+5.create security group 
+                 inbound               outbound
+ public subnet   ssh                   all
+ private subnet  mysql/aurora          all
+6.create nacl rule for mysql 
+  inbound  allow only mysql/aurora  ip range is 172.16.0.0/0
+  outbound rules allow traffic
+  subnet associate with private subnets 
+7.here we need to understand the default nacl will dis associate with private subnets and here only nacl associated with public sn only.
+8.now goto default nacl rule edit inbound rule
+  add ssh,mysql aurora with vpc range,http,custom tcp
+9.goto services here select database,here select rds
+  goto subnet group,create db subnet group (here add private subnets by understanding the ip address range)
+10.goto databases,create database 
+    here select standard create,select mysql,select mysql version latest,template free tier,here db instance name rconnectdb,
+    master name root,password Welcome#1,here burstable classes and t3 micro it will take,storage general purpose,allocate storage 20,
+    enable storage autoscaling disable it,select vpc we created,select subnet group,public access no,security group add existing,az 1a,
+11.then goto instances create ec2 in public sn.
+12.ssh into instance
+13.update the repository sudo apt update -y
+14.install mysql client tool 
+15.now connect to the mysql db (check the endpoint in goto rds-->databases-->select created database-->connectivity security here
+    we can see the end point)
+   mysql -hendpoint    -uroot -pWelcome#1
+16.delete process (when we try to delete the db instance dis-select create final snapshot and retain automated backups then onemore 
+  option will prompt select the acknowledge option  then write delete me to delete database)
+
+====================================================================================================================================
+
+dis-advantages of RDBMS
+-----------------------
+1.it supports only structured data, but not all the data is structured.
+2.not recommended to be used for storing audios, videos and images which are un-structured data.
+3.if we store semi-structured data in RDBMS huge amount of memory will be wasted,schema becomes quite complex and difficult to program
+4.by storing these data in RDBMS the underlying machines quickly runs out of resources and requires scaling the database due to which   the cost of storage increasing
+5.we cannot achieve highest level of concurrency, because these databases are transactional
+
+to overcome them other types of database management systems are innovated and introduced.
+1. no-sql databases
+2. object storage databases
+
+1.NO-SQL databases
+------------------
+no-sql databases are designed to store semi-structured data,the way the data is stored in no-sql databases differs from product to the product there is no standard format or hard and fast rule in the way we the no-sql databases supports storing data.
+
+In no-sql databases we dont define tables with fixed-set of columns, because different records data has different columns. 
+we dont create tables rather we create a data structure which is loosely structured called usually "collections". 
+
+1.how to store the data in collections ?
+  ans:- we can store the data as a records in collections.each record contains key/value of data.in a record we can define any number
+	of keys and values which differ from another record of data in the collection.
+2.product
+#1 [product_no=837
+	  model="Iphone 13 Pro Max"
+	  color="Red"
+	  storage="128gb"]
+   [product_no=938
+	  model="Samsung 32 inch LED tv"
+	  sound="5.1 Dolby Atmos"
+	  displayType="LED"
+	  pixel="1Million"
+	 ]
+These databases are suitable for storing
+1. semi-structured data which doesnt have fixed columns in nature
+2. no relationship between the data
+3. dont need transactionality
+
+examples of no-sql databases
+---------------------------
+1. mongodb 2. casendra 3. couchdb 4. oracle bigdata  5. aws dynamo db  6. graph db
+
+1.mongo db
+----------
+1.how to store the data in mongo db ?
+  ans:-In mongodb allows us to store the data interms of json format.
+	To store data in mongodb we need to create a collection per each type of data.
+ex:- if  we want to store product information create products collection,In collection we store data as collection documents
+product [
+	{
+		"product_no": "938",
+		"title": "Samsung LED Tv",
+		"manufacturer": "Samsung",
+		"price": "100000"
+	},
+	{
+		
+	}
+]
+
+
+2.casandra
+----------
+it is called columunar database it allows us to store the data in key/value pair format
+
+3.aws DynamoDB database
+-----------------------
+AWS Cloud Platform has provided an no-sql database service which is DynamoDB that allows us to store the data by definining interms of keys/values
+advantages of Dynamodb
+----------------------
+There are plenty of advantages of using dynamodb when compared with other no-sql databases available in the market
+1. DynamoDb is an managed service that is hosted by the aws cloud platform which takes care of all the lifecycle operations like provisioning/de-provisioning, scaleup/scaledown, scale-out/scale-in, backup/restore etc. if we are using any of the third-party provider databases, these has to be manually takencare by the ops engineer which is quite complex and huge cost in managing
+2. Optimized for performance at scale = irrespecitve of amount of data being stored in the DynamoDb database we can achieve same level of consistency interms of performance while accessing the data from the database
+3. High Availability / Durability = no matter always the database is available and the data is durable without loss
+4. Integrate with other AWS Services
+5. Cost effective usage based payment model
+
+2.aws dynamodb scoped to which level ?
+  ans:- It is scoped to AWS Region
+3.where we can access the dynamodb ?
+  ans:- it would be accessible across all the AZ, VPCs and subnets of the region.(only same region can access)
+4.DynamoDB supports multi-region replication where a table created in one region can be made accessible across other regions also   within cloud platform
+5.DynamoDB is serverless database, self-managed by AWS Cloud platform.
+6.(we can image a collection as a record in relational table)
+
+In DynamoDB we can store the data by creating the tables, while creating the tables in DynamoDB we dont need to specify the columns of data we wanted to store, since it is an no-sql database. In the tables we store collection of items, where each item is nothing but key/value pair of data (we can image a collection as a record in relational table)
+
+partition key
+-------------
+every table we create in DynamoDB we need to create a column partition_key.it is mandatory.
+If a table has only the partition_key then it acts as primary_key of the table,so no 2 collections of the table can carry the same value for the partition_key
+
+7.how quickly dynamodb can fetch the data ?
+  ans:- The DynamoDB takes the partition_key of the collection and computes the hash value of partition_key we provided and computes 	the partition in which the data has to stored within the table, so that the data is distributed uniquely across the 	partitions. So while lookingup for the data based on partition_key the DynamoDB again computes the hash value for the 	partition_key we supplied and determines the partition in which the data is stored and retrieves it quickly.
+sort key
+--------
+8.In addition to the partition_key we can create one more column called sort_key. if a table contains partition_key and sort_key then together both becomes primary_key of the table.
+
+9.if we have both portition key and sort how the hash value will be geenerate ?
+  ans:- if we have both portition key and sort also the hash value will be generate based on partition key only.
+10.why do we need sortkey even though we have partition key ?
+  ans:- for any two collections in table there is a chance of collision of hash value because only an partition key is not unique.
+note:- dynamodb is suitable for known access patterns.
+
+5.how to create dynamo db ?
+
+1.go to database service
+2.go to dynamo db
+3.tables --> create table -->(table name,partition key,sort key,select default settings)
+4.goto tables  --> actions --> Explore items --> create item --> if you want add new attribute  -->create item
+5.goto items select table which one you want --> we can select scan or query
+ how to work with index 
+select table --> indexes --> create index -->enter partition key --> goto attribute projection --> select incluse 
+             --> add attribute --> create index
+ goto dynamodb -->Explore items -->select table --> scan --> select index name -->  filter by anttribute which is given in index 
+                  value is given index name value --> run 
+
+**INDEX
+-------
+if you dont know the partition key then we can fetch the data based on index value.(index means any one of the column in table)
+====================================================================================================================================
+nature of the data
+1.static data
+  ex:- an examination results,e-commerce website,a product that is being added by an merchant
+2.moderatly modified at regular interval of time
+  ex:-an shippment being routed by an cargo service provider or courier provider. once the parcel has been dispatched until it arrives       to the next destination the information/status of the parcel will not be changed and remains constant for most of the time
+3.frequently modified data
+  ex:- stock market,frequently modified data,gaming applications.
+4.What is cache, why do we need caching?
+  ans:- Cache is used for storing the data temporarily within the memory, so that we can avoid repeatedly accessing the data from the         database and serve the data from the cache. By applying the caching mechanism we can improve the scalability & performance of 	the application
+5.examples of third party cache libraries ?
+  ans:- 1. ehcache 2. jcache 3. swarncache 4. rediscache 5. memcache 6. oscache 7. coherence cache
+
+The developer writes the code as part of his application using the cache libraries/apis in caching the data.
+
+Elastic cloud cache service 
+---------------------------
+The Elastic Cloud cache service is an managed service that takes care of provisioning, installing, configuring and managing the third-party caching libraries on aws cloud platform, which is similar to RDS service.
+
+1.elastic cloud cache supports how many types of cache library providers ?
+  ans:- 1.REDIS
+	2.MEMCACHE
+2.difference b/w REDIS AND MEMCACHE ?
+  ans:- 
+  (i). Mem Cache: supported data types: simple key/value pair
+       Redis Cache: supported data types: complex types which includes lists, sets, hashes and sortedset etc
+  (ii).Mem Cache: Multi-thread support
+       Redis Cache: No Multi-thread support
+  (iii).Mem Cache: Node upgrade is not supported (we cannot change the shape of the CacheNode)
+        Redis: Node shape upgrade is supported
+  (iv).Engine upgradation: both providers support engine version upgrade
+  (v).Mem Cache: Replication is not supported, so fault-tolerance is not there
+      Redis: Replication is supported, so high availability is guaranteed
+  (vi).Mem Cache: Data Partition and shrading is supported
+       Redis Cache: No support for data partition
+  (vii).Mem Cache: doesnt support automatic fail-over
+        Redis: Optional can be configured
+  (viii).Mem Cache: No support for publish/subscriber model
+         Redis: supports publish/subscriber model
+  (ix).Mem Cache: supports huge volumes of data to be cached
+       Redis: doesnt support huge volumns of data to be cached
+  (x).Mem Cache: no back and restore support
+      Redis: backup and restore is available 
+3.elastic cache is in which scope ?
+  ans:-Elastic Cache is an vpc scoped service.
+4.where we can access the cache ?
+  ans:- we can access the cache from the applications that are deployed on ec2 instances of the cloud platform.so we need to provision
+	the elastic cache instance on private subnet of the vpc.
+5.by default aws creates 2 replicas of the elastic cache for fail-over and fault-tolerance.so we need to create an subnet group in   replicating the cache .
+6.While setting up the subnet group it is recommended to distribute across the AZs of the region so that high-availability is   guaranteed
+#4. upon provisioning the elastic cache, to verify the cache is working or not we need to consume it by placing the message/data and access it back. 
+since we are not application developers, we can verify the cache and its connectivity by provisioning an ec2 instance on public subnet, install redis-tool on ubuntu operating system, using which we can connect to cahe and verify
+once we verified the cache configuration we can share the endpoint of the cache to the developers to let them integrate within their application 
+====================================================================================================================================
+COMPUTE DOMAIN
+--------------
+1.what is mean by compute domain ?
+  ans:- The computing services required for running the application are part of compute domain.
+2.what are the services are there in compute domain ?
+  ans:- (i).ec2
+	(ii).elastic beanstalk
+	(iii).elastic loadbalancer
+	(iv).autoscaling group
+	(v).lambda
+3.ec2
+ ----
+  ans:- ec2 stands for elastic compute cloud, it is nothing but an bare machine installed with operating system (AMI) provided as an         infrastructure resource by the aws cloud platform
+        bare machine (or bare metal) refers to a computer executing instructions directly on logic hardware without an intervening             operating system. 
+4.elastic loadbalancer
+----------------------
+(i).why loadbalancers are used ?
+  ans:- load balancers are used for distributing network/application traffic across then nodes on which our application is running.
+(ii).to host an application and expose it to the public world what we need ?
+  ans:- (i).compute instance
+	(ii).application server  (ex:- if it is web application we need http protocol supported dynamic web servers)
+	(iii).we need to deploy the application on the dynamic web server.
+        along with infrastrure
+	(i).we need public facing internet connection
+	(ii).static ip address to the machine
+	(iii).registered domain routing the request to the ip address of the machine.
+(iii).what is network topology ?
+  ans:- how does the application has beed exposed to the external world refers to the network topology.
+(iv).what are the challenges are there in manually setting up the load balancer for an application over the cluster ?
+   ans:-1. setting up the infrastructure and installing & configuring the load balancers takes lot of time
+	2. configuring the servergroups and routing the requests based on path is very complex 
+	3. if there is node in the cluster went down, we need to reconfigure the server group by detaching the node and attaching the 	   new node, which is an maintainance aspect
+	4. enabling ssl configuration is a difficult job
+	5. healthchecks has to be configured to identify the faulty nodes to stop routing the network traffic to those nodes
+	6. loadbalancer should be configured as HA
+	7. for fault tolerance and HA we need to enable stickysession and session replication
+(v).why elastic loadbalancer is used ?
+  ans:- AWS Cloud platform recommends us to host the application across the ec2 instances of multiple availability zones. To route the         traffic of our application to any of the ec2 instances across AZs of the region it recommends us to use Elastic Load Balancer.
+(vi).what are the advantages of using load balancer ?
+  ans:- 1. fault tolerant = if a machine on which our application is running has been crashed, always we have other machines on which 	   our application is running to serve the requests
+        2. resilience = In case an ec2 instance is heavily loaded with huge traffic, the loadbalancer can route/redirect the traffic            to other nodes helping the node to recovery
+        3. high availability = always we have instances on which application is running so that one goes down there is another            available for serving the request
+        4. scalability = if more number of requests are received for our application we can deploy our application on one more ec2            instance and add to the backend sets of the LBR to route/scale 
+(v).what are the advantages of using elastic load balancer ?
+  ans:-
+     1. elastic load balancer is an traffic distributor across the services or resources of AWS like
+     - ec2 instance
+     - autoscaling group
+     - elastic beanstalk
+     2. spans across the availability zones of the region
+     3. the elastic loadbalancer is highly available, resilient and scalable, all these aspects of Loadbalancer are managed by the         AWSCloud platform we dont need to provision or configure it
+     4. health checks = the LBR conduts periodical health checks to determine the fault nodes and routes the requests only to the         nodes that are available
+     5. supports autoscaling group (asg) = autoscaling group takes care of scaling up the ec2 instances of our application         automatically based on the threshold configuration like cpu utilization : 85% scale-out, memory etc, and modifies the LBR         backendsets automatically to route the traffic to scaled instances as well.
+        when the traffic patterns has been decreased the automatically the asg deprovisions or scale-in the instances to reduce the            cost
+(vi).what are the load balancers supported by the aws cloud platform ?
+  ans:- (i).aws classic loadbalancer
+	(ii).modern loadbalancers
+	(iii).network loadbalancer
+	(iv).Gateway loadbalancer
+(vii).what is aws classic loadbalancer ?
+  ans:-Initially AWS has provided only one loadbalancer service on AWS Cloudplatform called "classic loadbalancer", there after it has        been deprecated and AWS encourages us to use other loadbalancers apart from classic. and right now the classic loadbalancer is        not available.
+(viii).tomcat service file ?
+  ans:- 
+[Unit]
+description=Tomcat Service
+After=network.target
+
+[Service]
+Type=forking
+User=tomcat
+Group=tomcat
+Environment="=JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/"
+Environment="=CATALINA_HOME=/u01/middelware/tomcat9"
+	
+ExecStart=/u01/middleware/tomcat9/bin/startup.sh
+ExecStop=/u01/middleware/tomcat9/bin/shutdown.sh
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+***
+AUTO-SCALING GROUP
+------------------
+1.scaleup/scaleout
+2.what is scaleup and scaledown ?
+  ans:-scaleup/scaledown is modifying the shape of the machine.incase of sclaup the shape of the machine like cpu,ram and storage will
+       will be increased and scaledown means the system resources will be decreased.
+ 	(i).during scaleup/scaledown operation the cloud platform would restart the instance,due to which the application will be down	
+	    and will not be accessible.
+	(ii).to handle the above problem we need to run multiple instances of the application on the group of instances(min 2) and
+	     we need place the scaleup rollout strategy.
+	     1.round-robin :- scale 1 instance by each at a time
+	     2.load-based :- which ever the instance has more load cpu/memory utilization scale them first.
+3.what are the limitations with scaleup in handling huge traffic loads ?
+  ans:-(1).we might have reached to a maximum cpu/memory limits in scaling up the resources, so that  we can not achieve further 	   increased in system capacity and are blocked.
+	(2).when there is an increased traffic load, it doesnt mean that we have more demand on cpu/memory indirectly we have more 
+	   i/o traffic over the network channel.since the network channel would remain same after scleup we are still blocked and                 limited to the network capacity in serving the requests.
+	(3).due to heavy network traffic being generate there is an latency of the network due to which poor performance will be             resulted.
+4.when do we need to use scaleup/scaledown ?
+  ans:- (i).if the computing resources required for running our application has been increased, it could be due to several reasons 	    like
+	1. change in underlying platform version
+	2. patch/upgradation of a software
+	3. new version of the application released which might need more resources
+	then inorder to run the application with increased capacity we need to use scaleup, in otherway to decreases the computing 	capacity we need to use scale-down
+5.when do we need to use scaleout/scale in ?
+  ans:- if the enduser traffic in accessing the application has been increased, to meet the demand of the users we need to use scale-        out, so that the traffic  can be evenly distributed across multiple resources on which the application is running, viceversa         if the traffic goes down we can release a resource using scale-in 
+6.what is AMI ?
+  ans:- Amazon Machine Image which is an disk copy of EBS volume of an ec2 instance which is an bootable disk from which we can create 	an ec2 instance. AMIs are used for creating identical ec2 environments
+7.what is snapshot ?
+  ans:-is a copy of an EBS volume of an ec2 instance, which can copied into another EBS storage volume, but not bootable. We can think        of an Snapshot as a backup disk we have created from an existing EBS volume, so that in case of crash we can recover from the        snapshot
+6.how to work with auto scaling group ?
+  ans:-
+=====================================================================================================================================
+ELASTIC BEANSTALK
+-----------------
+1.what is elastic beanstalk what is the purpose of it ?
+  ans:- (i).To deploy and run an application we need infrastructure (ec2 instance), and necessary platform software to be installed 	    and configured on an environment.
+	(ii).To address the scalability and high availability aspects of running an application we need to create an AMI/Snapshot with 	     the application and configure autoscaling group and loadbalancers
+	(iii).For each technology based application, the platform software requirements in running the application seems to be same.               For eg.. in deploying an java application we most of the time need platform software as 
+	      1. jdk 2. tomcat server
+	(iv).setting up them seems to be repeatitive process. instead aws cloud platform developers identified it as an common              requirement and pre-created templates / techonology stack for each popular platform softwares and provided to us as              elastic beanstalk
+	(v).Now the aws engineer can quickly choose from pre-defined elastic beanstalk templates which environment he need in running             the application and can quickly create infrastructure, platform software for the application.
+	(vi).In addition to the above the elastic beanstalk supports configuring auto-scaling group and loadbalancer in addressing 	     scalability and high-availablity in running the application
+2.elastic beanstalk supports how many types of environments ?
+  ans:- (i).WebServer Environment
+	(ii).Worker Environment
+3.what is web-server environment ?
+  ans:-The webserver environment provides required software packages for deploying and running an http based applications build on any        language.
+4.
+
+======================================================================================================================================
+STORAGE DOMAIN
+--------------
+1.what is storage domain?
+  ans:- All the storage class services related to storing and maintaining the data on aws cloudplatform are grouped under storage         domain. 
+2.what are the services are there in storage domain ?
+  ans:- 1. Simple Storage Service (S3)
+	2. Cloud Front (CDN Server)
+	3. Snowball (Migrational Service)
+	4. Glacier (Backup for RDS)
+	5. Elastic Block Storage (EBS) (harddisk for ec2 instance)
+	6. Elastic FileSystem (shared network storage location)
+	7. Storage Gateway (bridge between on-premise and cloudplatform)
+3.aws cloud platform organize the data into how many storage types ?
+  ans:- 3 types 
+	(i).block storage
+	    block storages are also called as block volumes. These are nothing but FileSystem storage locations in which we can store 	            the data interms of Files/Folders and access them.
+	(ii).object storage
+	     object storage systems are in which we can store any type of object which can be an audio, video, image, document etc and 	     can be accessed it using an unique id
+	(iii).network storage
+              block storages are also called as block volumes. These are nothing but FileSystem storage locations in which we can               store the data interms of Files/Folders and access them.
+
+
+(I).Elastic Block Storage
+    ---------------------
+(1).what is elastic block storage ?
+  ans:- elastic block storage acts as an harddisk for an ec2 instance. At the time of provisioning an ec2 instances, the aws cloud         platform provisions an default ebs volume and attaches as an harddisk to the ec2 instance
+(2).what is the default size of volume to the ec2 instance ? and is mounted into which user ?
+  ans:- 10 gib. i will mount as a root user.
+(3).what is the max allowed storage capacity ?
+  ans:- 16tb
+(4).the default/root volume that is attached to ec2 instace at the time of provisioning we can extend or not ?
+  ans:- we can not.
+(5).how many ways we can extend the storage capacity of ec2 instance after provisioning ?
+  ans:- 2 wyas
+	1. mount an additional storage volume on to the existing ec2 instance
+	2. expand the storage volume of an existing instance
+(6).how to mount an additional storage volume on to the existing ec2 instance ?
+  ans:-
+----------------------------------------------------------------------------------------------------------------------------------
+Elastic File System
+-------------------
+1.what is elastic file system ?
+  ans:- Elastic FileSystem is a network storage location that can be mounted across multiple ec2 instances to share the data         effectively between the applications
+2.when ebs volume will be attached to the ec2 instance ?
+  ans:- ebs volume will be attached to the ec2 instance at the time of provisioning.
+3.when ebs vloume will be destroyed ?
+  ans:- when we deprovision the ec2 instance automatically the ebs volume also will be destroyed.
+4.how to share the data between multiple ec2 instances  or applications ?
+  ans:- aws has provided EFS(elastic file system) which is an network location that can be mounted across ec2 instaces.
+5.using efs where we can share the files ?
+  ans:- Using EFS we can not only share the files across the ec2 instances, we can even transfer the files between EFS and On-Premise         servers as well
+6.features of aws ?
+  ans:-Features:
+	1. Scalable performance
+	Amazon EFS can provide throughput IOPS to lower the latency in accessing the data for various different workloads
+	2. Scalable Storage
+	We start wth initial capacity during the time of provisioning, when we store the data onto the EFS location, automatically the 	storage space will be increased and when we delete the data, the storage space will shriked
+	3. Secured & Complaint
+	EFS locations can be protected by Amazon Virtual Private cloud networking. we can configure the secure access to the NFS 	location through subnets and security groups
+	4. Storage Options
+	EFS offers 2 storage classes
+	1. Standard = Most frequently accessed data can be placed in standard storage class. 
+	EFS locations are provisioned within a region, when we choose storage class as standard, then the EFS location is replicated 	across all AZs of the region automatically for optimized access
+
+	2. one zone = Less frequently accessed data can be placed on one-zone. The name itself will tells you the data being stored 	with One-Zone storage class will be kept only at one availability zone only.
+7.what is the cost comparision b/w standard and one-zone class in efs ?
+  ans:- in standard class storage cost is very high.but in one-zone the cost of storage comes down to 90% compared with standard.
+8.standard class data will be stored in which az of the region ?
+  ans:- it will store standard class data in all the az's of the region.
+9.one-zone data will be stored in whcih az's ?
+  ans:- it will store in one az.
+10.how many ways we can access efs location ?
+  ans:_ 2 ways are there
+	1. using mount targets
+	2. access points
+11.mount target :- we can access the efs location by mouting the mountTarget onto the ec2 instances within the vpc, through                    mountTargets we have
+                   1. access to the root filesystem of the EFS
+                   2. all the operations we perform on the efs location will be performed on the root user
+12.access point:-access points help the application easily accessing the efs location. For each application we create an separate 	         access point dedicating a directory. 
+                 per application we create an linux user and configure in access point to perform operations on efs location through                  the application user. 
+13.advantages of using access point ?
+  ans:-advantages:
+	1. every application will perform operations on their dedicated directory location on the efs location, so no chance of 2 	different applications overlapping the data of each other
+	2. security, not 2 different applications can see or access others data
+	3. multiple instances of the application can access the accesspoint through the same user
+14.what is the location mount target ?
+  ans:- /
+15.what is the location of accesspoint ?
+  ans:- /dir name
+--------------------------------------------------------------------------------------------------------------------------------
+SIMPLE STORAGE SERVICE (S3)
+---------------------------
+1.an application may produce different types of data what are those ?
+  ans:- (i).structured data  (rds service)
+	(ii).semi structured data  (dynamodb
+	(iii).object (like audios,videos,images..) (S3)
+2.in no-sql or semi structure database we store the data in format ?
+  ans:- collections or tables.(collection or table will not have fixed set of columns).
+	ex:- key/values based storage.
+3.in object storage database which type of data we can store ?
+  ans:- audio,video,images,etc.
+4.example of object storage database ?
+  ans:- (i).aerospike
+	(ii).hana
+	(iii).S3
+5.how to store the data in s3 ?
+  ans:- it will allows to store the data in storage buckets.
+6.what is storage bucket ?
+  ans:- storage buckets are similar to folder of a File system used for organizing and storing the group of related data.
+7.how to give control access to the storage buckets and their objects ?
+  ans:- 2 ways
+	(i).acl
+	(ii).policies
+8.in which level we can build the acl's or policies ?
+  ans:- (i).bucket level
+	(ii).object level
+9.What is the difference between EFS and S3?
+  ans:- 1. EFS has to be mounted on to an ec2 instance in order to store files/folders into it, where as an S3 is shared storage            service where we can perform operations either using sdk or api
+        2. Programmer has to write complex logic in storing and organizing the data on EFS location, whereas we can store or access            the data from S3 storage using simple api/sdks
+        3. EFS is suitable for backup or data migration across the ec2 instances or on-premise and ec2 as well. where as S3 is used            for storing application data.
+10.what are the storage classes supported by S3 ?
+  ans:-1. S3 Standard
+          S3 standard offers high durablility, availability and performance object storage, which can be used for frequent access of              the data. It deliversy low-latency and high throughput in accessing the objects
+       2. S3 Intelligent-Tiering
+          When we are not certain about how the data is being used or access from the S3 storage bucket, then place the data in S3           Intelligent-Tiering.S3 automatically monitors the uage of the data based on which it moves the data across the storage                 classes for optimizing the cost
+       3. S3 Standard IA
+	  S3 Standard IA (infrequent access)  is used for storing the data that is being access less-frequently. but we need           durability, 	availability and low-latency then we need to use S3 Standard IA. The price of storing the data per GB is very           less when compared with standard
+       4. S3 One-Zone IA
+          If the data is less frequently access, then we can place the data in one AZ only which lowers the cost of storage upto 20%             when compared with S3 StandardIA. durability is not guaranteed.
+       5. S3 Glacier Instant Retrieval
+          Glacier is an archival storage service where the data is stored on magnetic tapes.
+          It is used for storing long-lived data that is rarely accessed and lowest-cost of storage. We can save upto 80% of storage             cost in storing the data
+       6. S3 Glacier Deep Archive
+          durable across multiple availability zones, lowest-cost storage option. suitable for storing the data alternate to magnetic           tapes. Retrival of the data takes 12 hours
+       7. S3 outposts
+          Instead of storing the data on cloud, we can store the data on on-premise servers of your organization using S3 outposts
+10.what is the defaulr behaviour of acl's ?
+  ans:- by default acl's are disabled.and aws deprecated acls and doesn't recommended to use them.since they have limited control in         enforcing the security.
+11.if we disable the acl's what is the another way to grant access to the bucket/objects in s3 ?
+  ans:- through policies.
+12.how to give access to the buckets publicly ?
+  ans:- by default the bucket and objects are not accessible publicly  we need to enable public access by attaching the policy.
+	and uncheck block all public access.
+	
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1668821302963",
+    "Statement": [
+        {
+            "Sid": "Stmt1668821297968",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::rapidos3bucket/*"
+        }
+    ]
+}	
+13.what is mean by bucket level policy ?
+  ans:- the policies we are binding directly to the bucket or object level are called bucket level policies.
+14.how to give access to the specific user ?
+  ans:- 
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1668822631949",
+    "Statement": [
+        {
+            "Sid": "Stmt1668822628503",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::227218640239:user/terraformuser"
+            },
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::rapidos3usermgmt/*"
+        }
+    ]
+}
+
+15.what will happen when we check the block all public access ?
+  ans:- the bucket and objects are not accessible publicly without authentication. and even by attaching policies also we cannot grant         public access
+note :- Bucket policies are limited to 20 KB in size.
+------------------------------------------------------------------------------------------------------------------------------------
+CLOUD FRONT (cdn)
+-----------------	
+1.why cloud front service is used ?
+  ans:- cloud front service is used for hosting an static web application to reduce the load on the backend servers of the 	        application.
+2.how aws host and distribute the static content ?
+  ans:- aws host and distribute the static content through CDN servers by placing them at verious edge locations across the globe.
+	(410)
+3.application that is deployed using cloudfront service,in which order the application will recieve the request ?
+  ans:- cloudfront --> loadbalancer --> target group 
+---------------------------------------------------------------------------------------------------------------------------------
+GLACIER
+-------
+1.why Glacier is used ?
+  ans:- glacier is used for storing archival data(long term data) at cheapest cost.and it is almost 10x cheap than s3 storage.
+2.what are the features of glacier ?
+  ans:- 1.cheapest cost
+	2.durabality (quality of being able to last a long time without becoming damaged)
+	3.secured
+	4.infinite storage capacity
+	5.region specific cost
+3.in which format we can store the data in glacier ?
+  ans:- in glacier we can store the data interms of objects similar to s3.
+	like audio,video,images,documents,files.
+4.how to move the data from rds or dynamodb to aws glacier ?
+  ans:- aws cannot move the data directly from these services into glacier since the 2 worlds of data storage are different. The         application developers has to write archievers and exporter programs in retriving the data from database and convert into         archivable format (kind of file) and store into glacier using aws glacier apis
+5.how to move the data from s3 storage to glacier ?
+  ans:- the data in S3 is stored in object format, by configuring lifecycle policy on the bucket aws itself takes care of archiving         the objects into glacier and retrieve back by moving them into S3 again when required.
+	the data that is stored through S3 lifeycle cannot be read back using apis
+note:- archival data stores in a magnetic tape mediums at a cheaper price which is nothing but glacier.
+	(magnetic tapes are used for storing heavy data)
+6.how to store the data in glacier ?
+  ans:-in glacier we  need to create vaults into which we can store the data in 3 ways
+	(i).through aws glacier apis
+	(ii).glacier tools
+	(iii).s3 storage bucket lifecycle policy into glacier
+7.what is the cost of storage in glacier ?
+  ans:- The storage cost varies per region and the minimum cost of storage starts at: $0.0036 per GB/ month
+	All the data storage or uploads into Glacier Vaults are free
+8.how to retrieve the data that is stored in glacier ?
+  ans:-For each data retrieval from Glacier amazon charges us. Since Glacier offers storage of data at cheapest/lowest cost, all the        data we stored into glacier will be written by amazon into magnetic tapes. So that data in galicer is not readily availbale, so        we need to place request into aws glaicer asking toread the specific data , it would read the data from magnetic tapes and make        it available so always reading the data from galicer is delayed
+9.what are the retrieval modes are available to retrieve the data from glacier ?
+  ans:- 3 modes
+	1. expedited
+	2. standard
+	3. Bulk
+note: we can use fast-glacier tool for storing and accessing the data from aws glacier service
+===========================================================================================================
+SNOWBALL
+---------
+1.what is snowball ?
+  ans:- showball is an physical hardware device that aws team carries to the datacenter and they themself copy all the data from         datacenter and move to the respective aws clous services by which migrating from on-premise or datacenter to aws cloud         platform becomes easy.
+        snowball is an service that is offered by aws  to move the petabytes of data from datacenter to aws cloud platform.
+---------------------------------
+STORAGE GATEWAY
+---------------
+1.how to run and bridge the applications which are running on on-premise and cloud parallelly ?
+  ans:- we need to use storage gateway.
+2.what is the use storage gateway ?
+  ans:-By using storage gateway, the existing applications which are running on on-premise doesnt need to be rewritten, rather through        the help of storage gateway, they can push the application data generated on the on-premise into the cloud platform, so that        the applications which are running on on-premise and cloud both can use the same storage/data to run
+       over the time we can migrate the whole bunch of applications to the cloud and can demolish the on-premise the infrastructure
+3.how to store the application data that is generated on on-prepmise to cloud ?
+  ans:- storagegate way creates an ebs volume and let mount it onto the on-primise machine so that application can start writing the
+	data as if the volume is an local volume and doesn't require any code change.
+5.how many types of storage gateway's are there ?
+  ans:- 3 types
+	(i).volume gateway
+	(ii).tape gateway
+	(iii).file gateway
+6.how to work with volume gateway ?
+  ans:- create new ebs volume and attach to the storage gateway so that  it will be mounted as a disk onto the on-premise machine.
+  note:-
+	(i).caching: frequently access data to reduce the network latency in accessing the data on the on-premise machine.
+	(ii).upload buffer : to temporarily hold the data before it is being uploaded on the block volume.
+
+====================================================================================================================================
+IAM service
+-----------
+1.iam stands for ?
+  ans:- identity and access management
+2.why iam service is used ?
+  ans:- it is used for delegating the access to the services of an aws account to other users.
+3.in aws account how many types of users are there ?
+  ans:- (i).ROOT user
+	(ii).IAM user
+4.what is root user ?
+  ans:- ROOT user is the owner of the aws account, and has full previliges in using all the services of the aws account.
+5.what is IAM user ?
+  ans:-ROOT user create additional user called "IAM user" to grant permissions in allowing the others to access and manage resources        or services of his account
+6.how many ways we can grant access to the IAM user ?
+  ans:- (i).api/programmatic access 
+	    by default an IAM user will be created with programmatic access where he will be generated with an api access key/secret             access key using which he can access, manage the resources/services of the ROOT account through application programs
+            like aws api, aws sdk, aws cli tool or any other third-party tools (terraform, ansible, cloudformation etc)
+	(ii).management console access
+             The IAM user can login into aws console and access the resources/services of the ROOT account. to login into the console,              he has to choose IAM user login and has to enter #12 account no of the root user
+groups
+------
+1.what is group ?
+  ans:- groups are used for grouping related users of similar roles together so that they can be managed easily by binding         policies/permissions at the group level
+2.how many ways we can assign permissions to the iam user ?
+  ans:- 2 ways
+	(i).user + policies
+	(ii).user + group
+policies
+--------
+1.what is policy ?
+  ans:-. A policy is an expression that comprises of set of actions/permissions that can be granted on a resource to a user. Now          instead of assigning #30 permissions individually to an user, we can assign policy which comprises of these #30 permissions            quickly 
+        So policy is nothing but collection of permissions/actions pertaining to a resource that can be granted to a owner/user of aws
+	ex:-AWSEc2ReadOnlyAccess is a policy which has been defined with all the read-only actions allowing the users to perform one            ec2 services of an Account.
+
+2.how many types of policies are there ?
+  ans:- 3 types
+	(i).aws managed policies
+	(ii).user management policies
+3.aws management policies :-
+   The AWS managed policies are pre-defined by the aws cloudplatform people. they identified common usage patterns of the    resources/services and has created pre-defined policies with actions for each type of resource, these policies can be used directly    for granting access on resource to an user.
+4.advantages aws management policies ?
+  ans:- The advantage of aws managed policies is these are managed and maintained by aws itself. For eg.. in future if there is an new feature introduced on  a service, there could be additional permissions might be introduced, so necessary changes on the relevant policies based on the new permissions will be performed automatically by aws cloudplatform developers itself.
+5.examples aws management policies ?
+  ans:- 1. AWSEC2ReadOnlyAccess
+        2. AWSEc2FullAccess
+	3. AWSS3ListBuckets
+        4. AWSS3GetObject
+6.user management policies :-
+  AWS Root Account user can create his own policies for granting access to a specific resource(s) of his account to an IAM user.
+7.how many types of usermanagement(customer) policies are there ?
+  ans:- 2 types
+	(i).account-level policies
+	(ii).inline policies
+8.what is account level policies ?
+ ans:- we can define the policies at the account level and can reuse them while creating the various IAM users of the account
+9.what is inline policies ?
+  ans:- while creating an IAM user we can bind policy to the user by defining directly at the user level, this policy cannot be reused         for other users we create on the same account
+10.aws policies are defined in which format ?
+  ans:- json format.
+11.what are the attributes we have to use to create the policy ?
+  ans:- (i).principle (indicates an user to whom we want to grant access)
+	(ii).sid (sequence ID)
+	(iii).effect ("allow" / "deny")
+	(iv).Action ("permission to be issued or stopped ")
+	(v).resource (arn resource name)
+	(vi).condition (based on condition the permissions should be granted or revoked.
+
+ROLE
+----
+1.what is ROLE ?
+  ans:- we can grant access permissions or policies to an aws service/resource in accessing other aws service/resource of an account
+	by using role.
+	ex:- granting permissions to access s3 bucket to a resource(ec2 instance) rather than user.
+
+----------------------------------------------------------------------------------------------------------------------------------
+ROUTE 53
+----------------------------------------------------------------------------------------------------------------------------------
+Message domain
+--------------
+all messaging related services are provided as part of messaging domain.
+1.how many types of services are there in messaging domain ?
+  ans:- 3 types
+	(i).Simple Notification Service
+	(ii).Simple Queuing Service
+	(iii).Simple Email Service
+2.what is SNS ?
+  ans:- simple notification service which is nothing but an topic in pub/subscriber model. 
+
+
+
+===============================================================================================================================
+DEVELOPER TOOLS
+---------------
+1.what are the tools that are provided as part of developer tools ?
+  ans:- (i).CodeCommit
+	(ii).CodeBuild
+	(iii).Code Deploy
+	(iv).CodePipeline
+	(v)Code Artifact
+2.why developer tools are used ?
+  ans:- to implement devops process.
+3.what is code commit ?
+  ans:- CodeCommit is nothing but a git repository managed and hosted by the aws cloudplatform
+4.what is code build ?
+  ans:- Using CodeBuild we can build the project and verify all the tests are running properly or not. We can think of it as similar         to ci pipeline
+        Upon developer commits the code we want to run the build on the project to verify all the tests are passed and required         artifacts are produced out of the build or not. This requires us to bake infrastructure and write pipeline code for building         and executing the tests on the project
+        instead we can use aws codebuild which takes are running the build on the project
+5.what is code deploy ?
+  ans:-	Through the help of CodeDeploy we can deliver the software application on the aws cloud infrastructure which is equal to cd         (continous deployment) pipeline
+6.what code pipeline ?
+  ans:- Through the help of CodePipeline we can execute the CodeDeployment to release the code / deploy the code.
+7.what is code artifact ?
+  ans:-Code Artifact is used for storing the build artifacts that are produced through CodeBuild
+7.how the repositories are managed ?
+  ans:- we need to group the users of the repository in teamleads and members and grant access to them. A member can pull, push,         clone, commit the code and create PR. A team lead can create repositories, review PR and merge them
+        none of them should have access to deleting the repositories
+8.how to grant access to the repositories in aws ?
+  ans:- grant access to the repositories we can create IAM users and bind policies enabling them to access the code repositories               easily
+9.examples of policies that are there in aws for code commit ?
+  ans:- 1. AWSCodeCommitFullAccess
+        2. AWSCodeCommitPowerUser   (full access)
+        3. AWSCodeCommitReadonly
+10.how to use CodeCommit ?
+  ans:- create an IAM user and grant PowerUser policy enabling him to create repositories and manage them.
+        The IAM user apikey/secret key cannot be used for accessing the CodeCommit repositories. We need to create an separate         CodeCommit credentails for each IAM user using which he/she can access the CodeCommit Repository
+====================================================================================================================================
+AWS CLOUD WATCH
+---------------	
+1.what are the services that are there as part of cloudwatch ?
+  ans:- 3 services 
+	(i).metrics
+	(ii).log
+	(iii).alarms/alerts
+2.how cloudwatch capture the metrics ?
+  ans:- while provisioning the services we need to enable cloudwatch to capture the usage metrics,so that cloud watch will capture and 
+	provides their usage.
+	note:- CloudWatch will periodically polls the services/instances for every 5 minutes and gathers the metrics and provides the                data. if we want the metrics to be capture more often we need to upgrade pricing plan
+	we want to monitor the usage of the compute services and wanted to derive metrics based on the usage of cpu/memory. and out of         these metrics we want to draw dashboards or reports helping us in understanding the resources are being under utilized or               highly utilized.based on which we can scale-out or scale-in the infrastructure and can save the cost, this can be achieved          using aws cloudwatch.The AWS Cloudwatch has an close integration with all the aws servics, during the provisioning of the              services we need to enable cloudwatch to capture usage metrics,so that cloud watch will capture and provides their usage
+2.logs
+------
+  ans:-For each action/event performed by the aws service, the aws cloudplatform logs those events aspart of the cloud watch.
+For eg.. when we provision an ASG with threshold limits, 
+when the ASG reaches to the Threshold limit, it publishes event and scale/out the instances, along with that the cloud watch logs the event that has been triggered
+which helps us in debugging and understanding why does the ASG has scaled-out/scaled-in
+3.alarms/alerts
+---------------
+We configure alarms based on threshold values, so that when the services falls in the threshold limits, the cloud watch can notify us either by publishing an message into an SNS or SQS queue
+===================================================================================================================================
+TRUSTED ADVISOR
+---------------
+1.what is trusted advisor ?
+  ans:- Trusted advisor is an aws account level monitoring tool, that monitors the account activities and derives reports and provides         recommendations on the areas where we can improve
+  ex:- Cpu usage level of an ec2 instance is low= then trusted advisor sends an notification to reduce the shape of the ec2 instance
+   Security Group = if it is open to the workd, it sends an notification about the security breach opened aspart of the security group
+2.how work with trusted advisor ?
+  ans:- By default for an AWS Account trusted advisor is not available. we need to change our plan to use trusted advisor and 	additional cost will be incurred.
+====================================================================================================================================
+AWS CLOUD TRAIL
+---------------
+
+
+
+
+
+
+====================================================================================================================================
+AWS LAMBDA
+----------
+1.what is aws lambda ?
+  ans:- Lambda is an server-less technology offered by aws cloudplatform to run burstable short-lived programs that lives at an span         of nanoseconds/microseconds of time and performs an operation
+2.how to work with aws lambda ?
+  ans:- The developer of the program builds the codemodule, in one of the supported lambda programming platforms using Lambda and AWS         cloud sdks packages the program and delivers to the aws cloud engineer.
+        The aws cloud engineer is responsible for configuring the aws lambda function with the codemodule along with configuring the         invocation points on when does the lambda program should be executed.
+	ex:-whenever the etaxfiling web application has put an object (taxfiling doc) on to the S3 storage bucket, we can configure 	    the Lamdba function to be triggered, so that the Lambda program reads the taxfiling doc, perform calculation and generates             the tax documents in format that can be uploaded to income tax website and quits the execution.
+            If we configure this program as a lambda, then whenver the new doc got uploaded into S3 bucket the Lambda would be                     triggered and finish the execution and release the infra, so that we would be only charged for the amount of time the             	    lambda program has executed only.
+3.adwantages of using lambda ?
+  ans:- 1. no dedicated infra to execute the program, which saves huge amount of cost
+	2. no infrastructure or software configuration setup required that saves lot of time
+	3. no need to manage scalability and availability
+	4. no need of prior estimates of how much ram/cpu needs to be allocated to run the program, lambda itself determins and             allocates the resources while running by gathering the historical execution of the program.
+
+====================================================================================================================================
+AWS CLOUD TRAIL
+---------------
+AWS CloudTrail is a service that helps you enable governance, compilaince and operational activities and risk auditing information of an aws account.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

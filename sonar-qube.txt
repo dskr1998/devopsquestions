@@ -1,0 +1,158 @@
+1.what is sonarqube ?
+  ans:-sonarqube is an static code analysis tool which is an opensource tool for ensuring the code quality.
+2.what is the use of static code analysis tools ?
+  ans:-these tools helps us in identifying the most commonly made programattic errors like
+        (i).unused variables
+	(ii).infinite loops
+	(iii).unnecessary else block
+	(iv).unreachable try/catch block
+	(v).resource leakage errors
+3.before delivering the code to other developer for peer review what we need to ensure ?
+  ans:- we should ensure 
+	(i).all the unit test cases passed
+	(ii).code coverage is meeting the criteria
+	(iii).code analysis has been passed
+4.after all test cases passed then what should do ?
+  ans:-then allow the developer to push the code into the feature branch,then create the PR and submit for review.
+5.when we run the git push what will happen ?
+  ans:-when we run git push command internally git hooks will be executed.git hooks will run maven build.if maven build success               then success file will come.git hooks code checks for success file.if it's not present it abort's the git push.
+6.what is code coverage ? why codecoverage tools are used ?
+  ans:-Code Coverage is about the lines of code being tested by the testcode written aspart of the project. In order to certify the        code is working propertly we need to ensure all the lines of code within our application has been executed/tested through test        code, we can analyze what percentage code is being tested by the testcode using code coverage tools
+7.what is code review ?
+  ans:-The code review process is used for verifying the quality of code written by the developer. There can be bad programming        mistakes or poor implementation of the logic that can be identified and made better through code review process.
+8.how many types of code reviews are there ?
+  ans:- two types
+	(i).peer review
+	(ii).static code analysis tools
+9.what is peer review ?
+  ans:- it is the process of delevering the code to another developer in the team asking him to verify or review the code before
+        merging the code into the repository.so that developer can verify and eliminate any inefficient implementations or bad
+	programmatic logic in writing the code.
+================================================================================================================================
+10.what is the full process of PR ?
+
+  ans:- (i).developer working on featurebranch  (ex:-myaccountfeature)
+	(ii).commit and push the code into feature branch
+		==>during the push githooks will execute
+		  -->executes the maven build (maven will kick of unit test cases)
+		  -->git hooks verify the unittests passed/failed and aborts the push
+	(iii).upon pushing the code into the feature branch developer has to merge the code into develop branch.
+	(iv).the devops engineer has to enforce the developer to create PR (pull request)
+11.what are the synonyms for PR review ?
+  ans:-creating the PR by select the    source branch : feature
+					target branch : develop     (to merge)
+	and send the PR to the team.the team review the  code through PR and gives code review comments,once the PR is approved the
+	developer can merge the PR.
+
+12.what are code-coverage tools are there ?
+  ans:- (i).jacaco
+	(ii).emma
+	(iii).sonarqube
+13.what are code-review tools are there ?
+  ans:- (i).findbugs
+	(ii).PMD
+	(iii).sonarqube
+14.sonarqube is used for both code coverage and code review.
+15.how To specify the version of sonar-maven-plugin instead of using the latest ?
+  ans:-mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar
+16.In some situations you may want to run the sonar:sonar goal as a dedicated step. Be sure to use install as first step for multi-   module projects
+  ans:- mvn clean install
+        mvn sonar:sonar -Dsonar.login=myAuthenticationToken
+
+17.how to delete sonarqube projects ?
+  ans:-sonarqube administration --> projects  --> select project --> delete
+-----------------------------------------------------------------------------------------------------------------------------------
+how to work with sonarqube ?
+
+(i).install sonarqube
+(ii).goto sonarqube bin directory
+(iii).go to platform specific directory then run the file  (if it is windows StarSonar.bat)
+(iv).go to browser enter http://localhost:9000  then it will ask username and password
+     default username : admin
+     default password : admin
+(v).then it will ask to update the password
+(vi).then goto projects manually create the project add project displayname then setup
+(vii).create locally
+(viii).generate token --> continue  -->  select maven  --> copy mvn clean verify command  
+       that look like 
+        mvn clean verify sonar:sonar \
+	  -Dsonar.projectKey=mine \
+ 	  -Dsonar.host.url=http://localhost:9000 \
+ 	  -Dsonar.login=sqp_557bcc0bf10dcaa41a74a67510d619fc372cc9fb
+(ix).go to project directory paste that  command.it will build the project
+(x).go to browser --> projects  --> you can see the result of your project.
+
+
+
+C:\Program Files\Java\jdk-11
+
+
+https://download.java.net/openjdk/jdk17/ri/openjdk-17+35_windows-x64_bin.zip
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

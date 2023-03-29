@@ -1,0 +1,334 @@
+1.replace the mysql url,username and password in application.yml by using jinja2 template.so we need to rename the application.yml   into application.yml.j2
+  #dbhost#
+  #dbusername#
+  #dbpassword#
+2.add final name in pom.xml (name is urotaxi)
+3.create config folder for creating infra
+  inside that directory create terraform dir
+  inside the terrafrom dir create the terraform files 
+  main.tf
+  variables.tf
+  inputs.auto.tfvars
+  output.tf
+4.main.tf
+  -------
+  terraform {
+    required_providers {
+      aws = {
+        source = "hashicorp/aws"
+      }
+    }
+     backend "s3" {
+      bucket = "urotaxi-tfstate-bucket"
+      region = "ap-south-1"
+      key = "terraform.tfstate"
+      dynamodb_table = "urotaxi-terraform-lock"
+    }
+  }
+
+  provider "aws" {
+    region = "ap-south-1"
+    profile = "default"           (or if you dont want to set the profile aws accesskey id and secreat access key we cat set through
+  }				   environment variables).
+
+
+resource "aws_subnet" "urotaxipubsn1" {
+  cidr_block = var.urotaxvpc_pubsn1
+  vpc_id     = aws_vpc.urotaxvpc.id
+  tags = {
+    "Name" = "urotaxipubsn1"
+  }
+  availability_zone = "ap-south-1a"
+}
+
+
+resource "aws_subnet" "urotaxiprvsn3" {
+  cidr_block = var.urotaxvpc_prvsn3
+  vpc_id     = aws_vpc.urotaxvpc.id
+  tags = {
+    "Name" = "urotaxiprvsn3"
+  }
+  availability_zone = "ap-south-1a"
+}
+
+resource "aws_subnet" "urotaxiprvsn4" {
+  cidr_block = var.urotaxvpc_prvsn4
+  vpc_id     = aws_vpc.urotaxvpc.id
+  tags = {
+    "Name" = "urotaxiprvsn4"
+  }
+  availability_zone = "ap-south-1b"
+}
+resource "aws_internet_gateway" "urotaxiig" {
+  vpc_id = aws_vpc.urotaxvpc.id
+  tags = {
+    "Name" = "urotaxig"
+  }
+}
+
+resource "aws_route_table" "urotaxiigrt" {
+  vpc_id = aws_vpc.urotaxvpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.urotaxiig.id
+  }
+  tags = {
+    "Name" = "urotaxiigrt"
+  }
+}
+resource "aws_route_table_association" "urotaxiigrtassociation" {
+  route_table_id = aws_route_table.urotaxiigrt.id
+  subnet_id      = aws_subnet.urotaxipubsn1.id
+}
+
+resource "aws_security_group" "urotaxjavaserversg" {
+  vpc_id = aws_vpc.urotaxvpc.id
+  ingress {
+    from_port   = "8080"
+    to_port     = "8080"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = "22"
+    to_port     = "22"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    "Name" = "urotaxijavaserversg"
+  }
+}
+
+resource "aws_security_group" "urotaxdbsg" {
+  vpc_id = aws_vpc.urotaxvpc.id
+  ingress {
+    from_port   = "3306"
+    to_port     = "3306"
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    "Name" = "urotaxidbsg"
+  }
+}
+
+resource "aws_db_subnet_group" "urotaxidbsubnetgrp" {
+    name = "urotaxidbsubnetgrp"
+    subnet_ids = [aws_subnet.urotaxiprvsn3.id, aws_subnet.urotaxiprvsn4.id]
+    tags = {
+      "Name" = "urotaxidbsubnetgroup"
+    }
+}
+
+resource "aws_db_instance" "urotaxidb" {
+  vpc_security_group_ids = [aws_security_group.urotaxdbsg.id]
+  allocated_storage = 10
+  db_name = "urotaxidb"
+  engine = "mysql"
+  engine_version = var.db_engine_version
+  instance_class = var.db_instance_type
+  username = var.db_username
+  password = var.db_password
+  skip_final_snapshot = true
+  db_subnet_group_name = aws_db_subnet_group.urotaxidbsubnetgrp.name
+}
+
+resource "aws_key_pair" "urotaxikp" {
+  key_name = "urotaxikey"
+  public_key = var.urotaxi_public_key
+}
+
+resource "aws_instance" "urotaxiec2" {
+  vpc_security_group_ids = [aws_security_group.urotaxjavaserversg.id]
+  subnet_id = aws_subnet.urotaxipubsn1.id
+  ami=var.ami
+  key_name = aws_key_pair.urotaxikp.key_name
+  instance_type = var.instance_shape  
+  associate_public_ip_address = true
+}
+
+
+5.variables.tf
+  ------------
+variable "urotaxvpc_cidr" {
+  type = string
+}
+
+variable "urotaxvpc_pubsn1" {
+  type = string
+}
+
+variable "urotaxvpc_prvsn3" {
+  type = string
+}
+variable "urotaxvpc_prvsn4" {
+  type = string
+}
+variable "db_instance_type" {
+  type = string
+}
+variable "db_username" {
+  type = string
+
+}
+variable "db_password" {
+  type = string
+}
+variable "db_engine_version" {
+  type = string
+}
+variable "ami" {
+    type = string
+  
+}
+variable "urotaxi_public_key" {
+    type = string
+}
+variable "instance_shape" {
+  type = string
+}
+
+6.inputs.auto.tfvars
+  -------
+urotaxvpc_cidr = "10.0.0.0/16"
+urotaxvpc_pubsn1="10.0.1.0/24"
+urotaxvpc_prvsn3="10.0.2.0/24"
+urotaxvpc_prvsn4="10.0.3.0/24"
+db_instance_type="db.t3.micro"
+db_username="root"
+db_password="Welcome#123"
+db_engine_version="8.0.30"
+ami="ami-024c319d5d14b463e"
+urotaxi_public_key="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDiaVPFGb64VWZYhukf+l1PsTWtUubqX15mgAMEuzivYFenEYgnHAdW3gtqToi2GkSUgnYJBAl3/zFfhY7WJa1ZvtaN4qh9km8Ya51mhz5HIKa7qz7+9Aw+5ylzMlWjFn7P3JGd6dqhnY52rI838Mn5zUsMywbR+vvCG4abBpAdR8pOot+dFwRWbSkDcuiqmCBo60UEIYxBS36MaGnoJB1w4eKPKh3IKgRVURqVHBRcyCANPTsXKRjIdpIx7XT7tSDwJKdwFgqK1xzDq7hMUvOFpgg4OJ8EKs+xk7jXocEhRNIdAAStN4YwCXG1Cs6A7dAO2M/VXyzLDfolhMXgYGKIFGyZko5oC3qHKhHowenaIfZhAlw+FWtRzBwuiDrrJWkSwqIzJW0lR/3j37m1nXHbycCh2PPgIT2QnHDQy86Q0dkH8mgQx0MxVg8az1t+V+yR5ssu/KibRHTJSi8naBbKGbXE85z5PmX4PI5bt42bInIHuHygdiP8SAtO14hKSn0= Sriman@DESKTOP-1QI4S5N"
+instance_shape="t2.micro"
+
+7.output.tf
+ ----------
+output "db_endpoint" {
+  value = aws_db_instance.urotaxidb.endpoint
+}
+output "javaserver_ip" {
+  value = aws_instance.urotaxiec2.public_ip
+}
+
+
+here we dont have lbr so we need to host in public ip only.dont need jumpbox.dont need nat gateway.dont need hyb sn.
+
+==================================================================================================================================
+create aws credentials for creating infra using terraform
+IAM --> User groups -->  create user group --> EC2 full access,RDS full access --> create group.
+create user --> username --> programmatic access --> add into group --> tags (name username)(role devops engineer) --> create. 
+======================================================================
+How to integrate jenkins with terraform ?
+  ans:- we need to install terraform plugin.configure it as an auto installer under global tool configuration.
+	 manage jenkins --> manage plugins --> pipeline:Groovy libraries -->
+	mange jenkins --> available plugins --> terraform 
+
+after add the terraform plugin
+global tool configuration --> here we can see terraform --> add terraform --> select terraform linux (386) --> add Name terraform 
+versionname.(21207) --> apply --> save. 
+
+how to configure aws credentials ?
+  ans:- manage jenkins --> manage credentials --> system --> global credentials --> add credentials --> kind (secret text) -->
+	scope (global) --> ID (AWS_ACCESS_KEY)  --> Secret (copy the aws access key) --> description (AWS ACCESS KEY).
+	again add credentials --> kind (secret text) --> scope (global) --> ID (AWS_SECRET_ACCESS_KEY) --> Secret (copy the aws         secret access key) --> description (AWS SECRET ACCESS KEY). --> create.
+	for database password also same process. ID:UROTAX_DB_PSW
+
+what will happen if you add any tool inside the global tool configuration ?
+  ans:- if you add any tool inside the global tool configuration that tool will automatically install where ever we are using.
+
+new item --> urotaxipipeline (item name) --> pipeline project --> configuration --> description --> 
+
+pipeline {
+  agent any
+  environment {
+    AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY')			//if you configure the variables in env section then 		    AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')        //these env vars will be created on target env.
+    UROTAXI_DB_USER = 'root'
+    UROTAXI_DB_PSW = credentials('UROTAX_DB_PSW')
+  }
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '3'))  
+    disableConcurrentBuilds()
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+  tools {
+    maven '3.8.6'
+    terraform '21207'
+  }
+  stages {
+    stage('checkout'){
+      steps {
+        git(url: 'https://github.com/techsriman/urotaxijenkins.git', credentialsId: '')
+      }
+    }
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

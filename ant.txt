@@ -1,0 +1,356 @@
+1.task=tag
+2.group of tags=target
+3.buildscript=build.xml
+4.<project name,basedir,default>
+5.<target name,dependson> 
+6.d:/work:/>
+calculator
+|-src 
+ |-com
+  |-calc
+   |-test
+    |-CalcTest.java
+|-build.xml
+|-build
+ |-classes
+   |-*.class
+ |-dist
+   |-*.jar
+7.
+---------------------------------------------------------------------------------------------------------------------------
+errors:-
+------
+1.premature end of file
+2.pseudo attribute is expected
+  ans:- xml prolog is mistake
+---------------------------------------------------------------------------------------------------------------------------
+1.what is mean by build tool ?
+  ans:- automate the process of running the application through tools which are called build tools.
+2.what is mean by build process ?
+  ans:- to run a software application we need to perform some activities like (i).setting classpath (ii).exporting environment 
+ 	variables (iii).writing/modifying configuration files (iv).compiling the application (v).package the application with all 
+	required files for execution (vi).run the application
+	all these activities put together to run the application is called build process.
+3.why not the development team can use IDE for compiling/packaging and executing the application to testing the application?
+  ans:- when we are working on large enterprise application the application may comprises several modules,where each of these modules
+	has interdependencies interms of build order dependencies,deployment and runtime dependencies.which can not be managed through
+	ides,developer has to takes care of managing these modules in running and testing the application.
+4.what are problems in carrying the build/deployment activities manually ?
+  ans:- to perform these activities manuallly takes lot of time ,since these are repeted actvities that has to be conducted by the
+	developer repeatitivly there are high chances of performing some human errors while carrying these activities 
+5.ant stands for ?
+  ans:- ant stands for another neat tool.
+6.make what will used for carrying the building activities ?
+  ans:- make build tool uses operating system routines for carrying the build activities.
+7.ant uses what for carrying the build activities ?
+  ans:- ant uses java language instructions to carrying the build activities.
+8.in current version of ant will required minimum version of jdk is which version ?
+  ans:- 8.0
+8.1. why do we need to write build script file ?
+  ans:- we need to write build script file for describing the build activities we wanted to apply for our project in building the
+	project.  
+9.ant bydefault will looks for build script file with name what ?
+  ans:-build.xml
+10.for each build activity to be conducted by the ant has provided what ?
+  ans:- predefined task 
+=====================================================================================================================================
+10.1 in which directory we need to place the build script file ?
+  ans:- root directory of the project.
+11.each task should associated with what ?
+  ans:- tag
+12.bunch of tasks that should be applied together are grouped under what ?
+  ans:- target
+13.each target has what ?
+  ans:-it has name attribute. to identify the operation.
+14.name attribute is used for what purpose in target ?
+  ans:-by using the name attribute we can identify what operaion we are performing.
+15.what is the use of name attribute ?
+  ans:- we can declare the dependencies between the targets.
+16.write the basic ant file ?
+  ans:- <?xml version="1.0" encoding="utf-8"?>
+        <project name="basicant">
+          <target name="print">
+	    <echo> "hello good evening"</echo>
+          </target>
+	</project>
+17.how to print and build that above file
+   ans:-ant print       (here we passed the ant target name)
+	ant targetname
+18.every buildscript file must be write with file name as what ?
+   ans:- build.xml
+19.goto the project root directory and execute ant command what will happen ?
+  ans:- it will build the project
+20.what is the root element in build script file?
+  ans:- <project>
+21.within the project root element what are the attributes are there ?
+  ans:- name , default, basedir
+22.what is the example for grouping the multiple tasks into the target ?
+  ans:- while compiling the project we need to perform multiple build activities like copy resources from source to build dir,
+        compile java classes etc.
+================================================================================================================================
+23. build the basic java project
+  ans:-  d:/work:/>
+calculator
+|-src
+  |-com
+    |-calc
+      |-test
+        |-CalcTest.java
+|-build.xml
+|-build
+  |-classes
+    |-*.class
+  |-dist
+    |-*.jar
+
+CalcTest.java
+package com.calc.test;
+public class CalcTest {
+	public static void main(String[] args) {
+		System.out.println("Calculator is not completed! wait");
+	}
+}
+
+build.xml
+----------
+<?xml version="1.0" encoding="utf-8"?>
+<project name="calculator" basedir="." default="execute">
+	<target name="clean">
+		<delete dir="build/classes"/>
+		<delete dir="build/dist"/>
+		<delete dir="build"/>
+	</target>
+	<target name="createdirs" depends="clean">
+		<mkdir dir="build"/>
+		<mkdir dir="build/classes"/>
+		<mkdir dir="build/dist"/>
+	</target>
+	<target name="compile" depends="createdirs">
+		<javac srcdir="src" destdir="build/classes"/>
+	</target>
+	<target name="execute" depends="compile">
+		<java classname="com.calculator.test.CalcTest" classpath="build/classes"/>
+	</target>
+</project>
+========================================================================================================================
+24.ant target name if the target name has space in between the name like print msg then how to passthe target as an input
+   to the ant ?
+   ans:-ant "print msg"
+25.what is a prolog ?
+26.if we have the build script file like buildscript.xml insted of build.xml then how to pass the build script file as an input to 
+   the ant tool ?
+  ans:- ant -f buildscript.xml
+        ant -buildfile buildscript.xml
+27.write the build script file using user defined variables ?
+  ans:- <?xml version="1.0" encoding="UTF-8"?>
+        <project name="userdefined variables">
+		<property name="username" value="satheesh"/>
+		<target name="print userdefined variables">
+			<echo>"user name is : ${username}"</echo>
+		</target>
+	</project>
+28.ant supports how many types of variables ?
+  ans:-4 types (i).predefined variables or built in variables
+	      (ii).System properties of java
+	     (iii).environment variables
+	      (iv).userdefined variables
+29.what are the predefined or built in variables are there in ant ?
+  ans:-1. ant.version 2. ant.project.name 3. ant.java.version 4. basedir 5. ant.project.default-target
+       6. ant.home  7. ant.core.lib  8. ant.library.dir
+30.how to print environment variables ?
+  ans:<?xml version="1.0" encoding="UTF-8"?>
+      <project name="" basedir="." default="envvars">
+     	 <property environment="env"/>
+    	 <target name="envvars">
+         	<echo>JAVA_HOME : ${env.JAVA_HOME}</echo>
+        	<echo>ANT_HOME: ${env.ANT_HOME}</echo> 
+        	<echo>MAVEN_HOME : ${env.MAVEN_HOME}</echo>
+        	<echo>USER_NAME: ${env.USERNAME}</echo>
+       </target>
+       </project>
+31.how to print system variables ?
+  ans:-<?xml version="1.0" encoding="UTF-8"?>
+       <project name="systemvariables" basedir="." default="systemvariables">
+       		<target name="systemvariables">
+            		<echo> osname: ${os.name}</echo>
+            		<echo>java version: ${java.version}</echo>
+            		<echo>username : ${user.name}</echo>
+        	</target>
+	</project>
+=============================================================================================================================
+32.how to get the system properties ?
+ans:- jvm gathers the information about the system on which program is running.populate them as system variables.
+33.how to save the properties files ?
+   ans:-build.properties
+34.how to create properties file and how to pass it as an input to build script file ?
+ans:- <?xml version="1.0" encoding="UTF-8"?>
+	<project name="properties" basedir="." default="">
+	<property file="build.properties"/>
+		<target name="properties">
+			<echo>project name: ${project_name}</echo>
+			<echo>project version: ${project_version}</echo>
+			<echo>project status: ${project_status}<echo>
+		</target>
+	</project>
+build.properties:
+-----------------
+project_name=banking
+project_version=1.0
+project_status=released
+================================================================================================================================
+35.ant data types
+  (i).FileSet :-
+      -------
+     ans:-  - static
+		myown.jpg
+		notes.txt
+		data.txt
+		info.txt
+		my.jpeg
+		content.txt
+		data.txt
+		- htmldir
+		   index.html
+		home.hmtl
+		index.jsp
+	    - target
+		
+<?xml version="1.0" encoding="1.0"?>
+<project name="fileset" basedir="." default="copyusefileset">
+	<target name="copyusefileset">
+		<copy todir="target">
+			<fileset dir="static">
+				<include name="*.jpg"/>
+				<include name="*.png"/>
+				<include name="**/*.html"/>
+			</fileset>
+		</copy>
+	</target>
+</project>
+
+36.in fileset what are the symblos we can use for matching files ?
+  ans:- ?,*,**        (ex:**/*)
+37.what we will get byusing fileset ?
+  ans:- using file set we can copy multiple matching files at a time.
+37.what is pattern set ?
+  ans:-PatternSet is used for creating reusable patterns that can be reused across many places within our build file
+38.filelist (means copy the specific list of files using file names)
+   ex:-
+- src
+  - home.jsp
+  - data.txt
+  - index.html
+  - myimg.png
+- target
+  build.xml
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="filelist" basedir="." default="copyfiles">
+    <target name="copyfiles">
+        <copy todir="target/">
+            <filelist dir="src">
+                <file name="home.jsp"/>
+                <file name="data.txt"/>
+            </filelist>
+        </copy>
+    </target>
+</project>
+===================================================================================================================================
+****
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="mobilecare" basedir="." default="init">
+	<property file="build.properties"/>
+	<target name="init"/>
+	<path id="build.classpath">
+		<fileset dir="${lib.war}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	<target name="clean">
+		<delete dir="${classes.dir}"/>
+		<delete dir="${dist.dir}"/>
+		<delete dir="${build.dir}"/>
+	</target>
+	<target name="createdirs">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${classes.dir}"/>
+		<mkdir dir="${dist.dir}"/>
+	</target>
+	<target name="compile">
+		<javac srcdir="${java.dir}" destdir="${classes.dir}" classpathref="build.classpath"/>
+	</target>
+	<target name="package">
+		<war destfile="${dist.dir}${file.separator}${ant.project.name}.war" web.xml="${webinf.dir}${file.separator}web.xml"></war>
+			<fileset dir="${webapp.dir}">
+				<include name="*.jsp"/>
+			</fileset>
+			<lib dir="${lib.dir}">
+				<include name="*.jar"/>
+			</lib>
+			<classes dir="${classes.dir}">
+				<include name="*.class"/>
+			</classes>
+		</war>
+	</target>
+</project>
+
+here war utility knows structure of the war file.and it automatically creates all the directories.the ant developer has to tell in
+each of those war directories what content should be placed.
+
+
+
+
+
+
+
+</project>
+================================================================================================================================
+what is the directory structure for war file ?
+ans:-  mobilcare.war
+        |-*.jsp
+	|-WEB-INF
+	  |-lib
+	    |-*jar
+	  |-classes	
+	    |-*.class
+
+
+
+
+
+
+what is the project dir structure for creating war ?
+ans:-C:.
+ 
+ -db
+ -src
+   -faxapp
+   -dao
+   -entity
+   -util
+   -web
+ -war
+   -images
+   -js
+   -META-INF
+   -styles
+   -WEB-INF
+     -classes
+     -jsp
+     -lib
+
+
+The database scripts are stored in the db folder.
+The java source code is stored in the src folder.
+The images, js, META-INF, styles (css) are stored in the war folder.
+The JSPs are stored in the jsp folder.
+The third party jar files are stored in the lib folder.
+The java class files are stored in the WEB-INF\classes folder.
+The WEB-INF directory contains the deployment descriptors for the Web application (web. xml and weblogic. xml) and two subdirectories
+ for storing compiled Java classes and library JAR files. These subdirectories are respectively named classes and lib.
+=====================================================================================================================================
+
+
+

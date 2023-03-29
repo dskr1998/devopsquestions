@@ -1,0 +1,15 @@
+source /etc/environments
+
+
+manage jenkins -> global tool configuration   (JAVA_HOME ,MVN_HOME 
+manage jenkins --> plugin manager
+ALL>
+how to add credentials -> MANAGE JENKINS--> credentials-->system-->globsl crede  (ID we can access)
+
+
+dashvoard __ all-> 
+
+
+monitoring tools ?
+ans:-   cloud watch
+	Dynatrace

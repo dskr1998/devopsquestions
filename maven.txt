@@ -1,0 +1,533 @@
+(plugins --> goals (by using maven plugins we can perform build,test,code coverage)
+(dependencies --> used for develope the javacode)
+
+1.what is declarative build management tool ?
+  ans:- maven knows already how to build the project we just need to provide the info about the project.
+2.what are the features are there in maven ?
+  ans:-(i).standard dir structure (ii).dependency management  (iii).plug-ins  (iv).build abstraction 
+       (v).tools support  (vi).Archetypes
+3.what is the maven dir structure ?
+  ans:- |-src
+	  |-main
+		|-java
+		|-resources
+	  |-test
+		|-java
+		|-resources
+	|-pom.xml
+4.in pom.xml what info we need to provide ?
+  ans:- declare the info about the project.
+5.pom stands for ?
+  ans:- project object model.
+6.what are the elements we need to define in pom.xml mandatorily ?
+  ans:- modelversion,groupid,artifactid,version.
+7.what are the gav co-ordinates of the project ?
+  ans:- groupid,artifactid,and version.
+8.what is model version ?
+  ans:- it represents the version of the pom file we are using in writing the pom file.
+9.what is group id ?
+  ans:-organization name to whom we are building the project(domain name).
+10.what is artifact id ?
+  ans:-name of the project.
+11.version contains ?
+  ans:- version of the project.
+12.why two source directories are are there in mvn project ?
+  and:- main contains actual code and test contains the unittest code for testing the actual code
+13.maven even can execute the unit test code automatically while packaging the project ?
+14.what are the drawbacks of pushing the libraries into scm repository ?
+  ans:- multiple copies of the dependencies for muliple different projects will be repeatedly stored in the version control system
+	due to which huge amount of storage will be wasted.
+	it takes more time for checkout/clone the project for building and deploying which contributes to the delay in development 
+        and delivery of the application
+	by keeping the jar dependencies in the source code management repository we endup in keeping multiple copies of the same jar
+	with different versions which is not required.
+15.where maven host the repositories ?
+  ans:- maven host the repositories in maven central repository
+16.how to uniquly identify the dependency  (artifacts) from another ?
+  ans:- by using gav co-ordinates
+====================================================================================================================================
+====================================================================================================================================
+17.project we build/develop can act as an dependency for other projects, to make it identifiable maven mandates every project to have    gav coordinates, so in our pom.xml for our project as well we define gav coordinates
+18.what is declarative dependency ?
+  ans:-For a given project what dependencies are required for compiling and deploying/executing a project are well known during the           development time itself. The developer instead of manually downloading the dependencies for a project, he/she can declare the
+       dependencies required for compiling/packaging the project by declaring them in pom.xml of the project.
+18.what are the advantages of using declarative dependency management ?
+  ans:-1.the developer dont need to download the dependencies required for compiling/packaging the project, maven at the time of 	building the project determines which dependencies are requried by looking into pom.xml of your project and downloads them 	automatically
+	These dependencies are added to the classpath while compiling and packaged into war aswell
+	by declaring the dependencies, we can easily identify which dependencies of what versions are needed for building the project
+
+19.how to identify the artifacts into the repository ?
+  ans:- use gav co-ordinates
+20.maven supports how many types of repositories ? what are those ?
+  ans:- 3 types (i).maven central repository   (ii).maven remote repository    (iii).maven local repository
+21.when we run maven build in our local machine for the first time what will happen ?
+  ans:- it will create the local maven repository in  ~/.m2 directory.
+22.how to change the default directory location of maven local repository ?
+	ans:- ~/.m2/settings.xml   here we can add
+              <localRepository>d:/.m2/repository<localRepository>
+23.how to check maven version ?
+  ans:- mvn --version
+24.how many types of dependencies we can define in our project ?
+  ans:- 2 types (i).direct dependencies  (ii).transitive dependencies 
+25.what are transitive dependencies ?
+  ans:- When  we add a dependency into the project, it may intern dependent on other dependencies these are called transistive 		dependencies.
+26.how to find what dependencies are included in our project ?
+  ans:-mvn dependency:tree
+27.what is dependency mediation technic ?
+  ans:-When maven lands into conflicting dependencies through transitive dependency management process it uses mediation technic
+       There are rules of resolving them
+       1. always pick the transitive dependency closed to the top of the tree
+       2. if in case 2 conflicting transitive dependencies are at the same level, then picks the left most of the tree
+
+		pom
+	 	 |
+--------       		--------
+  A:2.1			B:3.2
+    |			  |
+-----------    		--------------
+ | 	|     |		 |	  |
+F:3.2   G:2.3 H:2.2		P:2.3	Q:3.4.5
+			  |
+			 H:3.5
+
+here it will select H:2.2		
+
+
+
+28.is all the dependencies are required to be available during all the stages of the project like compiling, packaging or testing ?
+  ans:- no not at all.
+29.how to classify the usage of the maven dependencies ?
+  ans:- using maven dependency scopes.
+
+<!-- https://mvnrepository.com/artifact/net.javacrumbs.json-unit/json-unit -->
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit</artifactId>
+    <version>2.37.0</version>
+    <scope>test</scope>
+</dependency>
+
+30.what are the maven dependency scopes ?
+  ans:- (i).compile  (ii).provided  (iii).runtime  (iv).test   (v).system   (vi).import
+31.what is the default scope in pom.xml file ?
+  ans:- compile
+32.if you dont specify the scope in pom.xml file what will be the default scope ?
+  ans:- compile
+33.what is mean by compile scope ?
+  ans:-compile scope means the dependency should be included all the phases of the build.
+34. provided scope means ?
+  ans:-these dependencies are already provided as part of the runtime environment/containers into which we are going to run the        application, so these has to be excluded during runtime/packaging. but should be included in rest of the phases of build
+35.runtime scope means ?
+  ans:- should not include compile time
+36.test scope means ?
+  ans:-these dependencies should be included in classpath while compiling and running the testcase code only
+37.system scope ?
+  ans:-to refer a dependency from the hardcoded path of the system rather than from repo.
+38.import scope ?
+  ans:-used for importing the dependencies of another pom.xml into our pom file.
+39.what is the plugin for manually add the dependency into the local repository ?
+  ans:-mvn install:install
+40.how to install the dependency in local maven repository ?
+  ans::- mvn install:install -Dgroupid=<groupid> -DartifactId=<artifactId> -Dversion=<version> -Dfile=<filepath> 
+	-Dpackaging=<jar,war,ear> -DGeneratePom=<true/false>
+41.what are the directory structure allowed for maven project ?
+  ans:- src/main/java
+	src/main/resources
+	src/test/java
+	src/test/resources
+	target=holds the generated artifacts out of the build
+	src/main/config = holds the configuration files (not included in the artifact)
+	src/main/scripts = holds the administrative scripts required for administrators or developers
+	src/main/webapp = holds the .jsp or web assets in this directory
+	src/it = integration tests
+	src/main/db = database schema/scripts
+	src/site = site generation document
+|-src
+	|-main
+		|-java
+		|-resources
+		|-config
+		|-scripts
+		|-webapp
+		|-db
+	|-site
+	|-it
+	|-test
+		|-java
+		|-resources
+|-target
+
+42.how to identify the transitive dependency is included through which parent dependency ?
+  ans:-dependency:tree
+43.how to create mvn project ?
+  ans:-bu using mvn architypes we can simply create the mvn project
+44.what is mean by architype ?
+  ans:-archetypes are pre-built project templates that are compressed/packaged and distributed through maven repositories by the
+       maven team. These archetypes contains standard directories and configuration files which can be used to directly creating 
+       the project.
+45.what are the built in maven architypes are there ?
+  ans:- 1. maven-archetype-quickstart    = building core java application
+	2. maven-archetype-j2ee-simple   = simple jee application (ear)
+	3. maven-archetype-webapp        = web application project
+	4. maven-archetype-mojo          = maven plugin project
+	5. maven-archetype-archetype     = An archetype project using which we can create our own archetype
+46.how to create our own archetype ?
+  ans:-maven-archetype-archetype archetype
+47.how to create the maven project by using archetype ?
+  ans:- by using mvn tool called mvn archetype
+=====================================================================================================================================
+48.how to create the core java project by using archetype ?
+  ans:- archetype gav co-ordinates
+	groupId=org.apache.maven.archetypes
+	artifactId=maven-archetype-quickstart
+	version=1.4
+
+our project gav coordinates
+	groupId=org.jtools
+	artifactId=inventorymgmt
+	version=1.0.0-SNAPSHOT
+
+mvn archetype:generate -DgroupId=org.jtools -DartifactId=inventorymgmt -Dversion=1.0 -DarchetypeGroupId=org.apache.maven.archetypes
+-DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4
+
+49.why architypes are used ?
+  ans:- to quickly create the maven projects.
+50.what is the syntax for creating a project by using archetypes ?
+  ans:- mvn archetype:generate -DgroupId=projectgroupid -DartifactId=projectartifactid -Dversion=projectversion 
+	-DarchetypeGroupId=archetypegroupid -DarchetypeArtifactId=archetypeartifactId -DarchetypeVersion=archetypeversion
+
+51.the above archetype plugin what will do ?
+  ans:-it generates the project based on the gav co-ordinates of the archetype we supplied,so we dont need to create project manually.
+52.can we create the custom archetypes ?
+  ans:- yes we can create our own custom archetypes.
+53.how many ways we can create our own custom archetypes ? what are those ?
+  ans:- two ways  
+		(i).from scratch by using maven-archetype-archetype archetype
+		(ii).from an existing project we can create archetype
+54.how to create archetype from scratch ?
+  ans:- create an project by using predefined archetype called maven-archetype-archetype,and add required configuration files,
+	dependencies,and plugins that are required for your project and export it an an archetype.
+
+mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-archetype -    DarchitypeVersion=1.4
+
+55.How to create an archetype from an existing project
+  ans:-#2. How to create an archetype from an existing project
+	ans:-(i).create a project by choosing an archetype appropriate to the type of the project we wanted to build
+	     (ii).add necessary dependencies, plugins and configurations into the project
+	     (iv).goto the project root directory and run the below archetype plugin
+		  mvn archetype:create-from-project
+** java -cp target/customarchetpye-1.0.jar com.jtools.Main
+----------------------------------------------------------------
+ mvn archetype:create-from-project
+====================================================================================================================================
+plugins
+-------
+56.plugin contains what ?
+  ans:- plugin contains goals.
+57.goal represents ?
+  ans:- goals represents an activity or an operation to be carried as part of build process.
+58.maven archetype plugin has how many goals ? what are those ?
+  ans:- maven archetype plugin contains 2 goals 
+	(i).generate
+	(ii).create-from-project
+59.mvn archetype:generate what operation it will perform ?
+  ans:- it will create new project from existing archetype.
+60.mvn archetype:create-from-project what operation it will perform ?
+  ans:-it will create new archetype from existing project.
+61.what is the goal has the install plugin ?
+  ans:- install goal
+62.what is the syntax of running the goal of plugin ?
+  ans:- mvn plugin:goal
+63.how to install local artifact into maven repository ?
+  ans:- by using install goal
+64.when we create the archetype from an existing project where the archetype will store ?
+  ans:- it will generate the archetype in /target/generated-sources/archetype
+65.in which location we need to run the mvn archetype:create-from-project ?
+  ans:- go to the root directory of the project and run the command.
+66.after generating the archetype from an existing project how to add configurations or resources further ?
+  ans:-we can add the configurations/resources into archetype-resources directory.and configure their information in 
+	archetype-metadata.xml
+================================================================================================================================
+67.what are the built-in build life cycles are there ?
+  ans:- (i).default = default lifecycle has phases to build an application 
+       (ii).clean = clean phases of a project
+      (iii).site = documentation for the project
+68.each build life cycle contains what ?
+  ans:- each build life cycle contains several build phase we can treat these phases as an ant targets or staged of build process.
+69.what are the phases are there in default life cycle ?
+  ans:-  (i).validate		= validates the project is correct and all information provided is valid or not
+	(ii).compile		= compiles the source code
+       (iii).test 		= test the source code with available unit testcases 
+        (iv).package		= packages into a distributable format (jar, war, ear)
+	 (v).integration-test   = runs the integration testcases
+        (vi).verify             = run any checks to verify whether the package is meeting the quality criteria or not
+       (vii).install		= install the package into local maven repository
+      (viii).deploy		= copies the final package into remote maven repository so that it can be shared to other dev's/teams.
+				  This is usually done in an integration or release environment.
+
+(integration-test :- it occurs after unit testing and before system testing.integration testing is the phase in software testing in
+which individual software modules are combined and tested as a group)
+70.how to perform these phases ?
+  ans:-there are plugins with goals associated to carry the relavant operation at each phase.
+71.what is the plugin for test phase ?
+  ans:- surefireplugin
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+plugin --> goals (we can perform what we want)
+72.what are the phases in clean life cycle ?
+  ans:- clean
+73.what are the phases in site life cycle ?
+  ans:- site
+74.mvn clean:clean default:verify
+
+75.how to build a project ?
+  ans:- to build a project we need to tell the maven to build the project up to which phase of a life cycle by using lifecycle:phase
+76.what is mean by "mvn clean package"
+  ans:- means here we told clean phase of clean life cycle and package phase in default lifecycle.so maven automatically takes care of
+	all the phases from the top to till the life cycle we specified by execute all the plugin goals associated with each phase of
+	the life cycle.
+77.what is maven build abstraction ?
+  ans:-With the preconstructed phases associated with goals of the plugins the build process for any java project would be same. so           developer/deployer dont need to understand the complex build scripts to determine which target to be executed to build an              application. For any project the way we carry the build would be same which is build abstraction
+======================================================================================================================================
+78.how to add/perform new activities at the phase of build ?
+  ans:-we can use any of the plugins available to perform additional build activities by associating the plugin to the appropriate            phase of the lifecycle
+79.how to associate a plugin to the phase of a life cycle ?
+  ans:-the default plugin/goals are pre-associated to the lifecycle phases in maven, if we want to perform more activities then we        need to associate the goal of a plugin to an appropriate phase of the lifecycle
+80.how many types of plugins are there ? what are those ?
+  ans:- two types 
+	1. build plugin     = build plugins carries build activities of a project
+        2. reporting plugin = are used for generating reports like site, sonarcube etc
+81.when will be the build plugins will execute ?
+  ans:-build plugins are executed during the default lifecycle phases of the maven build and participates in performing an activity        during the maven build process
+82.when will be the reporting plugins are executed ?
+  ans:- reporting plugins are executed during the site lifecycle phase of the maven build.
+83.How can we add additional activity during the phase of the maven build?
+  ans:-We need to manually add the plugin configuration in pom.xml
+-----------------------------------------------------------------------------------------------------------------------------
+84.how to develop our own plugin and associate to the maven build life cycle ?
+  ans:-maven has provided plugin api for building our own plugin. we need to write our own plugin component implementing from maven        provided interface/extend from abstract class provided
+  
+  #1. create an maven plugin project
+      mvn archetype:generate -DgroupId=pluginProjectGroupId -DartifactId=pluginProjectArtifactId -Dversion=pluginVersion -      DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-mojo -DarchetypeVersion=1.0
+      
+	groupId=techteam.com
+	artifactId=debug-plugin
+	version=1.0
+	
+  #2. we need to upgrade the dependencies in pom to the latest version
+
+  #3. write a plugin class
+
+	@Mojo(name="debug")	
+	class DebugPlugin extends AbstractMojo {
+		@Parameter(property="msg", required=true, defaultValue="none")
+		private String msg;
+	
+		public void execute() {
+			super.getLog().info("DebugPlugin: " + msg);
+		}
+	}	
+	
+   #4. install the plugin into local maven repository
+   mvn clean install
+======================================================================================================================================
+85.how to use the above plugin into our project create another maven project
+  ans:-
+  mvn archetype:generate -DgroupId=projectGroupId -DartifactId=projectArtifactId -Dversion=version -  
+DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.0
+
+add the above plugin configuration to the pom.xml
+<project>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>techteams.com</groupId>
+				<artifactId>debug-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<configuration>
+							<msg>Hey executing the debugplugin as part of maven build</msg>
+						</configuration>
+						<goals>
+							<goal>debug</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+======================================================================================================================================11. What is the command to install JAR files in the Local Repository? 
+  ans:- mvn install is used to install JAR files in the local repository.
+        To install the JAR manually into the local Maven repository, the following plugin is used: 
+        mvn install:install-file-Dfile=<path to file>.
+13. What is Clean, Default, and Site in Maven?
+  ans:- There are three built-in build life cycles:
+	Clean: The clean lifecycle looks after project cleaning.
+	Default: The default lifecycle handles the project deployment.
+	Site: The site lifecycle refers to the creation of the project’s site documentation.
+16. How does Maven Architecture work?
+  ans:- Maven architecture works in three steps, which are as follows:
+        The first step is to read the pom.xml file.
+        Then, it downloads the dependencies defined in pom.xml into the local repository from the central repository.
+        Lastly, it creates and generates a report according to the requirements, and executes life-cycles, phases, goals, plugins,             etc.
+19. Which command is used to build a Maven site? 
+  ans:- mvn site command is used to build a Maven site
+        The resulting site, by default, is target/site/…
+20.What are the different conventions used while naming a project in Maven? 
+The full name of a project in Maven includes:
+  <GroupId>: <artifactId>: <version>
+21.What is a Maven Artifact?
+  ans:- Maven Artifact refers to a file, usually a JAR that gets deployed to a Maven repository. The tool creates one or more         artifacts, such as a compiled JAR and a source JAR.
+        Every artifact has its groupID, an artifact ID, and a version string. These three together identify the artifact. 
+        For example: com.your.package, any name, and a version string (to uniquely identify)
+22.What is meant by Maven Plugins?
+  ans:- Maven plugins are essential features of Maven that are used to reuse the common build logic across several projects.
+        The plugins are needed to carry out tasks like compiling code, testing them, creating JAR files, and documenting the projects.
+23.Why are Maven Plugins used?
+  ans:- Maven Plugins are used to: 
+	Create a JAR file.
+	Create a WAR file.
+	Compile code files.
+	Unit testing of code.
+	Create project documentation.
+	Create project reports.
+28.What are the types of Maven Plugins?
+  ans:- There are two types of Maven Plugins:
+        Build plugins – These plugins are executed during the build and are configured in the <build/> element of pom.xml
+        Reporting plugins – These plugins are executed during the stage generation and are configured in the <reporting/> element of                             the pom.xml.
+
+29. What is a ‘Snapshot’ in Maven?
+  ans:- Snapshot refers to the version available in the Maven remote repository. It signals the latest development copy. Maven         inspects for a new version of Snapshot in the remote repository, for every new build.
+        The snapshot is updated by the data service team with an updated source code every time to the repository for each Maven         build.
+30.What does ‘Maven Clean’ imply? 
+  ans:- Maven clean is a plugin as the name suggests, that approaches to clean the files and directories generated by Maven at the         time of its build.
+        The plugin removes the target folder that contains all the class files, docs, JAR files.
+
+31.What are the different types of Build Profiles?
+  ans:- There are three different types of build profiles:
+        Per Project - defined in pom.xml
+        Per - User - defined in Maven settings.xml
+        Global - defined in Maven global settings.xml
+32.What is the Maven settings.xml file?
+  ans:- The Maven settings.xml file contains elements used to define the values needed to configure Maven execution differently.
+        It contains the following configurations:
+        Proxy configuration
+        Local repository configuration
+        Remote repository configuration
+        Central repository configuration
+
+
+
+
+
+
+
+
+
+
+
+
+
+======================================================================================================================================
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.spectrum</groupId>
+  <artifactId>speed</artifactId>
+  <version>1.0</version>
+  <packaging>war</packaging>
+
+  <name>speed Maven Webapp</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>5.3.13</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>javax.servlet.jsp-api</artifactId>
+			<version>2.3.3</version>
+			<scope>provided</scope>
+		</dependency>
+  </dependencies>
+
+  <build>
+    <finalName>speed</finalName>
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <plugins>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.2.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
+
+
+
+
+
+==================================================================================================================================
+22
+14
+26
+40
+42
+48
+54
+64
+66
+71
+77
+80
+84

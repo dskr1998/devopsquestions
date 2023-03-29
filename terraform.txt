@@ -1,0 +1,586 @@
+1.how many ways we can provision the infrastructure in cloud platform ? what are those ?
+  ans:- 3 ways 
+  (i).cloud console          (ii).api      (iii).sdk
+2.insted of creating the infrastructure on each cloud provider manually, every cloud provider offers what ?
+  ans:- api and sdk's
+3.what are api's ? how to work with ?
+  ans:- api's are http end points,which are inter-operable.irrespective of the platform/language we can implement our programs to 
+	invoke the api's provided by the cloud vendor to create the infrastucture.
+4. what are the sdk's ? how to work with ?
+  ans:- sdk's are software development kits.each cloud provider provides language libraries written in specific programming                 language,these libraries can be used in our programs in creating the infrastructure.
+5.what are the drawbacks are there in managing the infrastructure by building the software programs ?
+  ans:- 1. The efforts involved in building the code to achieve infra automation is very high
+	2. manpower required in building the automation code is high
+	3. the time required for developing the automation code is more
+	4. huge cost involved in achieving this automation
+	5. testability of the code takes huge time and quite difficult
+  ===================================================================================================================================
+IAC tools (infrastructure as a code)
+---------
+6.what is mean by iac ?
+  ans:- where each service/resource we want to provision is expressed in terms of code which can be excuted to reproduce the 
+	infrastructure.
+7.what are the iac tools available in the market ?
+  ans:- terraform
+	openstack heat
+	cloud formation
+8.what are the advantages of using iac tools ?
+  ans:- (i).higher-rate of delivery
+	(ii).self-service
+	(iii).documentation
+	(iv).versioning
+	(v).speed and safety
+	(vi).validation
+	(vii).reusability
+	(viii).collaboration and sharing
+9.what are the diff b/w software configuration management tools and server templating tools ?
+  ans:- if we are using server templating tools like docker and packer etc most of the software configuration management requirements         are handled by these tools itself we dont need software configuration management tools like ansible/puppet/chef/salt for               installing & configuring the software, but to provision the infrastructure we still need iac tools
+10.how terraform will works ?
+  ans:- terraform works in plugin based archetecture.
+11.what is the flow of terraform works ?
+  ans:- terraform conf file (provider,resource info) --> terraform cli --> validates --> dowload provider plugin(workdir) --> 
+        --> pass to the plugin --> invoke api/sdk's 
+=====================================================================================================================================
+12.what are the components are there in terraform ?
+  ans:- 4 components
+	(i).terraform cli
+	(ii).terraform configuration file
+	(iii).provider plugin
+	(iv).cloud provider api
+13.when we pass terraform conf file as an input to the terraform cli what it will do ?
+  ans:- it will validates and invokes the respective provider plugins.
+14.in which language we need to write the terraform configuration file ?
+  ans:- hcl language (hashicorp language) 
+15.what is the extension of terraform conf file ?
+  ans:- .tf
+16.how many ways we can pass the aws apikey/secreat access key as an input to the terraform cli letting it provisioning the resource     on the aws account ? what are those ?
+  ans:- 3 ways
+	(i).shared file approach
+	(ii).through environment variables
+	(iii).write credentials in terraform conf file
+17.how to work with shared file approach ?
+  ans:- in /HOME directory create .aws directory, inside that directory create a file name called credentials here write the info
+	about the credentials.
+18.how to write credentials info in credentials file ?
+  ans:-
+	~/.aws/credentials
+	[default]
+	aws_access_key=accesskey
+	aws_secreat_access_key=secreatkey
+	aws_region=ap-south-1
+19.how to create environment variables for credentials ?
+  ans:- 
+	AWS_ACCESS_KEY_ID
+	AWS_SECREAT_ACCESS_KEY
+20.how to pass the credentials in terraform conf file ?
+  ans:- 
+	provider "aws" {
+		access_key= ""
+		secreat_key= ""
+	}
+21.what is the recommended way to pass the credentials info ?
+  ans:- through environment variables
+======================================================================================================================================
+22.credentials file in .aws directory how many aws account users info we can pass ? how to pass it ?
+  ans:- any no.of aws users info we can pass here. we can differentiate them using profiles.
+	~/.aws/credentials
+	[profiles]
+	aws_access_key=accesskey
+	aws_secreat_access_key=secreatecode
+23.what is profiles ?
+  ans:- it supports multiple aws accounts or iam users.
+24.in which format we can write terraform conf file ?
+  ans:- two formats  
+      (i).hcl :- hashicorp language
+      (ii).json
+======================================================================================================================================
+25.in terraform configuration file how many types of declarations we can write ?
+  ans:- two types
+	(i).resource declaration
+	(ii).datasource declaration
+26.what is resource declaration ?
+  ans:- A Resource declaration indicates the resource we wanted to be provision on the cloud provider platform.
+27.what is the syntax of declaring the resource declaration ?
+  ans:-
+	resource "TYPE" "NAME" {
+		resource configuration
+	}
+28.here TYPE indicates what ? how it looks like ?
+  ans:- TYPE indicates resource type we want to provision. and resource type start with cloudprovidername_resourceType
+	ex:- aws_ec2
+29.NAME indicates what ?
+  ans:- it is just configuration name or block name we gave to the resource declaration.using name we can refer the resource in          expressing dependencies across the resources.
+30.how to declare the dependencies in resources ?
+  ans:- 
+	resource "aws_vpc" "java_vpc" {
+		cidr = "10.1.0.0/16"
+		tags = {
+			name = "javavpc"
+}
+	}
+
+	resource "aws_subnet" "java_subnet" {
+		cidr = "10.1.1.0/24"
+		vpc_id = "aws_vpc_java_vpc.id"             (here it is datasource declaration)
+		tags = {
+			name = "javasubnet"
+	}
+	
+}
+ 
+
+31.when we apply (terraform apply) the terraform configuration file passing to the terraform cli what terraform will do ?
+  ans:- it will generates the cyclic graph representing the resources and their dependencies to identify the resources has to be 
+	created on which order.
+======================================================================================================================================
+32.in which location we need to write terraform configuration file ?
+  ans:- we can write either along with project code or we can write another project.	
+33.how to keep the infrastructure code along with project code ?
+  ans:-
+	|-src
+	  |-main
+	    |-java
+	    |-resources
+	    |-config
+	      |-terraform
+	        |-terrafromconffile
+	    |-web-app
+	      |-WEB-INF
+	        |-web.xml
+	|-pom.xml
+34.what is preferred name for declaring the terraform conf file ?
+  ans:- main.tf   (but we can write any name)
+35.how many terraform files we need to create ?
+  ans:- we can create any no.of terraform conf files.we can declare all resources in one single file also we can declare the resources
+        in multiple resource files also.(we can modularize the resource declarations by distributing them into mutliple terraform
+	configuration files)
+36.what is terraform project directory ?
+  ans:- for one project the relavant terraform configuration files are kept under sigle directory which is called terraform project
+	directory.
+37.how it will executes if we have mutliple terraform configuration files ?
+  ans:- it will combines all the conf files into one single conf file and merge and applies.
+38.what are from port and to port in ingress egress rules ?
+  ans:- from port means starting port,to port meand ending port (ex:- 35768 - 65535)(22 - 22) (21 - 22)
+====================================================================================================================================
+39.how to run terraform configuration ?
+  ans:- (i).go to project directory (terraform project directory)
+	(ii).terraform init
+	(iii).terraform plan
+	(iv).terraform apply
+40.when we run terraform init what will happen ?
+  ans:- merge all tf files --> validate (if valid) -->  download provider plugin (in .terraform dir)
+41.how to keep the infrastructure code in different project dir ?
+  ans:- 
+	project :-
+	-------
+	project(repo)
+	|-src
+	  |-main
+            |-java
+	    |-resources
+            |-wepapp
+	      |-WEB-INF
+	        |-web.xml
+	  |-test
+	    |-java
+	    |-resources
+	|-pom.xml
+
+	project-integrations
+	|-ci
+	  |-terraform
+	  |-ansible
+	  |-jenkins
+
+42.what is the recommended way to place the iac code ?
+  ans:- place it into the different project dir insted placing the project dir.
+======================================================================================================================================
+variables 
+---------
+43.working with variables in terraform how many parts are there ?
+  ans:- 3 parts are there
+	(i).declare variable
+	(ii).refer those variables in terraform conf file 
+	(iii).pass values
+44.how to declare the variables in terraform conf file ?
+  ans:- we need to use variable block declaration
+	ex:- variable "variable_name" {
+	       type = datatype
+	       description = "purpose/usage"
+	       default = "default_value"	    
+	     }
+45.here in variable declaration default means ?
+  ans:- if the user has not specified any value it will take default value.
+46.what are the supported data types of variables ?
+  ans:- string
+	list
+	map
+	bool
+	number
+	set
+	object
+47.how to declare the list values ?
+  ans:- 
+	variable "cidr_blocks" {
+	  type = list
+	  description = "cidr for security group"
+	  default = ["10.1.0.0/24", "10.2.0.0/24"]
+	}
+
+48.how to declare map values ?
+  ans:- 
+	variable "variable_name" {
+	  type = map
+	  default = {
+	    name = tomcat server
+	    Env = dev
+	    app = fithealth2	
+
+          } 
+	}
+49.how to declare the object type variables ?
+  ans:- 
+	variable "ec2instanceconf" {
+	  type = object({
+	    instance_type = string
+	    ami = string
+	    associate_public_ip_address = bool	  
+	  })
+	  default = {
+	    instance_type = "t2.micro
+	    ami = "ami-8870"
+	    associate_public_ip_address = true
+}
+	}
+
+	
+
+
+50.how to declare number variable ?
+  ans:- 
+	variable "port" {
+	  type = number
+	  description = "port"
+	  default = 22
+		
+}
+ 
+
+how to set variable ?
+  ans:- variables.tf
+	variable "ami" {
+	  type = string
+	}
+	
+	set TF_VAR_ami=ami-3932
+======================================================================================================================================variables_passing
+-----------------
+51.how many ways we can pass the variables to the terraform conf file ? what are those ?
+  ans:- 4 ways
+	(i).passing the variables into the command prompt
+	(ii).create varibles in a file and pass that file as an input.
+	(iii).declare the variables file in project directory with naming convention as *.auto.tfvars
+	(iv).creating the environment variables.
+52.what is the extension we need to pass to the variables file ?
+  ans:- *.tfvars   (fithealth.tfvars)
+53.how to pass the variables in command prompt ?
+  ans:- terraform apply -var varname=value -var varname=value
+54.how to pass the variables file as an input to the terraform ?
+  ans:- terraform apply -var-file=filename
+55.what is the recommended way to create the environment variables for terraform conf ?
+  ans:- export TF_VAR_variableName=value
+====================================================================================================================================
+56.what is the precedence taking the variables we supplied ?
+  ans:- *.auto.tfvars
+	-var-file=*.tfvars
+	-var var=value
+	env variable
+
+
+======================================================================================================================================
+57.how to declare,use and pass the values to the variables ?
+  ans:- 
+	declare:	
+	variables.tf    variable "instance_shape" {
+		  	type = string
+			default = "t2.micr0"
+			}
+		
+	refer:		
+	main.tf		resource "aws_instance" "ec2" {
+				instance_type = var.instance_shape		
+			}
+			
+	pass:		
+	input.tfvars	instance_shape = "t2.nano"
+
+58.how to declare object type variable,use and pass ?
+  ans:- declare :-
+	
+	variable "ec2config" {
+	  type = object({
+	    instance_type = string
+	    ami = string
+	    associate_public_ip_address = bool	
+	  })
+	  default = {
+            instance_type = "t2.micro"
+	    ami = "ami-34512"
+	    associate_public_ip_address = true
+	  }
+	}
+
+	use :-
+	
+	resource "aws_instance" "ec2"{
+	  instance_type = var.ec2config.instace_type
+	  ami = var.ec2config.ami
+	  associate_public_ip_address = var.ec2config.associate_public_ip_address
+	}
+
+	pass :-
+
+	instance_type = "t2.micro"
+	ami = "ami-9bbf438035y"
+	associate_public_ip_address = true
+
+====================================================================================================================================
+output variables 
+----------------
+59.what are output variables ?
+  ans:- while executing the terraform resources may produce/generates output upon computing which can be captured as an output using
+	output variables.
+60.what is the recommended way to declare the output variables ?
+  ans:- write the output variables in another file name called outputs.tf
+61.how to declare the output variable ?
+  ans:- using output variable block declaration
+	
+	output "variable_name" {
+	value = "expression pointing to one of the resource attribute which we want to capture"
+	descritption = "info about the variable"
+	sensitive = "true/false"	
+	}
+62.example of value ?
+  ans:- value = aws_instance.fit_ec2.public_ip
+63.what is the default behaviour of the output variable ?
+  ans:- by default it will display the output on the console.if we mark it as sensitive it will capture but it will not display as 	output on the console.
+**
+how to store the output of terraform execution into a file ?
+  ans:- terraform apply > file.txt   (wrong)
+**
+terrafrom apply --auto-aprove
+=====================================================================================================================================
+terraform provisioners
+----------------------
+***
+how to install and configure the softwares on top of the infrastructure provisioned by the terraform ?
+  ans:- There are 2 options are available
+	1. use software configuration management tools like ansible, puppet, chef, salt etc for installing and configuring the            software ontop of the infrastructure provisioned through terraform
+	2. create custom cloud provider images in re-creating the infrastructure whenever needed.
+these are have draw backs.
+***
+64.what are terraform provisioners ?
+  ans:- upon provisioning the infrastructure using terraform we can launch or apply software configuration management scripts ontop of 
+	the infrastructure provisioned through the help of provisioners.
+65.how many types of provisiners are supported by terraform ?
+  ans:- 3 types
+	(i).file-provisioners
+	(ii).local-exec provisioners
+	(iii).remote-exex provisioners
+66.what is file provisioners ?
+  ans:- file provisioners are used for copying the files from terraform controlnode to remote resources provisioned.
+67.what is local-exec provisioner ?
+  ans:- runs the scm scripts locally on the terraform control node.
+68.what is remote exec provisioner ?
+  ans:-  run the software configuration management scripts by copying them on to the remote resource and executes local to the                  resource it self.
+69.provisioners defined in how many levels ?
+  ans:- two levels
+	(i).local to the resource level
+	(ii).global level
+70.what is the local to the resource level ?
+  ans:- we can define the provisioner in resource level,so upon provisioning the resource the terraform immediatly executes the 
+	provisioner on that resource.
+71.what is global provisioner ?
+  ans:- if we want to execute provisioner on group of resources then we need to use global provisioner.
+72.what is null resource ? when it is required ?
+  ans:- in general provisioners are used for applying the scm scripts on resources,so without resources we can not write provisioners.
+	but global provisioners is not attached to any resource so we need to use null provisioners on which we can configure the
+	null resource.
+73.example of using file and provisioner ?
+  ans:-
+	connection {
+		type = "ssh"
+		host = "self.public_ip	
+		user = "ubuntu"
+		private_key-file = "~/.ssh/javakp"
+	}
+ 
+	provisioner "file" {
+		source = "sourcefile"
+		destination = "destinationfile"
+	}
+
+	provisioner "remote-exec" {
+		inline = {
+			"command1"      (ex:- chmod u+x /tmp/installjdk.sh)
+			"command2"	(ex:- bash /tmp/installjdk.sh)
+		}	
+	}
+	
+	provisioner "local-exec" {
+		inline = {
+			"command1"	(ex:- echo $self.public_ip >> hosts)
+		}
+}
+
+==================================================================================================================================
+terraform modules
+-----------------
+74.what are terraform modules ?
+  ans:- Terraform modules are the group of resources that can be imported in various terraform configurations in creating the         	infrastructure.
+75.why do we need to use terraform modules ?
+   ans:- Modules are the way through which we can reuse the terraform resource declarations or configurations across the projects
+76.how to work with modules ?
+  ans:- while working with modules we need to organize the directory structure of our project in differentiating modules from main 	 terraform configuration. Each resource/group of resources that can be reused should be defined as one module
+
+tomcatec2
+|-modules
+  |-services
+		|-network
+			|-vpc
+				|-variables.tf
+				|-main.tf
+				|-outputs.tf
+			|-subnet
+				|-variables.tf
+				|-main.tf
+				|-outputs.tf
+			|-ig
+				|-variables.tf
+
+				|-main.tf
+				|-outputs.tf
+			|-securitygroup
+				|-variables.tf
+				|-main.tf
+				|-outputs.tf				
+		|-compute
+			|-ec2
+				|-variables.tf
+				|-main.tf
+				|-outputs.tf
+|-global [terraform configuration]
+	|-main.tf
+	|-inputs.tfvars
+	|-variables.tf
+	|-outputs.tf
+
+75.example creating vpc module and use it in vpc resource declaration ?
+  ans:-
+module/vpc
+variables.tf
+------------
+	variable mvpc {
+	type = object({
+		vpc_cidr = string
+		vpc_name = string
+	})
+}
+	
+main.tf
+-------	
+resource "aws_vpc" "examplevpc" {
+	vpc_cidr = var.vpc.vpc_cidr
+	vpc_name = var.vpc_name
+}
+
+outputs.tf
+----------
+output "vpcid" {
+	value = aws_vpc.examplevpc.id
+}
+
+global/vpc
+
+variables.tf
+------------
+variable "vpc_cidr" {
+	type=string
+}
+variable "vpc_name" {
+	type=string
+}
+
+main.tf
+------- 
+module "name" {
+	source = "../modules/vpc"
+	mvpc.vpc_cidr = var.vpc_cidr
+	mvpc.vpc_name = var.vpc_name
+}
+
+==================================================================================================================================
+TERRAFORM STATE MANAGEMENT 
+--------------------------
+76.what is terraform resource mapping ?
+  ans:- in terraform state file it stores the information about for which resource declaration what resources are provisioned on the         cloud platform by storing resource ids being generated by the cloud provider. This is called Terraform resource mapping
+77.what is terraform state file ?
+  ans:- Terraform uses the terraform state file to identify for a resource declaration what is the corresponding service or resource 		being created on the cloud provider.
+78.when will be the tarraform state file will create ? where it will create ?
+  ans:- During the time of provisioning the infrastructure using terraform it generates an terraform.tfstate file under the project 	directory
+79.what is the naming convention of terraform state file ?
+  ans:- terraform.tfstate
+80.when we reapply the same configuration file why terraform will not re-create the resources ?
+  ans:- terraform will identify for each resource declaration what is the corresponding service/resource it has provisioned on the 	cloud platform, so that in subsequent re-apply of the same terraform configuration it will not re-create the resources.
+
+
+=====================================================================================================================================
+TERRAFORM REMOTE STATE MANAGEMENT
+---------------------------------
+by default terraform generates and stores the terraform state file in where ?
+  ans:- by default it will store the terraform state file with in the project directory.
+why we need to store the terraform conf file in remotly ?
+  ans:- to support collaborative development.
+terraform conf file requires versioning ?
+  ans:- terraform state file doesnt require any versioning, the developer or the ops engineer dont modify this file directly to 	version it or rather we never directly rollback the changes of the file. The only way this file will gets modified is by 		applying terraform configuration, by which we can understand it doesnt require versioning 
+what are the drawbacks are there if we store the terraform conf file vcs  ?
+  ans:- if multiple developers are trying to parallely execute the terraform configuration file against the same state file, due to         parallel execution un-predictable outcome will be resulted and might even corrupt the state of the system. by storing         terraform state file into vcs repository we cannot prevent this
+by using terraform remote state management what we can achieve ?
+  ans:- we can distribute the statefile without versioning and we can avoid multiple people running the terraform conf file on the 		same state parallelly.
+how to implement locking mechanism for while one terraform execution is under progress, no other person can acquire the lock on the statefile to run the terraform configuration in parallel
+  ans:- we need to use dynamodb
+
+
+********
+how to create remote state file management ?
+------------------------------------------
+1. IAM user we are using for provisioning the infrastructure through terraform should have bucket and dynamodb access policies
+2. we need to create an S3 storage bucket
+3. we need to create an dynamodb table with partition key as LockID (name should match)
+4. In terraform configuration file we need to add the backend declaration as shown below.	
+	
+
+
+
+
+(i).add the policies to the iam user amazonS3FullAccess,amazonDynamoDBFullAccess
+(ii).go to s3 service --> create bucket --> bucket name,region,block all public access -->disable bucker versioning --> disable server 	side encryption 
+(iii).Dynamodb --> create table --> table name --> partion key (LockID) --> table settings (default)
+(iv).go to terraform configuration file in main.tf   write follow script
+	backend "s3" {
+		bucket = "bucket_name"
+		region = "region"
+		key = "statefilename"
+		dynamodb_table = "tablename"
+	}
+	
+********
+
+======================
+8
+19
+50
+55
+56 q
+73
+======================

@@ -1,0 +1,800 @@
++11.what is kubernetes ?
+  ans:- kubernetes is a container cluster manager.which takes care of scheduling,monitoring,and running docker containers on a
+        network/cluster of computers
+2.why kubernetes are used ?
+  ans:-kubernetes is majorly used for deploying and monitoring microservices architecture based applications.
+3.how many types of application architectures are there in which we can develop the application ?
+  ans:- 2 types are there (i).monolithic architecture based application
+			 (ii).microservices architecture based application
+4.what is monolithic application architecture ?
+  ans:-the enterprise application which consists of several modules/functionalities are built out of an single source code based 
+       project and will be build and packaged into single deliverable/deployable artifact is called "Monolithic" application.
+5.what are the adv and dis-adv of using monolithic application based architecture ?
+6.monolithic application supports horizontal scaling or vertical scaling ?
+  ans:-it supports horizontal scaling.vertical scaling not supported.
+7.horizontal scaling means ?
+  ans:- if you want scale you need to scale entire system.
+8.what are microservices ?
+  ans:-the enterprise application comprises of several functionalities/modules as part of it.these are broken down into smaller 
+       independent deployable applications and loosely coupled applications which are microservices.
+9.is microservices supports vertical scalling ?
+  ans:- yes microservices supports vertical scaling.
+10.what are the components that are there in kubernetes architecture ?
+  ans:- (i).master node     (ii).worker node      (iii).kubectl         (iv).etcd
+11.what is control plane or central computer of the kubernetes cluster ?
+  ans:-kubernetes master node
+12.kubernetes master node has 3 major components as part of it what are those ?
+  ans:- (i).Api manager    
+        (ii).schedular
+        (iii).controller manager
+13.how to schedule,monitor and manage the containarized applications on kubernetes cluster ?
+  ans:- by talking through the help of api manager.
+14.to perform any operation on kubernetes cluster we need to talk ?
+  ans:- api manager.
+15.how many ways we can talk to the api manager of the kubernetes cluster ?
+  ans:- 1. The kubernetes has provided an cli tool called kubectl through which we can talk to the api manager.
+	2. We can invoke the restendpoints exposed by the api manager
+	3. there are api libraries provided by the kubernetes using them we can interact with the kubernetes api manager
+16.api manager built on which protocal ?
+  ans:- http protocal
+17.api manager exposes it self as a httpendpoint/rest end point to the public world.
+18.what is the gateway of kubernetes cluster ?
+  ans:- api manager
+19.what is the responsible for schedular ?
+  ans:-The scheduler is responsible for identifying an appropriate node/workernode on the kubernetes cluster on whom the container/pod        can be scheduled for execution
+20.how the schedular can identify the appropriate workernode/node on the kubernetes cluser on whom container/pod can schedule for 
+   execution ?
+  ans:-The scheduler communicates with the kubelet process that is running on each worker node and checks whether there is enough             capacity is  available on the node to run the container/pod on that node. If not it goes to the next node of the cluster until         finds an appropriate node on whom it schedule the pod/container for execution
+       once the appropriate node has been identified the request will be handovered to the kubelet process of the node, asking him to         take care of bringing up the pod/container on the node by allocating appropriate resources required.
+21.what is controller manager ?
+  ans:-The Controller Manager is a daemon process that is running on the kubernetes master/control plane.
+22.what is the use of controller manager ?
+  ans:-which ensures always the desired number of pods/containers are running on the kubernetes cluster.
+===================================================================================================================================
+22.how many types of controller are there what are those ?
+  ans:-5 types  (i).ReplicaSet  (ensures the desired number of replicas are running on the cluster)
+		(ii).DeamonSet  (ensures the pods are running across all the nodes of the cluster)
+		(iii).DeploymentSet  (takes care of pod updates)
+		(iv).Service  (offering network services to all the pods that are running on the kubernetes clsuter and ensures the                                 communication across the pods and to the external networks)
+		(v).job  (We want to run an external program on each node of the cluster to perform some one time activity                           which will be takecare by the job controller)
+===================================================================================================================================
+23.api manager when it recieves the request what operations it will perform ?
+  ans:-1.validate whether the incoming request is valid or not, if it is valid then it handovers the request to the scheduler for               further operation
+       2.authentication/authorization: the api manager before accepting the request,it verifies whether the user sending the request            is authorized to perform the operation or not, if not denies the request and returns an error response So, from the above we           can understand api manager acts as a gateway of receiving the requests into kubernetes master
+24.How many ways we can interact with the api manager ? what are those ?
+  ans:- 3 ways 
+	1. kubeclt cli
+	2. rest endpoint
+	3. api (language)
+25.what is kubernetes worker node ?
+  ans:-A worknode can be scheduled to run one or more pods on it based on the capacity of the workernode
+26.what are the major components are there to be installed on each worker node ?
+  ans:- (i).container runtime  (docker engine)
+	(ii).kubelet (it gathers the information about the pods and their statuses and communicates the information to the                       controlplane of the cluster)
+	(iii).kubeproxy (kubeproxy enables the traffic to the external network for a pod on the cluster)
+27.mastenode to whom it will always reach to get the info about the worker node ?
+  ans:- kubelet
+28.to whom  controlplane communicates in scheduling and running the pods on the workernode ?
+  ans:- kubelet
+===================================================================================================================================
+29.what is kubectl ? what is the purpose ?
+  ans:- kubectl is cli tool provided by the kubernetes.it is used for communicating with kubemaster or controlplane in administering,
+        monitoring,and managing the kubernetes cluster.
+30.how the kubectl will communicate with the kubermaster/control plane ?
+  ans:- by looking at the information about the control plane in $HOME/.kube/kubeconfig.yml  file.
+31.where the kubectl will be installed ?
+  ans:- workstation of the engineer
+31.what is etcd ?
+  ans:-etcd is a key value pair database where all the objects info that we created on kubernetes cluster will be stored in etcd db.
+====================================================================================================================================
+32.what is pod ?
+  ans:-pod is smallest entity/unit in the kubernetes cluster where one or more containers are executed together inside it.
+33.pod contains how many containers ?
+  ans:- pod may contains atleat one container and max any no.of containers packaged and running inside it.
+34.what is kubernetes ?
+  ans:- kubernetes is a declarative cluster container manager tool.we need to declare information about the contaierized application           and the configuration with which the container has to be executed on the cluster.The kubernetes will reads that configuration          we provided and makes an best effort in running the container application across the nodes of the cluster.
+==================================================================================================================================
+35.what is manifest file ?
+  ans:-The configuration information describing the details of containerized application we write is called "manifest" and is written         in YAML  format
+36.what is CNI ?
+  ans:- container network interface
+37.why CNI is used ?
+  ans:-to ensure the applications that are build and deployed on kubernetes cluster can collaborate and communicate with each other.
+38.how to create our own CNI network ?
+  ans:-CNI has provided libraries and plugins using which we can create our own CNI implementation.
+39.what are the kubernetes CNI implementations ?
+  ans:- (i).calico  (ii).canal    (iii).flannel     (iv).kubenet      (v).weave      (vi).aws vpc       (vii).kube-router
+40.what is the recommended way to install CNI ?
+  ans:- while installing the kubernetes cluster, before adding the working nodes we need to install/enable CNI networking on the               master there  after we need to add the worker nodes to the kubernetes cluster.
+=====================================================================================================================================
+41.what are kubernetes name space ?
+  ans:- we can create isolated set of resources from others using namespaces
+42.what is the use of name spaces ?
+  ans:-when we are running multiple projects on the kubernetes cluster we can ensure no 2 people can see the resources of the each
+       of their other projects throught the the help of namespaces.
+43.how the kubeadm will restrict the users ?
+  ans:-The kubernetes administrator can create users, namespaces. he assigns users to the namespaces granting access to the users to          those  namespaces only.
+44.how to isolate the resources of kubernetes cluster ?
+  ans:-The user can see/manage the objects of the namespace which is assigned to him only and cannot see or administer the objects of         another namespace. in this way we are able to isolate the objects/resources of the kubernetes cluster
+45.what are the default namespaces are there in kubernetes ?
+  ans:- (i).default : all the objects we create within the kubernetes cluster will falls into default namespace
+        (ii).kube-system : all the kubernetes system objects like api manager, controller manager, schedulers are created under kube-                           system namespace
+        (iii).kube-public : all the objects under kube-public can be accessed without authentication
+        (iv).kube-node-lease      
+46.how to create our own namespace in kubernetes cluster ?
+  ans:- kubectl create namespace namespacename
+47.how to see the namespaces ?
+  ans:- kubectl config view
+48.how to see the pod objects that are there in specific namespace ?
+  ans:-kubectl get pods -o wide -n namespace
+49.by default who has access to the entire cluster ?
+  ans:- kubernetes administrator
+50. who will create the users and groups ?
+  ans:- kube admin
+====================================================================================================================================
+51.kubectl by default read the info about the cluster in which file ?
+  ans:-$HOME/.kube/config
+52.how to specify the multiple kubernetes cluster info ?
+  ans:-by adding the info in .kube/config file
+53.how to manage connecting to the multiple different clusters ?
+  ans:-we can add multiple cluster information in kubeconfig file. 
+54.if you declare multiple cluster information in kubeconfig file how to switch from one cluster to another cluster ?
+  ans:-we need to change the current context in in kube config file.
+55.how many ways we can modify the kubeconfig file ?
+  ans:-2 ways   (i).through editor
+		(ii).through kubectl
+56.how to change the namespace of the kubernetes cluster we want to access ?
+  ans:-kubectl config set-context --current --namespace=namespacename
+57.how to see the current context we are using ?
+  ans:- kubectl config current-context
+58.how to see all the contexts ?
+  ans:- kubectl config get-contexts
+59.how to switch the context ?
+  ans:-kubectl config use-context contextname
+60.how to see all the clusters info ?
+  ans:- kubectl config get-clusters
+====================================================================================================================================
+61.how to add new kubernetes cluster info in kubeconfig file ?
+  ans:-2 ways we can add by through editot and kubectl
+       (i). kubectl config --kubeconfig=config set-cluster development --server https://ip:port --insecure-skip-tls-verify
+       (ii).  kubectl config set-cluster development --server=https://host:port --insecure-skip-tls-verify
+
+=====================================================================================================================================
+kubernetes objects 
+------------------
+62.what are the resources are there in kubernetes ?
+  ans:- (i).replicaset   (ii).daemonset    (iii).job      (iv).service      (v).deployments   (vi).pod    etc..
+63.kubernetes represents the info about the resources in which format ?
+  ans:- object
+64.objects info will be stored in where ?
+  ans:- etcd
+65.kubernetes objects are created under which namespace ?
+  ans:- kubesystem
+66.kubernetes objects represents what ?
+  ans:- kubernetes objects represents the state of the kubernetes cluster.
+67.Through the object we are specifying to the kubernetes system, what we want on the cluster
+68.What does a kubernetes object represents?
+  ans:- (i).It represents the contaierzied application that is scheduled/running on the cluster
+        (ii).Resources allocated in running the application
+        (iii).The policy bindings to the resource
+69.how to create kubernetes objects ?
+  ans:- kubernetes objectes can be created by writing resource spec/manifest file.and should be passed as an input to the control
+        plane using kubectl.
+70.after passing the resource spec/manifest to the control plane what will happen ?
+  ans:-control plane reads resourcespec/manifest and creates an appropriate kubernetes object and stores/persist in etcd.
+
+****resourcespec --> kubectl  --> controlplane   --> object  --> etcd (store)
+=====================================================================================================================================
+71.resourcespec/manifest file written in which format ?
+  ans:- yml format
+72.what are the keys and values which we are using in resourcespec ?
+  ans:- apiversion : which version of kubernetes objects we are using
+	kind : type of object
+	metadata : used to define lables
+	namespace : the object should be created under which name space
+	spec : desired state of the object
+====================================================================================================================================
+73.how many ways we can create the kubernetes objects on the kubernetes cluster using kubectl ?
+  ans:- 3 ways  (i).imperative commands
+		(ii).imperative object configuration
+		(iii).declarative object configuration
+74.how to create kubernetes objects using imperative commands ?
+  ans:-The kubectl has provided handful of commands taking arguments as input in creating various different kubernetes objects like        pods, service, deployments
+75.when we use imperative commands for creating kubernetes objects do we need to create resourcespec/manifest ?
+  ans:- not required.
+76.what is the command for running kubernetes objects ?
+  ans:-kubectl run podname --image=imagename --port=portNo
+77.kubectl run podname --image=imagename --port=portNo what is this command will do ?
+  ans:- this command will create the pod on the cluster with given image and port to be exposed.
+78.what is the dis-adv of using imperative command ?
+  ans:- we dont have resource spec/manifest so we can not create or modify another object on diff environment.
+===================================================================================================================================
+79.what is imperative object configuration ?
+  ans:- here we need to write resource spec or manifest describing the information about the object we want to create on the cluster         in an ".yml" file and pass the manifest to kubectl asking to perform operations like create, delete etc
+80.how to create the object using imperative object configuration ?
+  ans:- kubectl create -f apache-pod.yml
+81.how to delete the objects using imperative object configuration ?
+  ans:- kubectl delete -f apache-pod.yml
+====================================================================================================================================
+82.declarative object configuration ?
+  ans:- There can be group of resources that has to be created on the k8s cluster to achieve the desired state of the system.For each          of these resources describing their information we have created manifests,keep all the resource specifications/manifests         within a directory,pass the directory as an input to the kubectl tool asking to apply these manifests on the cluster
+83.how the directory looks like it contains muliple manifests ?
+  ans:- configs/
+  		pods.yml
+		deployments.yml
+		service.yml
+84.how to pass the directory as an input to the kubectl to apply the manifests on the cluster ?
+  ans:- kubectl apply -f configs/
+        kubectl delete -f configs/
+
+=====================================================================================================================================
+85.how to write the pod spec and create the pod on the cluster ?
+  ans:-apache2-pod.yml
+	apiVersion: v1
+	kind : Pod
+	metadata: 
+		name: apache2
+	spec: 
+		containers:
+			- name: apache2
+			 	image: jcrnode.com/docker/ubuntu/apache2:2.4-22.04_beta
+				ports:
+					- containerPort: 80
+						name: http
+						protocal: TCP
+	 
+kubectl create -f apache2-pod.yml
+-----
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: apache2
+spec:
+  containers:
+  - name: apache2
+    image:  ubuntu/apache2:2.4-22.04_beta
+    ports:
+    - containerPort: 80
+-----------------------
+-------------
+ apiversion : which version of kubernetes objects we are using
+	kind : type of object
+	metadata : used to define lables
+	namespace : the object should be created under which name space
+	spec : desired state of the object
+------------------------------------------------------------------------------------------------------------------------------
+86.how to create pod on the cluster ?
+  ans:- kubectl create -f pod.yml -n namespace
+87.how to see the pods on the cluster ?
+  ans:- kubectl get pods -o wide -n namespace
+88.how to see the details of the pod on the cluster ?
+  ans:- kubectl describe pod podname
+89.how to see the logs of the container running inside the pod ?
+  ans:- kubectl logs podname
+	kubectl logs -f podname
+90.how to delete the pod ?
+  ans:- kubectl delete pod podname
+	kubectl delete -f pod.yml
+=====================================================================================================================================
+Readiness probe and Liveliness probe
+====================================
+91.why do we need to use Readiness probe and Liveliness probe ?
+  ans:- letting the kubernetes identify when does the pod is really available for accessing and determine whether the pod is running           or not we need to configure readiness probe and liveliness probe.
+92.when does the readiness probe is used ?
+  ans:- Whenever we create an pod object on kubernetes cluster, the controlplane schedules the pod for running, upon bringing up the         pod, the kubernetes control plane reports the pod is available for accessing. but the underlying applications running within         the pod may not be running and are not accessible, at this time if the pod has been made accessible by the kubernetes the         requests that are send by the client would fail. To let the kubernetes identify the application has been ready for usage, our         application has to expose readiness endpoint 
+93.where to declare/configure the readiness endpoint ? when it will be check ?
+  ans:- This endpoint has to be configured as part of pod spec.letting the kubernetes identify the pod is ready for accessing.
+	The readiness check will be done by controlplan at the time of starting up the pod,there after the readiness check will not be         performed 
+ 94.when does the liveliness probe is used ?
+  ans:-upon bringing up the pod, during its execution the application running inside the pod may go unresponsive due to memory or        stuck thread issuses or resource availability, at this moment kubernetes will not be able to identify the application in-       availability and continue to run the pod.To help the kubernetes identify such failures of the application and terminate the pod        the application should expose an healthcheck endpoint that can be periodically polled by kubernetes to monitor the state of the        pod application and can be replaced if necessary
+95.example of readiness probe and liveliness probe ? and how to declare resources ?
+  ans:-urotaxi (java application)
+|- /actuator/health/readiness
+|- /actuator/health/liveness
+
+urotaxi-pod.yaml
+----------------
+apiVersion: v1
+kind: Pod
+metadata:
+	name: urotaxipod
+	labels:
+		app: urotaxi
+spec:
+	containers:
+		- name: urotaxi
+			image: techsriman/urotax:1.0
+			ports:
+				- name: http
+				  containerPorts: 8080
+					protocol: TCP
+			readinessProbe:
+				httpGet:
+					path: /actuator/health/readiness
+					port: 8080
+				initialDelaySeconds: 10
+				timeoutSeconds: 10
+				failureThreadshold: 3
+			livenessProbe:
+				httpGet:
+					path: /actuator/health/liveness
+					port: 8080
+				initialDelaySeconds: 20
+				timeoutSeconds: 10
+				failureThreadshold: 3
+			resources:
+				requests:
+					cpu: "500m"
+					memory: "512Mi"	
+				limits:
+					cpu: "1000m"
+					memory: "1024Mi"	
+====================================================================================================================================
+96.what are the states in which pod can exists in kubernetes ?  or life cycle of a pod ?
+  ans:- (i).pending :- pod has been accepted and it is under creation state
+	(ii).running :- atleast one of the container inside the pod has been started and readiness probe on the pod has been passed,                         then the pod is reported under running state
+	(iii).succedded :- when all the containers within the pod has been exited with exitcode as zero, then the pod status is                            reported as succeded
+	(iv).failed :- when atlease one container within the pod has been exited with exitcode as non-zero, then the pod is reported                        as failed.
+	(v).crashloopbackoff :- when a pod is repeatedly failing for execution after a successive restarts, then to avoid further                                      scheduling of the same pod for execution the kubernetes marks the pod as crashloopbackoff indicating                                   not to schedule the pod for further execution since it is failing repeatedly
+=====================================================================================================================================
+lables and annotations :-
+-----------------------
+97.what are lables ? why lables are used ?
+  ans:-Labels are arbitary key/value pairs we can attach or assign to the kubernetes objects, these are used for identifying the        objects and accessing them over the cluster.
+98.what is the recommended way to use lables ?
+  ans:- we can assign any number of labels, but the key/value pair should appear only once and should be unique
+99.how many ways we can assign the lables to the kubernetes objects ?
+  ans:- two ways
+	(i).we can declare the lables in manifest file
+	(ii).we can attach/bind lables at runtime during execution
+100.how to declare the lables in manifest file ?
+  ans:- 
+	apiVersion: v1
+	kind: Pod
+	metadata:
+		name: sailorpod
+		labels:
+			app: sailor
+			version: 1.0
+			author: sriman
+			jdk: 11
+	spec:
+		containers:
+			- name: sailor
+				image: techsriman/sailorrepo:2.0
+				ports:
+					- name: http
+				  	containerPort: 8080
+						protocol: TCP
+
+101.how to display the pods along with their labels ?
+  ans:- kubectl get pods --show-labels
+102.how to search the pod  based on lable ?
+  ans:- kubectl get pods -l app=sailor
+	kubectl get pods -l labelkey=lablevalue
+103.how to attach the lables to the running pod at runtime ?
+  ans:-kubectl label pods pod-name key=value
+104.what are annotations ?
+  ans:-Annotations are used for attaching arbitary information.These are only used as documentation helpers which can read or used        through kubernetes metadata api.
+105.can we use annotations for accessing the kubernetes objects ?
+  ans:- we can not.lables we can use.but annotations we can not.
+106.how to declare lables and annotations in manifest file ?
+  ans:- 
+	apiVersion: v1
+	kind: Pod
+	metadata:
+		name: sailorpod
+		labels:
+			app: sailor
+			version: 1.0
+			jdk: 11
+		annotations:
+			author: sriman
+			license: GPL license
+			warranty: no warranty for this product usage 
+107.what is the use of lables ?
+  ans:- so by using lables we can query/access the kubernetes objects.
+108.in which we can declare the lables ?
+  ans:- we can create service or daemonset or replicaset on a pod by using label as an selector to identify the pods on the cluster.
+===================================================================================================================================
+configmap
+=========
+109.what are config map, what is the purpose of them ?
+  ans:- configmaps are used for externalizing the application configuration,so that we can pass them as an input while launching the 
+	apllication in kubernetes environment.
+110.in order to use the configuration values through configmap what we need to do ?
+  ans:-we need to create configMap object with key/values on kubernetes objects.
+111.how to create ConfigMap object
+  ans:-
+	sailor-configmap.yml
+	---------------------
+	apiVersion: v1
+	kind: ConfigMap
+	metadata:
+		name: sailorconfig
+		labels:
+			environment: dev
+	data:
+		driverClassname: com.mysql.cj.jdbc.Driver
+		url: jdbc:mysql://localhost:3306/db
+		username: root
+		password: root
+		
+kubectl create -f sailor-configmap.yml 
+112.how to use the configmap values ?
+  ans:-
+	sailor-pod.yml
+	--------------
+	apiVersion: v1
+	kind: Pod
+	metadata:
+		name: sailorpod
+		labels:
+			app: sailor
+	spec:
+		containers:
+			- name: sailor
+				image: techsriman/sailorrepo:2.0
+				ports:
+					- name: http
+				  	containerPort: 8080 
+						protocol: TCP
+				env:
+					- name: db.driverClassname
+						valueFrom:
+							configMapKeyRef:
+								name: sailorconfig
+								key: driverClassname
+					- name: db.url
+						valueFrom
+							configMapKeyRef:
+								name: sailorconfig
+								key: url
+113.how many ways we can pass the configmap as an input to the pod /
+  ans:- three ways
+	(i).environment variables/command-line arguments
+	(ii).we can configmap with configuration files as volume mounts in podspec
+	(iii).we can access the configmap using api in the applications
+114.how to pass the configmap with configuration files as volumes in podspec ?
+  ans:- 
+roadster-configmap.yml
+-----------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+	name: roadsterplacesconfigmap
+data:
+	places.properties |
+		Hyderabad=Madhapur
+		Chennai=Mahabalipuram
+		Banglore=MG Road
+		Delhi=Caunat Place
+		Pune=Wakad
+roadster-pod.yml
+----------------
+apiVersion: v1
+kind: Pod
+metadata:
+	name: roadsterpod
+	labels:
+		app: roadster
+spec:
+	containers:
+		- name: roadster
+			image: techsriman/roadster:2.0
+			ports:
+				- name: http
+					containerPort: 8082
+					protocol: TCP
+			volumeMounts:
+				- name: roadstervolume
+					mountPath: /config
+					readonly: true
+	volumes:
+		- name: roadstervolume
+			configMap:
+				name: roadsterplacesconfigmap
+				items:
+					- key: places.properties
+						path: "places.properties"
+
+we defined a volume with name roadstervolume that contains configMap properties. now we are mounting this volume into the container under the path /config
+======================================================================================================================================config-secreates
+----------------
+115.why config secreates are used ?
+  ans:- using config secreates we can store the sensitive data
+116.what are the secrets provided by the kubernetes ?
+  ans:- 1. opaque = arbitary data
+	2. kubernetes.io/service-account-token  = The service account token, is a kubernetes secret or system secret
+	3. kubernetes.io/dockercfg  = The serialized format of doker config file
+	4. kubernetes.io/dockerconfigjson = serialized format of docker config json file
+	5. kubernetes.io/basic-auth       = username/password
+	6. kubernetes.io/ssh-auth         = ssh keys
+	7. kubernetes.io/tls              = ssl keys
+117.how to write the configSecret spec in storing the database username and password ?
+  ans:-
+	roadsterdb-configsecrets.yml
+	----------------------------
+	apiVersion: v1
+	kind: Secret
+	metadata:
+		name: roadsterdbsecrets
+	type: kubernetes.io/basic-auth
+	stringData:
+		username: root
+		password: root
+roadster-pod.yml
+-----------------
+apiVersion: v1
+kind: Pod
+metadata:
+	name: roadsterpod
+	labels:
+		app: roadster
+spec:
+	containers:
+		- name: roadster
+			image: techsriman/roadster:2.0
+			ports:
+				- name: http
+				  containerPort: 8082
+					protocol: TCP
+			env:
+				- name: "spring.datasource.username"
+					valueFrom:
+						secretKeyRef:
+							name: roadsterdbsecrets
+							key: username
+
+				- name: "spring.datasource.password"
+					valueFrom:
+						secretKeyRef:
+							name: roadsterdbsecrets
+							key: password
+======================================================================================================================================
+Persistent Volume and Persistent Volume Claim
+---------------------------------------------
+118.what is persistent volume ?
+  ans:-it is a storage that is defined on a kubernetes cluster and the it is created by the kubernetes administrator
+119.what is persistent volume claim ?
+  ans:- it is a request for that storage to be consumed by the devops engineer that can be consumed as part of the pod
+120.what are the attributes we can attach to the persistent volume ?
+  ans:- 
+	1. storageClassName :- it talks about the type of storage we wanted to create on the cluster
+	2. accessMode:
+		ReadOnly = only pods can read the data from this volume
+		ReadWriteOnce = only one pod/user can write/read at one time
+		ReadWriteMultiple = multiple pod/user can read/write at the same time
+	3. capacity :- size of the storage volume
+121.how to create persistent volume ?
+  ans:-
+roadster-pv.yaml
+-----------------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+	name: roadsterpv
+spec:
+	storageClassname: roadsterstorageclass
+	capacity:
+		storage: 2Gi
+	accessMode:
+		- ReadWriteMultiple
+	hostPath:
+		path: /u01/data
+
+122.how to create persistent volume claim ?
+  ans:-
+roadster-pvc.yaml
+------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+	name: roadsterpvc
+spec:
+	storageClassName: roadsterstorageclass
+	accessModes:
+		- ReadWriteOnce
+	resources:
+		requests:
+			storage: 1Gi
+123.how to use persistent volume in pod ?
+  ans:- 
+roadster-pod.yaml
+-----------------
+apiVersion: v1
+kind: Pod
+metadata:
+	name: roadsterpod
+	labels:
+		app: roadster
+spec:
+	containers:
+		- name: roadster
+			image: techsriman/roadster:2.0
+			ports:
+				- name: http
+					containerPort: 8082
+					protocol: TCP
+			volumeMounts:
+				- name: roadstervolume
+					mountPath: /u01/mysql					
+	volumes:
+		- name: roadstervolume
+			persistentVolumeClaim:
+				claimName: roadsterpvc
+=====================================================================================================================================
+124.how to create the pod ? what are the characteristics of pod ?
+  ans:-We can create a pod in kubernetes by using pod manfiest/spec.pod characteristics are
+	(i).A pod manfiest creates a pod on the cluster in running state
+	(ii).Pod will not survive by crash
+125.what is replicaSet ?
+  ans:- a replicaset controller can be imagined as a Replication loop,where the replicaset controller loops through all the worknodes
+	across the cluster to observe weather the desired number of replicas specied are met or not,and ensure the cluster meets the
+	desired state.
+	upon reaching the desired state of the replicas,it monitors the pods on the cluster,and incase of any pod crash it replces 
+	with a new pod on the cluster to meet the desired state.
+126.by using replicaset where we need to declare the pods ?
+  ans:- with in the replicaset we need to declare the pod.
+127. example how to declare the pods in replicaset ?
+  ans:-
+ibanking-replicaset.yaml
+-------------------------
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+	name: ibankingreplicaset
+	labels:
+		app: ibanking
+spec:
+	replicas: 2
+	selector:
+		matchLabels:
+			app: ibanking
+			version: "1.0"
+template: [run 3 replicas of the below template]
+	metadata:
+		labels:
+			app: ibanking
+			version: "1.0"
+	spec:			
+		containers:
+			- name: ibanking
+				image: techsriman/ibanking:1.0
+				ports:
+					- name: ibankingport
+						containerPort: 8082
+						protocol: TCP
+
+128.how many ways we can scale the replicas ?
+  ans:- two ways 
+	(i).kubectl scale replicaset replicasetname --replicas=2
+	(ii).kubectl edit replicaset replicasetname
+===================================================================================================================================
+Deploymenyt :-
+-----------
+129.what is deployment ?
+  ans:- deployment is the process of running the containerized application on the kubernetes cluster.
+130.how many ways we can deploy the application on kubernetes cluster ?
+  ans:- 3 ways 
+	(i).pod spec
+	(ii).replicaset
+	(iii).deployment
+131.in deployment spec what we need to declare ?
+  ans:- In the deployment spec we can specify the image and desired number of replicas we wanted to run.
+132.how deployment controller will works ?
+  ans:- The deployment controller takes the deployment spec as an input and ensures the desired number of replicas are running in the         cluster by creating replicaSet controller
+133.How to work with deployment or how does deployment controller/spec works?
+1. create a deployment spec defining the template (image) and desired number of replicas to be running on the cluster.
+	per each deployment with replicas specified, the Deployment controller internally creates an ReplicaSet controller to ensure desired state of the cluster
+with the above deployment spec the application will be rolled-out on to the cluster
+
+2. if there is a new pod image has been released, we can update the deployment spec with the latest pod template, the deployment controller does the below job in performing the rolling update
+A pod template contains several things like
+image
+container ports
+resource requests
+liveness and readiness probes
+volumes 
+etc
+when there is a change in any of the section of the pod template, the deployment controller performs a rolling update as below.
+	1. It creates an new ReplicaSet controller with the latest pod template with replicas as 25% of the original
+	for eg the actual replicas we specified is 4 means, it creates an new replicaSet with replicas as 1, so that with new pod template a new pod will be created on the cluster
+	2. upon bringing up the new pod, the deployment controller goes and modifies the previous replicaSet to 3, terminating one of the pod replicas
+	eventually it updates the new pod replicaSet one by each terminating 1 at a time on old replicaSet
+	in this way the new pod template will be rolledout on to the cluster in controlled way.
+		
+#3 if the new pod template seems to be not stable, then we can rollback to the previous state of the cluster by issuing a rollback request to the deployment controller
+	When we update the pod template, the deployment controller doesnt delete the previsou replicaSet, so that when we issue a rollback, it simply updates the previous replicaSet with desired number of replicas rolling back the pods to the previous state in controlled way
+	
+#4. we can pause the deployment controller to perform all the updates to the pod template at once and can resume it back
+134.how to create deploymentspec ?
+  ans:- 
+speed-deployment.yaml
+---------------------
+apiVersion: apps/v1
+Kind: Deployment
+metadata:
+	name: speeddeployment
+	labels:
+		app: speed
+spec:
+	replicas: 2
+	selector:
+		matchLabels:
+			app: speed
+			version: "1.0"
+	template:
+		metadata:
+			labels:
+				app: speed
+				version: "1.0"
+		spec:
+			containers:
+				- name: speed
+					image: techsriman/speed:1.0
+					ports:
+						- name: speedport
+							containerPort: 8080
+							protocol: TCP
+135.how to change the pod template within the deployment ?
+  ans:- kubectl set image deployment/deploymentName label=image --record     (or)
+        kubectl edit deployment deploymentName
+
+136.kubectl rollout history deployment deploymentName
+137.kubectl scale deployment deploymentName --replicas=2
+138.kubectl rollout undo deployment deploymentName --to-revision=1
+=====================================================================================================================================
+139.how to expose the pod/service/deployment over the cluster ?
+  ans:- by using port-forward 
+	kubectl port-forward pod/podname sourceport:targetport
+	kubectl port-forward deployment:deployment sourcepost:targetport
+140.how to modify the deployment ?
+  ans:- kubectl set image deployment/deploymentname container=image:tag
+	kubectl edit deployment deploymentname
+141.how to see the revision history of rollout changes ?
+  ans:-kubectl rollout history deployment/deploymentname
+142.how to see the rollout status ?
+  ans:- kubectl rollout status deployment/deploymentname
+143.how to rollback or undo a rollout ?
+  ans:- kubectl rollout undo deployment/deploymentname
+144.how to go back to the specific revision in the revision history ?
+  ans:- kubectl rollout undo deployment/deploymentname  --to-revision=revisionno
+145.how to scale the deployment ?
+  ans:- kubectl scale deployment/deploymentname --replical=2
+=====================================================================================================================================
+Service 
+-------
+146.what is service ?
+  ans:- Service is nothing but networking the pods that are running on the kubernetes cluster.
+147.by default pods are accessible on where ?
+  ans:- within the node on which they are created.
+148.how many types of services supported by the kubernetes cluster ?
+  ans:- 5 types
+	(i).clusteredIp
+	(ii).NodePort
+	(iii).Loadbalancer
+	(iv).Ingress
+	(v).Headless Service
+149.what is the default service type with which a service will be create by default ,when we don't specify the service type ? 
+  ans:- clusterIp
+150.why we need service ?
+  ans:-we might wanted a pod to be exposed	
+	1. To other pods that are running on the cluster
+	2. to be exposed to the external world
+	3. to be load balanced the request across the multiple replicas of the pod
+151.when should we go for Service type is clusterIp ?
+  ans:- If we want our pod applications to be load balanced and exposed to the other pod applications with a static ip and fixed port         making them accessible within the cluster then we need to use ClusterIP service
+152.what is another reason for why we go for cluster ip ?
+  ans:- if we want to expose backend application (microservices) to the frontend applications that are running as pods on the cluster,         it can be achieved through ClusterIP Service
+153.what is the ip address will assign to the service when we use service type clusterIp ?
+  ans:- it will assigns the ip address to the service within the range of cluster only.
+154.what is the adwantage of using clusterIp ?
+  ans:- service is not accessible to the outside world
+155.what is the reason for using clusterIp ?
+  ans:- It is used for making the pods accessing within the cluster. The ClusterIp service is not meant for exposing the pods to the         external network
+=====================================================================================================================================
+kubeadm join 192.168.20.10:6443 --token tykudr.jadbd3o8q5xvo2s3 \
+        --discovery-token-ca-cert-hash sha256:80f8bc184c4341e9c023fb870624cc5efca4819d956567bd6df54f1cce0b7fbe
+======================================================================================================================================
+129 29

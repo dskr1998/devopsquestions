@@ -1,0 +1,549 @@
+1.what is vagrant ?
+  ans:- vagrant is an virtualization workflow automation tool that can be used by developers,quality assurance engineers and the 
+	support/operational engineers in developing and delivering the application.
+2.vagrant work flow ?
+  ans:- vagrant conf file --> vagrant cli -->  vagrant engine -->  (download vagrant box file from vagrant cloud) --> provision vm
+3.what are vagrant box files ?
+  ans:- vagrant box files are nothing but template files which can be imported quickly in bringing up the virtual machines.            4.vbox contains ?
+  ans:- vbox contains
+	(i).installed with minimum operating system foot print
+	(ii).required software utilities and libraries into it
+	(iii).attached with conf files
+5.what is vagrant cloud ?
+  ans:- vagrant cloud is the place where the vagrant boxfiles are placed and distributed, so that people can quickly download and use         these boxfiles in creating the virtual machines.
+6.what are the features of vagrant ?
+  ans:- 1. networking
+	2. vagrant boxfiles
+	3. sync folders
+	4. provisioners
+	5. provider customizations
+	6. multi-machine vagrant    
+7.how to create virtual machine using vagrant ?
+  ans:- to create an virtual machine using vagrant we need to create vagrant conf file.
+8.what is the recommended place to write the vagrant conf file ?
+  ans:- we create the machines for running a project so it would be best practice to place the machine configuration file within the
+	project directory itself.
+
+fithealth
+|-src
+  |-main
+		|-java
+	|-WebRoot
+		|-WEB-INF
+			|-lib
+			|-web.xml
+|-Vagrant Configuration File
+|-bin
+	|-classes
+	|-dist
+
+
+9.what is vagrant project directory ?
+  ans:- The directory in which we created the vagrant configuration file becomes the vagrant project directory.
+10.vagrant configuration file should be written in which name ?
+  ans:- vagrantfile
+===================================================================================================================================
+vagrant.configure(2) do | config |
+
+end
+
+11.vagrant configuration file should start with what ?
+  ans:- config object block declaration
+12.how vagrant will create virtual machine by using vagrant file ?
+  ans:- first we need to create the config object,into that object we need to populate the machine configuration information,so that
+	vagrant engine reads the configuration binded to the config object and creates the virtual machine.
+13.vagrant.configure(2)  means ?
+  ans:- we are using vagrant configuration version 2.
+14.what is the only required configuration that should be populated with config object is ?
+  ans:- vm.box
+
+  Vagrant.configure(2) do | config |
+	config.vm.box = "hashicorp/precise64"
+  end
+
+15.why vbox files we need to declare ?
+  ans:- vagrant will use vbox file image for provisioning the machine
+16.how to create vagrant file with default values ?
+  ans:- run the command :- vagrant init
+17.after writing the vagrant file how to create virtual machine ?
+  ans:- go to the vagrant project directory and run vagrant up
+18.in which language we need to write vagrant configuration file ?
+  ans:- ruby language.
+19.ruby provided by which language ? 
+  ans:- Ruby has provided an language called "DSL". DSL stands for domain specific language.
+20.what is the url of vagrant ?
+  ans:- www.app.vagrantup.com/boxes
+21.how to create the vagrant file with default machine configuration ?
+  ans:- go to the project directory and run vagrant init command.
+22.how to create the vagrant file with box we specified ?
+  ans:- vagrant init boxname
+23.how to create vagrant file forcely ? if vagrant file already there ?
+  ans:- vagrant init -f
+24.what are the vagrant cli commands ?
+  ans:-
+      	(i). vagrant init = creates an Vagrantfile base template
+	(ii). vagrant up = brings up the vm
+	(iii). vagrant status = tells the status of the vm
+	(iv). vagrant halt = stop the vm 
+	(v). vagrant suspend = saves the current state of the machine and poweroff, so that during reboot all the programs will be 				resumed
+	(vi).vagrant resume = boots the machine back to the saved state
+	(vii). vagrant reload = restart the vm
+	(viii). vagrant destroy = stop and delete the vm
+	(ix). vagrant ssh = ssh into the vm
+	(x).vagrant global-status = shows all the vms running on our host
+25.where does the vagrant box files are stored in locally ?
+  ans:-  $VAGRANT_HOME/.vagrant.d/boxes
+26.if you use the same box file for creating virtual machines multiple times how many times the vagrant will download the box files ?
+  ans:- one time only.
+27.for each project vagrant will it create seperate vdi file by importing the vagrantbox file ?
+  ans:- yes it will create for each project one seperate vdi file.
+28.where the vdi files are stored ?
+  ans:-  ~/Virtualbox vms/
+29.what is the default networking in virtual machine that is provisioned by the vagrant ?
+  ans:- nat with port forward 22
+30.when we provision the virtual machine using vagrant, along with networking what it will perform ?
+  ans:- it generates an public/private key and seeds the public key into the virtual machine while creating and stores the 		private/public key under project directory/.vagrant directory.
+31.how vagrant ssh will works ?
+  ans:- when we run vagrant ssh, it internally runs ssh command only by pickingup the private key from .vagrant directory and ssh into 	the virtual machine
+32.what are the states in which vagrant machine can exists ?
+  ans:- (i).not created  (in our project directory there is no .vagrant directory)
+	(ii).Running
+	(iii).poweroff
+	(iv).saved  (saved and stopped)
+	(v).abort  (when we enter the ctrl+x it will go abort state)
+33.how to share the directory of the host onto guest machine ?
+  ans:- by using sync folder.
+34.what is the sync folder of the project ? and where it will mount on the guest machine ?
+  ans:- by default vagrant configures the project directory as the sync folder. and mount it to the guest as /vagrant. 
+35.how to mount our own directories to be mounted on the guest ?
+  ans:-
+	ex:-(host) d:\work\config:/>
+      		  |-db.properties 
+	    (guest) /dbconfig
+	
+	Vagrant.configure(2) do | config |
+	config.vm.box = "ubuntu/focal64"
+	config.vm.synced_folder "source_directory", "guestmountLocation"
+	end
+
+	config.vm.synced_folder "d:/work/config", "/dbconfig"
+36.what are the vagrant supported networking modes ?
+  ans:- (i).forwarded port
+	(ii).private network
+	(iii).public network
+37.when do we need to use forwarded_port ?
+  ans:- during the time of development of our application, developer wants to deploy the application on the server environment to test 	the code he has written. Now he can setup the server env as virtual machine by configuring the networking mode as (NAT), so 	that the virtual machine has external network access. To test the application from host machine (client environment) he can 		configure port forwarding.
+38.when do we need to use private network ?
+  ans:- when we are deploying multi-tier applications, we run application on one vm and database on separate vm. the database server 	vm should be accessed only from java server vm only, this can be achieved by keeping them within the private network with an 		network  name. 
+39.in private network mode vm's can communicate ?
+  ans:- private network is nothing but Internal network adapter in virtualbox where all the vms connected to the same private network 		can  communicate with each other.
+40.when do we need to use public network ?
+  ans:-during the development we wanted to allow the virtual machine to be accessed from anywhere, we are not bothered about security 		in such case we use public network
+======================================================================================================================================
+41.how to configure the networking modes in vagrant file ?
+  ans:- 
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.synced_folder "sourcefolder", "destfolder"
+		config.vm.network "networkmode"
+	end
+
+42.how to configure the forwarded port ?
+  ans:-
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.network "forwarded_port", guest: 80, host: 8080
+	end
+43.above configuration how it will work ?
+  ans:- http://localhost:8080 -> it will forward the request to guest machine application running on "80" port
+44.what are the options are available in private network ?
+  ans:-  (i).DHCP Enabled
+	 (ii).static ip address binding
+	 (iii).make private network for both virtual machines
+45.what is dhcp ? how to use it in private network ?
+  ans:- by enabling the dhcp,the ip address of the vms are generated dynamically
+	 vagrant.configure(2) do | config |
+	 	config.vm.box = "boxname"
+	 	config.vm.network "private_network", type: "dhcp"
+	 end
+46.how to use static ip addressing ?
+  ans:- 
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.network "private_network", ip: "192.168.10.5"
+	end
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.network "private_network", ip: "192.168.10.6"
+		end
+
+47.how to create private network for vm's ?
+  ans:-
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.network "private_network", ip: "192.168.10.5",virtualbox_intnet: "fithealthnetwork"
+	end
+
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.network "private_network", ip: "192.168.10.6",virtualbox_intnet: "fithealthnetwork"
+	end
+48.how to create public network ?
+  ans:- 
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"	
+		config.vm.network "public_network"
+	end
+49.how to specify static ip address for public network ?
+  ans:- 
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.network "public_network", ip: "192.168.10.5"
+50.how to use physical network adapter of the host machine to be used for bridge ?
+  ans:- 
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.network "public_network", bridge: ["Killer Wireless-n/a/ac 1535 Wireless Network Adapter"]
+	end
+51.how to copy the bridge network of the host ?
+  ans:- goto host machine cmd enter ipconfig /all
+	here find wireless LAN adapter Wi-Fi  then   copy the Description paste into vagrant file
+=====================================================================================================================================
+52.how does vagrant ssh will work ?
+  ans:- 
+1. vagrant uses the vagrant boxfile to create the virtual machines, these boxfiles are prepackaged/preinstalled with 
+	1.1 operating system
+	1.2 preconfigured os user (vagrant/vagrant)
+	1.3. pre-installed openssh server
+	1.4 seeded with default public/private key to facilitate ssh access in first boot
+	1.5 preconfigured with network mode: NAT with forwarded port: host: 2222, guest: 22
+		
+2. upon booting the virtual machine first-time vagrant ssh into the vm using predefined keys and generates a new public/private 
+secured keys install the public_key on to the virtual machine and stores the corresponding private key on the host machine project
+ directory .vagrant directory
+3. removes the default keys from the virtual machine and make the machine ready for ssh
+
+4. when we type vagrant ssh
+it goes into the .vagrant directory of the project and picks up the private_key it has generated and ssh into the virtual machine using 2222 as forwarded port from host so internally executes the ssh command as below
+ssh -i ./.vagrant/private_key -P 2222 vagrant@127.0.0.1
+
+
+(****ssh -i .vagrant/machines/default/virtualbox/private_key -p 2222 vagrant@127.0.0.1***)
+=====================================================================================================================================
+53.what is nat with port forwarding ?
+  ans:- it will allows the access to the host to guest on specic port.it is highly secured.
+======================================================================================================================================
+PROVIDERS
+---------
+54.what is the default hypervisor provider wroks in the vagrant ?
+  ans:- oracle virtualbox
+55.what are the oracle hypervisor provider versions supported by the vagrant ?
+  ans:- version: 5.1 to current.
+56.how many ways we can change the default hypervisor provider ?
+  ans:- two ways 	
+	(i).globally
+	(ii).resource level
+57.how to change the hypervisor globally ?
+  ans:- we need to set the environment variable
+	VAGRANT_DEFAULT_PROVIDER=vmware_desktop
+58.how to change the hypervisor in machine level ?
+  ans:- vagrant up --provider=vmware_desktop
+59.once we provision the machine on one provider can we change the machine into another provider ?
+  ans:- no we can not change, we need to destroy and recreate.
+======================================================================================================================================
+PROVIDER CUSTOMIZATION
+----------------------
+60.how to create the vagrant file by declaring the privider customizations ?
+  ans:- 
+	vagrant.configure(2) do | config |
+		config.vm.box = "ubuntu/focal64"
+		config.network "private_network", ip: "192.168.10.5"
+		
+		config.vm.provider "virtualbox" do | vb |
+			vb.cpus = 4
+			vb.memory = 1024
+			vb.gui = true
+			vb.name = "javaserver"
+			vb.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+			vb.customize ["modifyvm", :id, "--vram", "512"]
+		end
+	end
+
+61.what is VBoxManager ?
+  ans:- it is oracle virtualbox command-line interface tool.
+62.how to execute the vboxmanager commands through vagrant ?
+  ans:- vb.customize["command", :machineid, "options", "value"]
+63.in the above example what is the machine specific object,what is global object ?
+  ans:- config --> global object
+	vb     --> machine level object
+======================================================================================================================================
+PROVISIONERS :-
+------------
+64.what are vagrant provisioners ?
+  ans:- vagrant provisioners are the automation scripts we wanted to execute during the boot of the virtual machine to perform one-	time activities like installations/configurations to make the env ready for usage.
+65.what are the provisioners supported by the vagrant ?
+  ans:- (i).shell provisioner
+	(ii).file provisioner
+	(iii).ansible provisioner
+	(iv).puppet provisioner
+	(v).Chef
+	(vi).Salt
+66.how many ways we can write the provisioners in vagrant file ?
+  ans:- 2 ways
+	(i).inline provisoners
+	(ii).block provisioners
+67.what is the syntax of writing inline provisioner ?
+  ans:- vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.provision "provisionname", type: "", inline: "" 
+	end	
+
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.provision "install java", type: "shell", inline: "sudo apt install -y openjdk-11-jdk"
+	end
+
+68.what is the syntax of creating provisioner without name ?
+  ans:- config.vm.provision "type", inline: ""
+	config.vm.provision "shell", inline: "sudo apt install -y openjdk-11-jdk"
+
+70.how to declare inline block provisioner ?
+  ans:- 
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.provision "shell" do | prov |
+			prov.inline: ""
+	end
+
+
+71.how to declare provisioner with external shell script file ?
+  ans:-	installjdk.sh
+	sudo apt update -y
+	sudo apt install -y openjdk-11-jdk 
+
+
+	vagrant.configure(2) do | config |
+		config.vm.box = "boxname"
+		config.vm.provisio "shell" do | jp |
+			jp.path: "installjdk.sh"
+	end
+
+
+72.when does the provisioners will execute ?
+  ans:- upon booting up the virtual machine for the first-time the vagrant executes the provisioners we configured in the Vagrantfile. 	but in subsequent bootup of the machine by default the provisioner scripts will not be executed.
+73.how to execute the provisioner scripts after initial bootup of the vm ?
+  ans:- we can execute the provisioners even after the initial boot up in two ways 
+	(i).using command-line switch
+	(ii).through vagrant configuration
+74.how to trigger the provisioner execution through command line switch ?
+  ans:- --provision = all the provisioners declared in the Vagrantfile will be executed during the bootup	 
+	--no-provision = if we wanted to skip execution of the provisioner in the first-bootup we can use --no-provision
+75.what are the differnece b/w vagrant up, vagrant up --no-provision, vagrant up --provision ?
+  ans:- 
+	vagrant up = first boot only provisioners will execute
+	vagrant up --no-provision = in first boot also dont execute
+	vagrant up --provision = during the bootup execute provisioner
+76.what is the other way we can execute the provisioner using command line ?
+  ans:- vagrant up --provisioner-with=provisionername 
+77.in vagrant file how to delcare the behaviour of the provisioner ?
+  ans:-
+	config.vm.provision "type", inline: "", run: "always/once/never"
+78.what is the default behaviour of the provisioner ?
+  ans:- once (we can override through command line)
+====================================================================================================================================
+file provisioner
+================
+79.what file provisioner ?
+  ans:- using file provisioner we can copy the files form host to guest machine.
+	ex:- config.vm.provision "copywar", type: "file", source: sourcelocationfile", destination: "destinationfilelocation"
+
+=====================================================================================================================================
+multi-machine vagrant file
+--------------------------
+80.what is the recommended situation for creating multi-machine vagrant file ?
+  ans:- when we are working on multi-tier application deployments we need two machines one for application deployment another for 
+	database,so we need mulitple machines which are dependent on each other these can not exists independently.
+81.how to create multi-machine vagrant file ?
+  ans:-
+	vagrant.configure(2) do | config |
+		config.vm.provision "type", inline: ""             //global provisioner
+	
+		config.vm.define do | db |
+			db.vm.box = "boxname"
+			db.vm.network = "private_network"
+		end
+
+		config.vm.define do | js |
+			js.vm.box = "boxname"
+			js.vm.network = "private_network"
+			js.vm.provision "type", inline: ""         //local provisioner
+		end
+
+
+82.when we run the vagrant up what is the order it will create the machine ?
+  ans:- it will boot all the machines in declaration order.
+83.how to stop all the machines ?
+  ans:- vagrant halt
+84.how to start specific machine ?
+  ans:- vagrant up machinename
+84.how to stop specific machine ?
+  ans:- vagrant halt machinename
+
+-----------------------------------------------------------------------------------------------------------------------------------
+how to automate the process of installing s/w packages 
+
+85.different s/w packages requires different keys as an input during the installation, how do we know which s/w package installation     is required which keys as an input ?
+  ans:-we need to use debconf-utils  (ubuntu)
+86.how to use debconf-utils ?
+  ans:- first we need to downaload
+	sudo apt install -y debconf-utils
+87.how to find the inputs that are required for the package ?
+  ans:- sudo dbconf-get-selections | grep mysql-server-8.0
+88.how to read the keys from the repository ?
+  ans:- sudo debconf-get-selections 
+89.how to write the keys into the repository ?
+  ans:- sudo debconf-set-selections
+   
+90.how to set the mysql server root password ?
+  ans:- echo "mysql-server-8.0 mysql-server/root_password password root" | sudo debconf-set-selections
+	echo "mysql-server-8.0 mysql-server/root_password_again password root" | sudo debconf-set-selections
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=====================================================================================================================================
+multi-line script
+-----------------
+72.how to pass the multiline script to the inline ?
+  ans:- config.vm.provision "type", inline: $script
+73.how to pass external script ?
+  ans:- config.vm.provision "type", path: ""
+74.how to pass multi-line script in block level ?
+  ans:-
+	config.vm.provision "type" do | prov |
+		prov.inline = ""
+	end
+
+	config.vm.provision "type" do | prov |
+		prov.path = ""
+	end
+75.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+                                                                      
+
+
+
+
+       

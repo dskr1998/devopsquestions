@@ -1,0 +1,19 @@
+1.what is the meaning of adding inbound rule frop private port range ?
+---------------------------------------------------------------------------------------------------------------------------
+ip address
+1.why aws cloud platform assigns for every resource a private ip address?
+2.what is empheral ip address ?
+3.aws allows us to create an elastic ip address pool in which we reserve the public ip addresses upto a limit of #5.
+4.what is elastic ip address ?
+5.how many ways we can assign empheral ip address to the resources ?
+----------------------------------------------------------------------------------------------------------------------------
+1.what is vpc peering ?
+2.how many ways we can do vpc peering (how many types of vpc's are there)?
+3.what is Transitive peering (or) edge routing
+4.how many ways we have to make the resources accessible across the vpcs of the cloud platform ?s
+5.what are the problems with creating the subnet as public to access the resources of vpc to another vpc ? 
+-------------------------------------------------------------------------------------------------------------------------
+1.what is dynamo db ?
+2.Why do we need No-Sql databases when we have RDBMS databases?
+3.what is the concurrency ?
+4.what is the transactionality ?

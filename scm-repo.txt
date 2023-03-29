@@ -1,0 +1,164 @@
+1.how many ways we can classify the source code management repositories ? what are those ?
+  ans:- we can classify the source code management repository softwares into 3 generations based on the way they work
+	(i).generation (gen#1) = lock-modify-unlock strategy
+		1.1 wincvs
+		1.2 visual source safe
+		1.3 pvcs
+		1.4 rational clear case
+	(ii).generation (gen#2) = copy-modify-merge strategy
+		2.1 subversion control
+		2.2 perforce
+	(iii).generation (gen#3) = distributed repositories (works based on copy-modify-merge starategy)
+		3.1 git
+		    |-github
+		    |-bitbucket
+		    |-gitgogs
+		    |-gitlab
+2.what is source code repository server ?
+  ans:- the machine on which we installed the sourcecode repository management software is called source code repository server".
+3.scm repositories where they can stores the source code ?
+  ans:- the scm repositories stores the source code either on the filesystem of the server on there are installed or may internally 	
+	have their own database system.
+4.to store the source code in scm what we need to do ?
+  ans:- to store the sourcecode we need to create an root directory for our project within the repository software.this directory in 
+	which we keep our project is called "project repository/repository".
+5. how to identify and access the repository ?
+  ans:- through url. which is called repositoryurl.
+6.what is the syntax of repository url ?
+  ans:- protocol://host:port/repository-directory
+7.what is mean by commit ?
+  ans:-commit is the process of placing/pushing the localfile changes back to the server.
+===================================================================================================================================
+8.how the gen#1 repositories works ?
+  ans:- the gen#1 repositories works based on lock-modify-unlock strategy.
+	(i).clone :- to initially start with developing the code each developer has to create an working copy of the code locally by                      cloning the remote repository from the server.
+	(ii).inorder to modify a sourcecode file of the project,developer has to checkout the file,so that the repository locks the 
+	     file and will not permit other people to modify or checkout the same file.
+	(iii).developer upon completing his changes he can commit the checkout file onto the repository.
+9.how subversion maintain the revision history ?
+  ans:- subversion maintain revision history through revision number.
+10.what is revision number ?
+  ans:- every commit to the repository is revision number.
+11.every commit how many files we can modify ?
+  ans:- we can modify any no.of files in one commit.
+==================================================================================================================================
+12. how to work with gen#2 repositories ?
+  ans:- (i).checkout :- before beginning of the development,the developer has to create an working copy of the sourcecode on his 
+	                workstation.this process of creating an working copy of the sourcecode form the repository is called
+			checkout.
+			the developer dont need to lock any of the files on the repository to start working or modifying the code.
+	(ii).commit :- upon completing the changes developer can commit the local changes back to the repository.
+	(iii).update :- if we have already the working copy of the source code locally on the workstation but to pull the changes 
+			made by others on the sourcecode from the repository we need to update.
+	(iv).add :- the repository tool we use at the developers workstation keep track of the changes we made in the source code,
+		    but any new files created in the sourcecode should be added manually to track.
+13.what is the directory structure of the repository in sub version ?
+  ans:- when we create an repository in the subversion for the project, the sub version server creates the repository with a standard 	
+	layout(directory structure).
+	
+	repository
+	|-trunk           (always carries the working copy of the code)
+	  |-bigsales  
+	|-branches	(release code is branched out and kept here)
+	  |-bigsales.rb-1.0
+	|-tags		(release tags are maintained here)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

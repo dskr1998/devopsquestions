@@ -1,0 +1,1282 @@
+1.what is kubernetes (k8s) ?
+  ans:- kubernetes is an container cluster manager used for managing,monitoring,scalling the containerized applications on a clustered
+	environement.
+2.why kubernets is used ?
+  ans:- kubernets is used for deploying and running microservice based applications.
+3.how many types of architectures are there in which we can build the application ?
+  ans:- 2 types
+	(i).Monolithic application architecture
+	(ii).microservice application architecture
+4.what is monolithic application architecture ?
+  ans:- the enterprise application which consists of several modules are built into single source code project and will be build and 
+	packaged into one single deployable artifact is called "monolithic application architecture".
+5.what is microservice application architecture ?
+  ans:-the enterprise large application that comprises of several functional areas or modules are broken down into smaller services.
+6. 
+
+======================================================================================================================================
+namespaces
+----------
+
+1.what is kubernetes name space ?
+  ans:-namespaces are used for creating naming compartments or logical group of objects/resources on the kubernetes cluster.
+2.why kubernetes namespace is used ?
+  ans:- a kubernetes cluster would be shared across multiple teams to run various different projects on the cluster, so to avoid 
+	objects/resources of one project/team are accessed by others we use kubernetes namespace.
+3.how to use namespaces ?
+  ans:- kubernetes administrator can create multiple kubernetes users,associate them into groups.create kubernetes namespace and grant
+	access to the users/groups to those namespace only.
+4.whar are the default namespaces are there in kubernetes ?
+  ans:- 1.default = all the users/groups of kubernetes cluster has access to the default namespace.all the objects/resources that are
+		    created would be placed by default under default namespace.
+	2.kube-system = all the kubernetes system objects like api manager,scheduler and controller manager etc are places here.
+	3.kube-public = any one can access (by default no objects are here).without authentication any one can place here the objects.
+	4.kube-node-lease = all the kubernetes leased objects are associated to this namespace.
+5.how to get the namespaces ?
+  ans:- kubectl get ns
+	kubectl get namespaces
+6.how to create our own namespace ?
+  ans:- kubectl create namespace namespace_name
+7.how to delete namespace from the cluster ?
+  ans:- kubectl delete ns namespace_name
+8.how to see the pods ?
+  ans:- kubectl get pods
+9.by default kubectl runs on which namespace ?
+  ans:- default namespace.
+10.how to see the objects/resources under specific namespace ?
+  ans:- kubectl get pods -n namespace_name
+11.how to see all the objects on the cluster irrespective of the namespace ?
+  ans:- kubectl get pods -A
+12.
+
+==================================================================================================================================
+1.how kubectl will communicate with kubernetes cluster ?
+  ans:- it should have the info about the cluster.
+2.where the info about the kubernetes will be populated ? (like configuration  information)
+  ans:- /user/home/.kube/config
+3.how to configure the aws eks cluster ?
+  ans:- aws eks update-config --region regionName --cluster clustername
+4.all the clusters info (like dev,test,prod) will be stored in where ?
+  ans:- kubeconfig file.
+5.clusters info will be configured in where in config file ?
+  ans:- cluster info will be configured in clusters section.
+6.what is context in kubeconfig file ?
+  ans:- context represents combination of cluster,user and namespace.
+7.how to write the context info ?
+  ans:- 
+contexts:
+- context:
+    cluster: minikube
+    extensions:
+    - extension:
+        last-update: Fri, 17 Feb 2023 20:12:42 IST
+        provider: minikube.sigs.k8s.io
+        version: v1.29.0
+      name: context_info
+    namespace: default
+    user: minikube
+  name: minikube
+
+8.how to set the context ? 
+  ans:- kubectl set-context --name ctx1
+4. how to change a namespace of a kubernetes cluster
+  ans:- kubectl config set-context --current --namespace=ns1
+9.when you run the kubectl get pods commands which pods info you will get ?
+  ans:- you will get the pods of cluster1 and ns1 namespace.
+10.what are the sections are there in kubeconfig file ?
+  ans:- (i).clusters
+	(ii).users
+	(iii).contexts
+11.https means ?
+  ans:- it has the ssl key.
+12.who will generates the ssl key ?
+  ans:- server will generate the ssl key.(client should given public key)client should encrypt the data using public key of server in
+	order send the request
+13.when we run the command using kubectl which will connect to which cluster and namespace ?
+  ans:- by using context info it will connect to the cluster and namespace belongs to that context.
+14. kube config file ?
+  ans:- 
+apiversion: v1
+kind: config      (type of the file) 
+preferences: {}
+clusters:
+  - cluster: 
+    name: testcluster
+      server: http://host:port
+      certificate-authority-data: key   (ssl key incase of ssl)
+  - cluster:
+    name: stagecluster
+      server: http://host:port
+      certificate-authority-data: key    (ssl key)
+users:
+  - name: testclusteruser
+    user:
+      client-ceritificate-data:          (username)(privatekey)
+      client-key-data:			 (password)
+  - name: stageclusteruser
+    user:
+      client-certificate-data:
+      client-key-data:
+contexts:
+  - context:
+    name: testcontext
+      cluster: testcluster
+      user: testclusteruser
+      namespace: default    (or any namespace)
+  - context:
+    name: stagecontext
+      cluster: stagecluster
+      user: stageclusteruser
+      namespace: ns1
+current-context: testcontext       (when we run kubectl command it will use current context which we declared)
+
+
+15.how to switch from one cluster to another cluster ?
+  ans:-we need to change the current-context attribute in kubeconfig file.
+16.how many ways we can change the context info in kubeconfig file ?
+  ans:- 2 ways 
+	(i).directly modifying the config file by using text editor
+	(ii).by using kubectl
+17.how to change the context using kubectl ?
+  ans:- kubectl config use-context stagecontext.
+18.how to see all the contexts in kubeconfig file ?
+  ans:- kubectl config get-contexts
+19.how to see current context we are using ?
+  ans:- kubectl config current-context
+20.how to change namespace of a kubernetes cluster ?
+  ans:- kubectl config --set-context --current --namespace=ns1
+21.how to add cluster information into kubeconfig file ?
+  ans:- kubectl config --kubeconfig=config set-cluster development --server http://host:port --instance-skip-tls-verify
+	kubectl config --kubeconfig=config set-cluster development --server http://host:port --insecure-skip-tls-verify
+====================================================================================================================================
+objects
+-------
+1.what are the different types of objects/resources are there in kubernetes ?
+  ans:- pod,ReplicaSet,DeploymentSet,DaemonSet,Service,Job,Ingress,Loadbalancer
+2.kubernetes where it will store the info about the resources ?
+  ans:- kubernetes will represents the resource info interms of objects.
+3.kubernetes where it will store the info about the objects ?
+  ans:- it will store in the objects info in etcd.
+4.all the objects are created under which namespace ?
+  ans:- kubesystem namespace.
+5.state of the kubernetes represented by what ?
+  ans:- state of the kubernetes represented by the type/number of objects on the cluster.
+6.how to tell the kuberntes to what we need ?
+  ans:- we need to pass the kubernetes objects.
+7.how to pass the kubernetes object ?
+  ans:- kubernetes objects can be created by writing resourcespec/manifest file.and it should passed as an input to the controlplane 	        using kubectl.then controlplane reads the manifest file and creates an appropriate kubernetes objects and store in etcd.
+8.resource spec or manifest file represents what ?
+  ans:- it represents the information about the object we want to create in terms of key value pairs and pass it as an input to the
+	controlplane.
+9.in all the resoucrce spec files what are the few common attributes ?
+  ans:- (i).apiversion
+	(ii).kind
+	(iii).metadata
+	(iv).namespace
+	(v).spec
+10.how to create and manage kubernetes objects in kubernetes cluster ?
+  ans:- 3 ways we can create 
+	(i).imperative commands
+	(ii).imperative object configuration
+	(iii).declarative object configuration
+11.what is pod ?
+  ans:- pod is an smallest unit or entity in the kubernetes cluster where one or more containers are kept together running inside the 
+	cluster.
+12.example of imperative command ?
+  ans:- kubectl create-pod --image=imagename
+	kubectl run apache2 --image=apache2:latest --port=80
+	kubectl run podname --image=imageName:tag --port=portNo
+13.without writing manifest file how to create the kubernetes objects ?
+  ans:- by using imperative commands.
+14.what is the dis-advantage with imperative commands ?
+  ans:- if you want to moidfy or recreate the object we dont have spec file with us.
+15.what is declarative object configuration ?
+  ans:- in order to run an application on kubernetes cluster they could be bunch of objects we need to create on the cluster.
+16.how to run the declarative object configuration ?
+  ans:- write all the spec files under single directory and pass it as an input to the kubectl.
+	ex:- airtelcare2
+	     |-manifests
+		|-pod.yml
+		|-deployment.yml
+		|-service.yml
+	
+	kubectl apply -f manifests/
+	kubectl delete -f manifests/
+17.how to write pod.yml to pull the image from the docker repo and run the container on top of the image ?
+  ans:-
+	apiVersion: v1
+	kind: Pod
+	metadata:
+  	  name: apache2
+	spec: 
+  	  containers:
+    	    - name: apache2
+              image: ubuntu/apache2:2.4-22.04_beta
+              ports: 
+                - containerPort: 80
+                  name: http
+                  protocol: TCP
+
+18.how to create the pod ?
+  ans:-kubectl create -f apache2-pod.yml
+19.how to port forward the pod we  are running ?
+  ans:- kubectl port-forward apache2 8082:80
+	kubectl port-forward podname hostport:containerport
+20.how to get the pod information ?
+  ans:- kubectl describe pod podname
+21.how to see the pods on the cluster ?
+  ans:- kubectl get pods -n namespace
+22.how to see the logs of running pod on the cluster ?
+  ans:- kubectl logs podname
+23.how to get full info of pods ?
+  ans:- kubectl get pods -o wide
+24.how to delete the pods on the cluster ?
+  ans:- kubectl delete pod podname
+25.what is set -e means in shell script ?
+  ans:- -e  Exit immediately if a command exits with a non-zero status.     
+
+
+
+https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz
+https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz
+=====================================================================================================================================
+REDINESS PROBE LIVELENESS PROBE 
+-------------------------------
+1.how to provide the health information about the application to the kubernetes ?
+  ans:- we can provide the health information about the application to the kubernetes through readinessprobe and liveliness probe.
+2.why rediness probe is used ?
+  ans:- using rediness probe kubernetes determines when the actual application is running.
+3.when the liveliness probe will be start ?
+  ans:- liveliness probe will start only upon the redinessprobe has beed reported as successfull and continue to perform the checks
+	until the pod has been reported as failed or manually terminated.
+4.yml file for redinessprobe and liveliness probe ?
+  ans:- urotaxi-pod.yml
+	apiVersion: v1
+	kind: Pod
+	metadata:
+	  name: urotaxipod
+	spec:
+	  containers:
+ 	    - name: urotaxi
+	      image: techsriman/urotaxi:1.0
+	      ports:
+	        - name: tomcatport
+		  containerPorts: 8089
+		  protocol: TCP
+	      readinessProbe:
+	        httpGet:
+		  path: /actuator/health/readiness
+		  port: 8080
+		initialDelaySeconds: 5
+		timeoutSeconds: 10
+		failureThreadShold: 3
+	      livenessprobe:
+		httpGet:
+		  path: /actuator/health/liveness
+		  port: 8080
+		initialDelaySeconds: 5
+		timeoutSeconds: 10
+		failureThreshold: 3 
+5.where the developer will diclare the info about the readiness probe and liveness probe ?
+  ans:-
+	management:
+	  endpoint:
+	    health:
+	      enabled: true
+	      probes: 
+		enabled: true
+          endpoints:
+	    web:
+              exposure:
+		include:
+		- health:
+		- info
+6.without describe command how to check readiness is passed or not ?
+  ans:- 
+	NAME	READY	STATUS	RESTARTS	AGE
+	poaname  1/1    Running 0               34s
+
+here 1/1 left one is ready
+=================================================================================================================================
+resource declaration
+--------------------
+1.what is resource declaration ?
+  ans:- Resource declarations are the way through which we specify the cpu and memory requirements and limits for an pod to be 	        scheduled and execute on the cluster.
+2.how it will work ?
+  ans:- based on the resource declaration the scheduler chooses the worker node of enough capacity to run the pod on the cluster.
+3.how many types of resource declarations are there ?
+  ans:- 2 (i).cpu	(ii).memory
+4.at which level we will specify the resource limits ?
+  ans:- container level.not at the pod level.
+5.if we want to run two containers in single pod by specifying the resource declarations then how it will schedule for execution ?
+  ans:- the sum of individual container resource specifications would be considered as the final resource limits in scheduling and 
+	running a pod on the cluster.
+6.how many types of limits are there ?
+  ans:- 2 types	(i).requests	(ii).limits
+7.request indicates what ?
+  ans:- request indicates the initial capacity to be allocated in running the pod.
+8.limits indicates what ?
+  ans:- the max capacity a pod can give for execution.
+9.incase if we not specify the limits then how it will consider the max cpu/memory to be allocated to the pod ?
+  ans:- (i).it will allocate the resource how much ever we requested.
+	(ii).and allocates the default resources that are declared in namespace.
+10.incase if we have not specified the requests resource spec for cpu/memory of a pod then how it will consider ?
+  ans:- it will consider by default same as "limits" only.
+
+ex:- roadster-pod.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  - name: roadster
+spec:
+  containers:
+    - name: roadster
+      image: techsriman/roadster:1.0
+      ports:
+        - name: tomcatport
+	  containerPort: 8080
+	  protocol: TCP
+      readinessProbe:
+        httpGet: 
+          path: /roadster/actuator/health/readiness
+	  port: 8080
+        initialDelaySeconds: 10
+        timeoutSeconds: 10
+        failureThreshold: 3
+      livenessProbe:
+	httpGet:
+	  path: /roadster/actuator/health/liveness
+	  port: 8080
+	initialDelaySeconds: 10
+	timeoutSeconds: 10
+	failureThreshold: 3
+      resources:
+        requests:
+	  cpu: "1"
+	  memory: "512Mi"
+	limits:
+	  cpu: "1000m"
+	  memory: "1024Mi"
+        
+   
+====================================================================================================================================
+STATUS OF THE POD
+-----------------
+1.what are the possible statuses of the pod ?
+  ans:- (i).pending	(ii).running	(iii).succeeded		(iv).failed	(v).crashloopbackoff
+2.when the pod status would be pending ?
+  ans:- when we send the request for creating the pod the api manager upon accepting the request would send the request to the 	scheduler for creating the pod at this moment the pod state is reported as "pending".
+3.when the pod status would be running ?
+  ans:- atleast one of the container inside the pod has beed started and redinessProbe has been passed then the pod status is running.
+4.when the pod status is succeeded ?
+  ans:- all the containers in side the pod has been exited with an exitcode as zero then the pod is reported as succeeded.
+5.when the pod status would be failed ?
+  ans:- atleast one of the container inside the pod has been has been exited with non-zero exitcode then the pod status is failed.
+=====================================================================================================================================
+LABELS AND ANNOTATIONS
+----------------------
+1.what are labels ?
+  ans:- labels are arbitary key/value pairs we can attach to an kubernetes objects.
+2.why labels are used ?
+  ans:- labels are used for identifying and accessing the objects over the cluster.
+3.what is the rule we need to follow for writing the labels in podspec ?
+  ans:- labels appear only once and it should be unique.
+4.how many ways we can define the labels for kubernets objects ?
+  ans:- 2 ways
+	(i).we can declare the labels in the spec or manifest file directly.
+	(ii).we can attach/detach the labels dynamically at runtime.
+5.how to see all the labels attached to an object ?
+  ans:- kubectl get pods --show-lables
+6.how to query or search for objects based on the labels ?
+  ans:-kubectl get pods -l key=value
+7.how to attach the lables dynamically ?
+  ans:- kubectl label pods podName key=value
+8.why annotations are used ?
+  ans:- annotations are used for attaching arbitary information which is non-identifier data.only used for documentation purpose.
+	which we can read or used through kubernetes metadata api.
+9.how to see annotations attached to an object ?
+  ans:- kubectl describe pod podname
+10.
+
+ex:-
+apiVersion: v1
+kind: Pod
+metadata:  
+  name: roadsterpod
+  labels: 
+    appName: roadster
+    version: 1.0
+    env: stage
+  annotations:
+    license: GPL license
+    Warranty: product comes under limited warrenty.
+spec:
+  containers:
+    - name: roadster
+      image: techsriman/roadster:1.0
+      ports:
+        - name: tomcatport
+          containerPort: 8080
+	  protocol: TCP
+
+====================================================================================================================================
+CONFIG MAPS
+-----------
+1.the software application may communicate with external resources what are those ?
+  ans:- (i).database	(ii).cache	(iii).remote file system
+2.if we want to use the configuration values in your application how to build the application ?
+  ans:- we need to externalize the configuration values in your application.
+3.why config maps are used ?
+  ans:- An Application has to be designed to read the configuration values as an input through environment variables so that while         running the application the devops engineer can pass these values as an input by configuraing them as environment variables.
+4.how many ways we can pass the enviroment variables as an input to the application in kubernetes ?
+  ans:- two ways (i).writing them inside the pod spec file
+		 (ii).create configamap object.
+5.in which format we can write the env variables in configmap ?
+  ans:- key values pairs
+
+6.how many ways a pod application can access the environment variables that are there in configmap object ?
+  ans:- 3 ways
+	1. environment variables = we can pass these configMap values as environment variables into the pod application by refferring 				   them in pod specfile
+	2. command-line arguments = we can pass these configMap values as commandLine-arguments while launching the application
+	3. Through ConfigMap api = The containerized application, the developer can write the code in reading the values from 				   ConfigMap object stored on the kubernetes cluster (not recommended)
+	4.We can mount ConfigMap with ConfigurationFile as volumes into the container through podspec
+
+7.how to create configmap object ?
+  ans:- we need to create configmap spec file.
+8.how to execute the executable jar ? (spring boot)
+  ans:- java -jar target/application-1.0.jar
+9.which location the developer write the env variables in an application ?
+  ans:- src/main/resources/application.yml
+10.how to create configmap object in kubernetes ?
+  ans:- apiVersion: v1
+	kind: ConfigMap
+	metadata: 
+  	  name: guidelinesconfigmap	(name of the configmap)
+          labels:
+          app: corona
+    	data:
+  	  oxygenLevels: 85
+  	  quarantine: 20
+  	  liters: 5
+  	  temparatureLevels: 99 - 100
+  with these values (data) we can create the config map object.
+11.How to pass ConfigMap with configuration file as a volume in the podspec?
+  ans:-
+	corona-configmap.yml
+	apiVersion: v1
+	kind: ConfigMap
+	metadata:
+  	  name: coronaconfigmap
+	data:
+  	  corona.properties |
+    	    oxygenLeves=85
+    	    liters=5
+            quarantine=20
+            tempartureLevels=99 - 102
+Now while writing the podspec file we need to mount the properties file as an volume mount into the container, so that developers while building the application will have the logic for reading the file from the mountLocation.
+
+corona-pod.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: coronapod
+spec:
+  container:
+    - name: corona
+      image: techsriman/corona:1.0
+      ports:
+	- name: tomcatport
+	  containerPort: 8081
+	  protocol: TCP
+      volumeMounts:
+	- name: coronavolume
+	  mountPath: /config    (this is the volume we defined inside the container)(we need to bind the volume here)
+	  readOnly: true
+  volumes:
+    - name: coronavolume
+      configMap:
+	name: coronaconfigmap		(first create volume then create volume mounts)
+	items:
+	  - key: corona.properties
+	    path: "corona.properties"
+
+
+
+
+
+
+***
+how to enter into the pod container ?
+  ans:- kubectl  exec -it podname /bin/bash
+in kubernetes pod if the docker image already exists then if you again run pod using same image tag what will happen ?
+  ans:- in previous version of the pod cached locally so it will not pull the image from repository,if you want the pod to pull new 
+        image we need to create new image with new tag or we need to delete cached image from the pod. 
+====================================================================================================================================
+CONFIG-SECREATES
+----------------
+1.why config secrets are used ?
+  ans:- config secrets are used for storing sesitive information like username,password,ssh keys,encryption keys
+2.by default when we store the data using config secret it will encrypt the data or not ? then what it will do ?
+  ans:- it will not encrypt the data by default.rather it encodes the data into base64 encoding and will be store.
+	That means we can read the values back into plain-text format and hence these are not by default secured.
+3.how the config secrets are secure ?
+  ans:- kubernetes config secrets are stored in hashicorp vault by integrating kubernetes with vendor vaults.
+4.how many types of secrets are there in kubernetes ? what are those ?
+  ans:- 7 
+	1. opaque = arbitary data
+	2. kubernetes.io/service-account-token = The service account token is an system secret or kubernetes secret
+	3. kubernetes.io/dockercfg = serialized format of docker config file
+	4. kubernetes.io/dockerconfigjson  = serialized format of docker config json file
+	5. kubernetes.io/basic-auth = username/password
+	6. kubernetes.io/ssh-auth = ssh keys
+	7. kubernetes.io/tls = ssl keys or public/private encryption keys
+5.what is the default secret type if you dont specify the type ?
+  ans:- opaque.
+6.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=========================================
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY = 'your-docker-registry-url'
+        KUBERNETES_NAMESPACE = 'your-kubernetes-namespace'
+        KUBERNETES_DEPLOYMENT_NAME = 'your-kubernetes-deployment-name'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'your-git-repository-url']]])
+            }
+        }
+
+        stage('Build Docker image') {
+            steps {
+                sh 'docker build -t your-image-name:latest .'
+            }
+        }
+
+        stage('Push Docker image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'your-docker-registry-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY"
+                    sh "docker push $DOCKER_REGISTRY/your-image-name:latest"
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withKubeConfig(credentialsId: 'your-kubeconfig-credentials', serverUrl: 'your-kubernetes-server-url') {
+                    sh "kubectl set image deployment/$KUBERNETES_DEPLOYMENT_NAME $KUBERNETES_DEPLOYMENT_NAME=$DOCKER_REGISTRY/your-image-name:latest -n $KUBERNETES_NAMESPACE"
+                }
+            }
+        }
+    }
+}
+
+
+
+
+=====================================================================================================================================
+CONTROLLERS
+-----------
+1.how many types of controllers are there ?
+  ans:- 5 
+	(i).ReplicaSet controller
+	(ii).Deployment
+	(iii).DaemonSet
+	(iv).Job
+	(v).Service
+2.how to get replicas ?
+  ans:- kubectl get rs
+3.why replicaset is used ?
+  ans:- it will always ensure desired number of replicas are running.  
+
+
+
+
+
+ex:-
+sailor-replicaset.yml
+---------------------
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: sailorreplicaset
+  labels:
+    app: foodies
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: foodies
+      version: "1.0"
+template:
+  metadata: 
+    labels:
+      app: foodies
+      version: "1.0"
+  spec:
+    containers:
+      - name: sailor
+        image: techsriman/foodies:1.0
+        ports: 
+          - name: tomcatport
+	    containerPort: 8080
+	    protocol: TCP  
+        readinessProbe:
+	  httpGet:
+	    path: /foodies/actuator/health/readiness
+	    port: 8080
+	initialDelaySeconds: 15
+	timeoutSeconds: 15
+	failureThreshold: 3
+	liveProbe:
+	  httpGet:
+	    path: /foodies/actuator/health/liveness
+	    port: 8080
+	inintialDelaySeconds: 15
+	timeoutSeconds: 15
+	failureThreshold: 3
+
+------------------------------------------------------------------
+(ii).Deployment
+     ----------
+
+1.why deployment is used ?
+  ans:- it is used for controlling the deployment of the pod application.any changes in the pod  template can be rolled out in a 
+	controlledway.
+2.what is deployment ?
+  ans:- deployment is an controller.it will take care of deploying the application.
+3.what are the different deployment strategies are supported by the deployment controller ?
+  ans:- (i).recreate = terminates the old pod release the new pod.
+	(ii).ramped  = release a new version on a rolling update fashion one after another one.
+	(iii).blue/green = release a new version alongside of the old version then swith the traffic to newer version.
+	(iv).canary = release a new version to a subset of users then proceed to a full rollout.
+	(v).a/b testing = release the newer version of the pod to the subset of users in a precise way.	a/b testing is a technique 
+			  for making business decisions based on statistics (statistics means based on user feed back)
+	   (a/b means alpha/beta testing stage)
+	   (ex:- how to release the application to the subset of users only :- i.e (1).weight :- out of 100 requests serve the 2%                  requests to the newer version (ii).http headers)
+4.how to distribute the traffic from older version to the newer version ?
+  ans:- we need to use istio,traefik,nginx/haproxy etc.
+5.how it work ?
+  ans:- if the request is coming the request is recieved by ingress controller.ingress controller will check in the request http 
+	header is there or not,if the http header is there then it will serve the request to newer version if not it will serve the 
+	request to older version.
+	
+6.pod --> replicas --> deployment
+7.note :- without replicaset there is no deployment controller exists to manage releases.so within the deployment spec always we embed
+	  the replicaset spec.
+8.how to port-forward to the deployment ?
+  ans:- kubectl port-forward deployment/speeddeployment 8081:8080
+	kubectl port-forward deployment/deploymentname 8081:8080
+9.how to modify the deployment ? (or) rolling update ?
+  ans:- kubectl set image deployment/speeddeployment speedcontainer=techsriman/speeddep:3.0
+        image: here image will be modify inside the deployment file. 
+	speedcontainer=techsriman/speeddep:3.0  update the image on this container.
+	(or)
+	kubectl edit deployment deploymentname    (not recommended)
+10.how to see rollout the history ?
+  ans:- kubectl rollout history deployment/speeddeployment
+11.how to undo the rollout ?
+       	kubectl rollout undo
+12.how to rollback to the specific version in the rollout history ?
+  ans:- kubectl rollout undo deployment/deploymentName --to-revision=revisionNo
+13.how to scale out the deployment ?
+  ans:- kubectl scale deployment/deploymentName --replicas=4
+14.what are the steps we need to follow rollout the newer version of the application ?
+  ans:- make the changes in the application and have these changes build tested and packaged and distributed it as docker image into         the docker container registry.the image name should be bumped up when we are releasing the newer version of the application.
+      upon new version of the image is published and ready we need to edit deployment we have already created for that application
+      on that cluster.
+
+
+
+1.recreates
+-----------
+
+
+
+
+
+Blue/Green deployment
+---------------------
+1.blue/green means ?
+  ans:- blue = old version
+	green = new version
+2.what is the blue/green deployment ?
+  ans:- along with the blue version of the pods the green version of the pods also available along side.after testing the new version
+	of the pods we need to update the service object.
+3.how the service will manage in blue/green deployment ?
+  ans:- while testing the new version of the pods we need to create temporary service after the new version of the pods are running         successfully we need to change the service version to route the traffic to the new version of the pods then temporary service  
+	we need to delete.
+4.in blue/green deployment how many deployments we need ?
+  ans: 2
+5.what is the default strategy for deployment ?
+  ans:- ramped
+6.how to blue/green dep will work ?
+  ans:- manually we need to by editing the deployment file of olderversion and change replicas=0
+***
+7.what are the strategies are there in deployment ? 
+  ans:- rollingupdate/renew
+***
+8.adwantages of blue/green deployment ?
+  ans:- 1.instant rollout/rollback
+	2.zero downtime for the application
+	3.avoid versioning issues.
+9.what are the strategies that are there in kubernetes that supports '0' down time ?
+  ans:-  blue/green,ramped
+10.what are the dis-advantes for blue/green deployment ?
+  ans:- requires more infrastructure for every release.
+	handling statefull applications  will be hard.
+11.kubectl create -f 	bluegreen\speedv1-deployment.yml
+   kubectl create -f bluegreen\speedv2-deployment.yml
+   kubectl port-forward deployment/speed
+12.how to see the deployments on the cluster ?
+  ans:- kubectl get deployments
+13.how to describe the deployments ?
+  ans:- kubectl describe deployments
+14.when we create deployment what will happen ?
+  ans:- it will internally creates replicaset in rolling out the pods based on deployment.
+15.how to edit the deployment object on the kubernetes ?
+  ans:- kubectl edit deployment deploymentname
+16.when we modify the deployment what will happen ?
+  ans:- every time when we modify the deployment kubernetes internally creates a new replicaset controller with the latest changes and
+	modifies the old replicaset replicas as 0 to rollout the newer pods.the way the old and new replicaset controller will be         changes is depends on strategy we choosen.
+17.when do we need to use pause and resume the deployment ?
+  ans:- if you want to poerform multiple updates/changes to the pod and wanted to deploy all these changes at once then we need to 
+	pause and resume the deployment.
+18.how to pause the deployment ?
+  ans:- kubectl rollout pause deployment/deploymentname
+19.how to resume the deployment ?
+  ans:- kubectl rollout resume deployment/deploymentname
+20.out of box kubernets deployment controller supports how many types of deployment strategies ?
+  ans:- 2 (i).recreate		
+	  (ii).Rolling Update
+21.what is canary deployment ?
+  ans:- the canary strategy is also similar to blue/green only,the only difference is we release the new version of the application to
+	the subset of users,then based on feedback we rollout full version.
+22.a/b testing ?
+  ans:- release a new version to the subset of users in precise way/controlled way.
+	ex:- if the user is sending the request with specific request header or cookie then send the user to newer application,other 
+	     users let access to the older version.
+23. release hound ?
+  ans:- integration test can be done at the production env.
+===================================================================================================================================
+SERVICE
+-------
+1.what is service ?
+  ans:- service is all about interconnecting or adding the network the pods that are running on kubenetes cluster.
+2.pod that is created inside the worker node by default it will accessible from where ?
+  ans:- bydefault it will accessible with in the worker node only.
+3.by default every pod that is running on the cluster which ip address it will assign by default ?
+  ans:- empheremal ip address.it will renewed upon a pod restart.
+4.two pods that are running inside the same worker node how both will connect ?
+  ans:- using ip address of the pod.(not local host)(every pod has their own ip)
+5.by using service what we can achieve ?
+  ans:- (i).a pod can be accessed by other pods on the cluster
+	(ii).pod can be exposed to the external world.
+	(iii).the traffic sholud be load balanced across the pod replicas.
+6.how many types of services are there in kubernetes ?
+  ans:- 5 types	(i).ClusterIp  (ii).NodePort   (iii).Loadbalancer   (iv).Ingress    (v).Headless Service
+7.why do we need to use services ?
+  ans:- (i).to load balance the across the replicas of the pod
+	(ii).to access the pods over an fixed ip/port
+8.what is the default service ?
+  ans:- ClusterIp
+9.which service we need to use the pod should expose with in cluster ?
+  ans:- ClusterIp
+10.how to distribute the traffic to the multiple pods of the same application ?
+  ans:- we need to use labels of pod,so that it will distribute the traffic.
+11.what is mean by cluster ip service ?
+  ans:- it is an fixed ip service.
+12.how to expose the pods to the external world ?
+  ans:- using nodeport
+13.what is the node port range in kubernetes ?
+  ans:- 30000 to 32767
+14.what is node port ?
+  ans:- nodeport is used for exposing an pod application that is running on a(specific workernode) worker node of the cluster directly to the external         world over an fixed port.
+15.how service will forwards the request to the underlying pods ?
+  ans:- based on matching labels or selectors.
+16.how node port will work ?
+  ans:- external traffic will recieve external port (i.e node port) --> it will forwards into nodeport service port --> service port
+	internally forwards the request into container port based on the selector.
+	modeport --> service port --> container port
+17.in worker node will pods run on same port ?
+  ans:- yes.multiple pods can run on same port because pods ip address will be different.
+18.how the nodeport will distribute the traffic if multiple replicas of a pod running on same worker node ?
+  ans:- node port will distribute the traffic across the replicas of a pod using loadbalancing.
+19.how to access the pod application from the external world ?
+  ans:- http://workernodeip:nodeport/applicationurl
+20.in which node port can work ?
+  ans:- node port will work at local to the worker node.and it will routes the traffic to pods of same worker node.
+21.who will takes care of session replication in monolithic application ?
+  ans:-app server and cluster configure on the app server.
+22.how many strategies are there for deployment ?
+  ans:- 2  (recreate,ramped)
+23.when we create the what should be match ?
+  ans:- (i).container port in deployment spec should match with target port service file.
+	(ii).pod labels in deployment spec should match with selector in the service file.
+24.how many ports we need to specify in service file ?
+  ans:- 3 ports.
+25.why 3 ports are opened in nodeport service ?
+  ans:- (i).NodePort:- opens a port on the workernode allowing the external network traffic
+	(ii).Port:- it will recieve the request from nodeport and discover the pods based on selector and forward the request to the
+	             request port.
+	(iii).TargetPort: port on which the pod applications are running.
+26.how to get the services that are there in cluster ?
+  ans:- kubectl get svc
+27.what is endpoint in service file ?
+  ans:- endpoint contains ipaddresses of the pods. every service contains one end point.
+28.how to see the endpoint of the service ?
+  ans:- kubectl describe svc service name
+29.what is the default username and password for login into the minikube server ?
+  ans:- docker/tcuser
+30.how to ssh into minikube server ?
+  ans:- ssh docker@minikube
+31.how to check the pod is created on which worker node ?
+  ans:- kubectl get pods -o wide
+32.cluster ip and nodeport which one used when ?
+  ans:- if you want to access the pod with in the pods of the cluster use clusterip.
+	if you want to access the pod from outside the cluster use nodeport.
+-------------------------------------------------------------------------------------------------
+PERSISTENT VOLUME AND PERSISTENT VOLUME CLAIM
+---------------------------------------------
+1.diff b/w docker volume and persistent volume ?
+  ans:- docker volumes are specific to the docker engine.
+	persistent volume should share across all the nodes of the cluster.
+2.where the kube admin will create the pv ?
+  ans:- under the namespace add the storage attribute inside that capacity,storageclass and access type will be add.
+3.what is the readwriteonce access type means ?
+  ans:- one pod can read and write.only one pod can perform read or write.
+4.what is the readwritemultiple access type means ?
+  ans:- multiple pods can write and multiple pods can read.
+5.what is persistent volume and persistent volume claim ?
+  ans:- persistent volume :- it is a storage defined on a kubernetes cluster and it is created and maintained by the kubernetes admin
+			     reserving the storage location on the worker nodes.
+	persistent volume claim :- it is a request for that storage to be consumed by the depods engineer that can be used as part of
+				   an pod application.
+6.what are the attributes we need to define while creating the persistent volume ?
+  ans:- (i).storageclassname
+	(ii).accessmode (ReadOnly/ReadWriteOnce/ReadWriteMultiple)
+	(iii).capacity
+7.ReadOnly access type means ?
+  ans:- only the pods can read the data from this volume.
+8.while working with pv and pvc what is the recommended place to create pv and pvc ?
+  ans:- ebs volume.
+9.if you want to share same persistent volume across all the worker nodes of the cluster what we need to do ?
+  ans:- create nfs volume.(in cloud efs)
+note:- when we create a persistent volume the kubernetes will reserves the persistent volume and creates the persistent volume across 
+       all the nodes of the cluster.
+note: in realtime pv will create specific to the application.
+10.in which order we need to create kubernetes objects if we have multiple spec files ?
+  ans:- pv --> pvc --> config secrets --> replicasecret --> node port
+11.how to get pv ?
+  ans:- kubectl get pv
+12.what is mean by Retain status in kubectl get pv ?
+  ans:_ volume has beed etained. 
+13.how to get secrets ?
+  ans:- kubectl get secrets.
+14.how to get services ?
+  ans:- kubectl get svc
+note:- while we are using the service and replicas,if pod has been crash then again new pod automatically will create with same ip.(ip remains same) because we are using service.
+
+INGRESS
+-------
+1.how to enter into the mysql pod and connect to the mysql ?
+  ans:- kubectl exec -it podname -- /bin/bash
+	mysql -uroot -proot
+2.through service what we can achieve ?
+  ans:- (i).pods are discovered
+        (ii).load balanced
+	(iii).fixed ip/port
+3.what is ingress ?
+  ans:- ingress is an another controller of the kubernetes.
+	(controller means that is daemon process that runs continously)
+4.by default withan kubernetes install ingress controller will be available or not ?
+  ans:- no we need to enable it manually.
+5.example of ingress controller component providers that are there in the market ? how it will work ?
+  ans:- nginx. these are internally httpd servers which recieves the request over an domainname and proxt the request to the backend.
+6.how to enable ingress in minikube ?
+  ans:- minikube addons enable ingress
+7.how to get ingress ?
+  ans:- kubectl get ingress
+8.what is mean by resource quota means ?
+  ans:- resource quota means resource declarations.
+
+HEADLESS SERVICE
+---------------
+1.how to get the pods based on labels ?
+  ans:- kubectl get pods -l key=value
+2.how to retrieve the ip addresses of all the pods in which our application is running ?
+  ans:- use headless service.
+3.how many ways we can retrieve the ipaddresses of the pod in which our application is running ?
+  ans:- 2 ways
+	(i).we need to write a program using kubernetes api for querying the ip addresses of all the pods that are matching with our
+	    application labels.here we have problem our application will become tightly coupled with kubernetes.
+	(ii).we can access the ip's of all the pods using headless service.Headless service will discover the pods based on lebels 
+	     and register them with it.when we do a dns lookup on headless service name it returns the ip's of all the pods that are
+	     running on the cluster,so that using those ip's we can reach individual pods.
+4.how the database application can run as a cluster ?
+  ans:- one acts as a master remain are slaves.
+5.how master and slave archetecture works for database ?
+  ans:- master node can read and write the data and slave nodes can only perform read operations.(if master fails we need to                   configure one of the slave acts as a master).the data that is written inside the master will automatically         	sinchronize/replicate  all the slaves.each slave has their own storage volume.when the user trying to do write operation we         need to send the traffic to master.when the user is sending the request to read operation loadbalance the traffic accross the         nodes of the cluster.
+6.how to create headless service ?
+  ans:- while creating the service spec inside the spec file clusterIP: None we need to specify.other wise it is bydefault clusterIp
+	service.
+7.how to see the ip address of the all pods using headless service ?
+  ans:- after creating the headless service we need to query that service 
+	kubectl describe svc servicename.
+8.for dns lookup what should be there in our machine ?
+  ans:- dns utils we need to install.
+	apt install -y dns-utils
+
+===================================================================================================================================
+JOB
+---
+1.how to see the logs of the pod ?
+  ans:- kubectl logs podname
+2.what is job ?
+  ans:- job is used for performing an operation on the kubernetes cluster.a job creates one or mode pods and executes util the 	specified number of executions are successful.
+3.example :- cleanup activity.(or) backup job.
+=================================================================================================================================
+DAEMONSET
+---------
+1.why daemonset is used ?
+  ans:- we can tag a pod to be execute on specific node of the cluster.
+	it ensures one pod per one node is being executed on the cluster.
+2.how daemonset works ?
+  ans:-A daemonset ensures that all (or some) nodes run a copy of a pod.as nodes are added to the cluster pods are added to them.as        nodes are removed from the cluster those pods are garbage collected.if we delete daemonset it cleanup all the pods that are            created.
+  usecases:
+           (i).log collection daemon to be run on everynode.
+	   (ii).monitoring agent to collect the metrics on everynode.
+note: we never generate the logs on shared volumes because it is not acts as an input to the another task.we can store the logs on           local volume.(pvc)
+2.persistent volume and persistent volume claim will creates on where ?
+  ans:- we will creates the pv and pvc's on all the workernodes.
+3. pod --> logs --> logstash (pod) --> elastic search --> kibana
+4. 
+
+
+==================================================================================================================================
+note:
+-----
+for every project two repositories will be there one for the application developer and second one for devops engineer.
+ci repository inside that jenkins,helm ...
+
+for each project kubernetes spec files are there in ci.(or repository will be created).
+ci
+--
+|-application
+  |-jenkins
+  |-helm
+
+note:- anything that has to be executed together is placed in git ci repository.
+================================================================================================================================
+ci
+|-project
+  |-ansible
+  |-terraform
+  |-jenkinsfile
+
+if you pass it as an input to the jenkins pipeline it checkout holl directory for starting the pipeline.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+====================================================================================================================================
+monitoring tools
+===============
+non-kubernetes = elk
+kubernetes = prometheus
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+docker images
+-------------
+techsriman/corona:3.0
+	   roadster
+	   sailor
+	   baedalcustomer
+	   usermgmtservice
+	   partnerstoreservice
+	   pickupdeliverymgmtservice
+	   speeddep:2.0
+	   speeddep:4.0

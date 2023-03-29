@@ -1,0 +1,124 @@
+1.what are the features of scm repositories ?
+  ans:-1. sourcecode management repositories should be distributed systems that allows the members to copy the code into their local        systems over the network
+       2. should enforce security in accessing the sourcecode from the repository. strict authentication mechanism should be there in           place granting the access to the project sourcecode based on groups/users
+       3. help us enforcing file/folder level permissions for performing operations like read/write/delete etc for users/groups
+       4. monitoring who is accessing the sourcecode and what operations are performed on the repository should be tracked and audited
+       5. should strongly support versioning to keep track of all the changes that are made on the sourcecode, so that in event of           override we can recover the previous version of the code
+       6. periodic backups and restore incase of crash
+       7. should help us in avoiding the overrides of the files/folders across the developers
+       8. sourcecode repository should help us in tracking which files are modified and provide tools to merge the code changes done           by multiple developers on the same files
+
+2.how many ways we can classify the source code management repositories ? what are those ?
+  ans:- we can classify the source code management repository softwares into 3 generations based on the way they work
+	(i).generation (gen#1) = lock-modify-unlock strategy
+		1.1 wincvs
+		1.2 visual source safe
+		1.3 pvcs
+		1.4 rational clear case
+	(ii).generation (gen#2) = copy-modify-merge strategy
+		2.1 subversion control
+		2.2 perforce
+	(iii).generation (gen#3) = distributed repositories (works based on copy-modify-merge starategy)
+		3.1 git
+		    |-github
+		    |-bitbucket
+		    |-gitgogs
+		    |-gitlab
+3.advantages of using gen1 repositories ?
+  ans:- 1. security and authorization are enforces in enabling the access to source code within the repository
+	2. developer dont need to keep track of the files he has modified, the scm repository itself will keep track of them so that 	it would be easy to identify what has been changed and push back to the repository
+	3. avoids the developers in overriding the changes of one with the another. when a developer has checkout the file, it will be 	locked with that developer and would not permit any other developers to commit their code changes without checkout/acquiring 	lock
+	4. versioning in place so that we can keep track of the changes happened on the sourcecode
+	5. these repositories helps us in backup and restoration
+4.dis-advantages of using gen1 repositories ?
+  ans:- 1. these repositories doesnt support collaborative application developer, developers cannot work in parallel in building the            application since a developer has to wait for another developer to complete his changes and commit to work on the same            sourcecode file 
+        2. many of the times the developers can run into deadlock where each of them checkout a bunch of files and waiting for others            to commit their changes to proceed and arrives to a deadlock
+        3. if a developer is working on a huge task which involves lot of files to be modified and takes more time in completing will            leaves the rest of team blocked and keep them idle to complete the changes
+        4. if a developer has checkout bunch of files within the repository and went on vacation or left from the organization then            the whole team will be blocked either until the developer returns back or administrator forcefully release the lock making            the code changesof the developer lost
+5.what is the directory structure of subversion repository ?
+  ans:- when we create an repository in the subversion for the project, the sub version server creates the repository with a standard 	
+	layout
+	
+	repository
+	|-trunk           (always carries the working copy of the code)
+	  |-bigsales  
+	|-branches	(release code is branched out and kept here)
+	  |-bigsales.rb-1.0
+	|-tags		(release tags are maintained here)
+
+***https://DESKTOP-1QI4S5N/svn/gooddealsrepo/
+
+
+
+2.what is source code repository server ?
+  ans:- the machine on which we installed the sourcecode repository management software is called source code repository server".
+3.scm repositories where they can stores the source code ?
+  ans:- the scm repositories stores the source code either on the filesystem of the server on there are installed or may internally 	
+	have their own database system.
+4.to store the source code in scm what we need to do ?
+  ans:- to store the sourcecode we need to create an root directory for our project within the repository software.this directory in 
+	which we keep our project is called "project repository/repository".
+5. how to identify and access the repository ?
+  ans:- through url. which is called repositoryurl.
+6.what is the syntax of repository url ?
+  ans:- protocol://host:port/repository-directory
+7.what is mean by commit ?
+  ans:-commit is the process of placing/pushing the localfile changes back to the server.
+8.how the gen#1 repositories works ?
+  ans:- the gen#1 repositories works based on lock-modify-unlock strategy.
+	(i).clone :- to initially start with developing the code each developer has to create an working copy of the code locally by                      cloning the remote repository from the server.
+	(ii).inorder to modify a sourcecode file of the project,developer has to checkout the file,so that the repository locks the 
+	     file and will not permit other people to modify or checkout the same file.
+	(iii).developer upon completing his changes he can commit the checkout file onto the repository.
+9.how subversion maintain the revision history ?
+  ans:- subversion maintain revision history through revision number.
+10.what is revision number ?
+  ans:- every commit to the repository is revision number.
+11.every commit how many files we can modify ?
+  ans:- we can modify any no.of files in one commit.
+
+12. how to work with gen#2 repositories ?
+  ans:- (i).checkout :- before beginning of the development,the developer has to create an working copy of the sourcecode on his 
+	                workstation.this process of creating an working copy of the sourcecode form the repository is called
+			checkout.
+			the developer dont need to lock any of the files on the repository to start working or modifying the code.
+	(ii).commit :- upon completing the changes developer can commit the local changes back to the repository.
+	(iii).update :- if we have already the working copy of the source code locally on the workstation but to pull the changes 
+			made by others on the sourcecode from the repository we need to update.
+	(iv).add :- the repository tool we use at the developers workstation keep track of the changes we made in the source code,
+		    but any new files created in the sourcecode should be added manually to track.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

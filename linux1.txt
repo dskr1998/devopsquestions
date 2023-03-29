@@ -1,0 +1,61 @@
+1. "/"    = The root of the Linux FileSystem where every other things will falls under
+2. /bin   = binary files, core commands of the linux operating system
+3. /sbin  = super user commands
+4. /etc   = configuration files related to software packages that are installed
+						(in windows program files)
+	
+5. /boot  = boot loader files are located here, to bootup the operating system
+						(in windows system32)
+	
+6. /proc  = everything in linux is captured as files only, even the programs under execution 							are tracked and monitored and the information of them are maintained as process 							files under proc directory (in windows taskmanager)
+7. /mnt   = remote filesystem directories are mounted under /mnt directory 
+						(in windows network devices)
+	
+8. /media = any detachable devices like cd, pendrives are mounted under /media directory
+						(in windows printers, scanners, cdroms and pendrives)
+9. /tmp   = all the temporary files are kept under /tmp. note: upon system reboot the tmp files 					removed automatically
+10. /home = for each linux user the user specific files are kept under /home/username directory
+11. /root = the root user home directory
+12. /var = variable large files are kept 
+13. /usr = optional software utilities to be shared across multiple users are kept under /usr
+14. /dev = device files (in windows device manager)
+15. /opt = optional software packages are located here and managed by package manager (in 
+program files)
+16. /lib = shared system libraries are kept under lib directory
+
+=======================================================================================================================================
+#1. How to create a File on the Filesystem of Linux?
+#2. How to see the list of files/folders within a directory?
+#3 How to see the directory in which we are in?
+#4. How to print message on to the terminal?   ans:-echo "message" 
+#5. How to create a file with data inside it?   ans:-echo "Good Morning! Guys" > message.txt
+#6 how to see the contents of the File?
+#7 how to create a directory?
+#8 How to change between directories ? ans:-cd dir,cd ..,cd,cd ~,cd /
+#9. How to know in which shell we are in?
+#10.to return back to previous shell what we need to type ?  ans:-exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
